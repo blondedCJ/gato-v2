@@ -14,7 +14,7 @@ public class CatBehavior : MonoBehaviour
 
     private const string SitStartState = "Skeleton_Sit_start_Skeleton";
     private readonly string[] sitLoopStates = {
-        "Skeleton_Sit_loop_1_Skeleton", "Skeleton_Sit_loop_2_Skeleton" // Add more loop states if you have them
+        "Skeleton_Sit_loop_1_Skeleton", "Skeleton_Sit_loop_2_Skeleton", "Skeleton_Sit_loop_3_Skeleton" , "Skeleton_Sit_loop_4_Skeleton"// Add more loop states if you have them
     };
     private const string SitEndState = "Skeleton_Sit_end_Skeleton";
 
@@ -33,7 +33,7 @@ public class CatBehavior : MonoBehaviour
         "Skeleton_Lie_side_sleep_end_Skeleton"
     };
 
-    private enum CatState { Idle, SitStart, SitLoop, SitEnd, SleepStart, SleepLoop, SleepEnd }
+    private enum CatState { Idle, SitStart, SitLoop, SitEnd, SleepStart, SleepLoop, SleepEnd, Eating }
     private CatState currentState;
 
     // Track the current sleep start state
@@ -98,6 +98,57 @@ public class CatBehavior : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public void TransitionToDrinking(GameObject drinkItem, float duration)
+    {
+        currentState = CatState.Eating; // You can change this to a new enum state for drinking if you want
+        catAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f); // Replace with the actual drinking animation name
+
+        // Optionally, destroy the drink item after the specified duration
+        StartCoroutine(DrinkingCoroutine(drinkItem, duration));
+    }
+
+    private IEnumerator DrinkingCoroutine(GameObject drinkItem, float duration)
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(duration);
+
+        // Destroy the drink item after drinking
+        Destroy(drinkItem);
+
+        // Transition back to idle after drinking
+        TransitionToIdle();
+    }
+
+    public void TransitionToEating(GameObject foodItem, float duration)
+    {
+        currentState = CatState.Eating; // Set the state to Eating
+        catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f); // Trigger the eating animation
+
+        // Optionally, destroy the food item after the specified duration
+        StartCoroutine(EatingCoroutine(foodItem, duration));
+    }
+
+    private IEnumerator EatingCoroutine(GameObject foodItem, float duration)
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(duration);
+
+        // Destroy the food item after eating
+        Destroy(foodItem);
+
+        // Transition back to idle after eating
+        TransitionToIdle();
+    }
+
+    private IEnumerator WaitForEatingEnd()
+    {
+        // Wait for the eating animation to finish
+        yield return new WaitForSeconds(catAnimator.GetCurrentAnimatorStateInfo(0).length);
+
+        // Transition back to idle after eating
+        TransitionToIdle(); // Return to idle after the eating animation
     }
 
     private void TransitionToIdle()
@@ -190,32 +241,6 @@ public class CatBehavior : MonoBehaviour
     {
         // Return the current idle state that is playing
         foreach (var state in idleStates)
-        {
-            if (catAnimator.GetCurrentAnimatorStateInfo(0).IsName(state))
-            {
-                return state;
-            }
-        }
-        return string.Empty;
-    }
-
-    private string GetCurrentSitLoopState()
-    {
-        // Return the current sit loop state that is playing
-        foreach (var state in sitLoopStates)
-        {
-            if (catAnimator.GetCurrentAnimatorStateInfo(0).IsName(state))
-            {
-                return state;
-            }
-        }
-        return string.Empty; // Or handle more states if needed
-    }
-
-    private string GetCurrentSleepLoopState()
-    {
-        // Return the current sleep loop state that is playing
-        foreach (var state in sleepLoopStates)
         {
             if (catAnimator.GetCurrentAnimatorStateInfo(0).IsName(state))
             {

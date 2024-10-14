@@ -7,10 +7,13 @@ using System.Collections.Generic;
 public class ObjectSpawnerOnPlane : MonoBehaviour
 {
     [SerializeField]
-    private GameObject objectToSpawn;  // The prefab to spawn
+    private GameObject cat; // Reference to the cat prefab
     private ARRaycastManager arRaycastManager; // Raycast manager to detect planes
     private Camera arCamera;
     private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
+
+    // Boolean to track if the cat has been spawned
+    private bool catSpawned = false;
 
     void Awake()
     {
@@ -35,10 +38,10 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
 
-            if (arRaycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
+            if (!catSpawned && arRaycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
             {
                 Pose hitPose = hits[0].pose;
-                SpawnObjectAtPosition(hitPose.position);
+                SpawnCatAtPosition(hitPose.position);
             }
         }
     }
@@ -51,39 +54,33 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
             Ray ray = arCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (!catSpawned && Physics.Raycast(ray, out hit))
             {
                 // Cast against AR planes to simulate placement
                 if (arRaycastManager.Raycast(Mouse.current.position.ReadValue(), hits, TrackableType.PlaneWithinPolygon))
                 {
                     Pose hitPose = hits[0].pose;
-                    SpawnObjectAtPosition(hitPose.position);
+                    SpawnCatAtPosition(hitPose.position);
                 }
             }
         }
     }
 
-
-    // Method to spawn object and set isIdling to true, with the object facing the camera
-    // Method to spawn object and set isIdling to true, with the object facing the camera
-    private void SpawnObjectAtPosition(Vector3 position)
+    // Method to spawn cat object
+    private void SpawnCatAtPosition(Vector3 position)
     {
-        // Instantiate the object at the specified position
-        GameObject spawnedObject = Instantiate(objectToSpawn, position, Quaternion.identity);
+        // Check if the cat has already been spawned
 
-        // Make the object face the camera
-        Vector3 directionToCamera = arCamera.transform.position - spawnedObject.transform.position;
-        directionToCamera.y = 0; // Keep the rotation only on the y-axis, so the object doesn't tilt up/down
-        spawnedObject.transform.rotation = Quaternion.LookRotation(-directionToCamera); // Face toward the camera
 
-        // Rotate the object 180 degrees on the Y-axis to make it face the camera properly
-        spawnedObject.transform.Rotate(0, 180, 0);
+        // Instantiate the cat object at the specified position
+        GameObject spawnedCat = Instantiate(cat, position, Quaternion.identity);
 
-        // Get the Animator component from the spawned object
-        Animator objectAnimator = spawnedObject.GetComponent<Animator>();
+        // Make the cat object face the camera
+        Vector3 directionToCamera = arCamera.transform.position - spawnedCat.transform.position;
+        directionToCamera.y = 0; // Keep the rotation only on the y-axis
+        spawnedCat.transform.rotation = Quaternion.LookRotation(directionToCamera); // Face toward the camera
 
-        // Check if the Animator component exists and set the isIdling parameter to true
+        // Set the flag to true, indicating the cat has been spawned
+        catSpawned = true;
     }
-
-
 }

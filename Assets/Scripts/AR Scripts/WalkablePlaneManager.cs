@@ -131,7 +131,7 @@ public class WalkablePlaneManager : MonoBehaviour
             CatBehavior catBehavior = cat.GetComponent<CatBehavior>();
             if (catBehavior != null)
             {
-                float duration = 10f; // Set the duration for the eating animation
+                float duration = 5f; // Set the duration for the eating animation
                 catBehavior.TransitionToEating(spawnedTreat, duration);
             }
             else
@@ -159,7 +159,7 @@ public class WalkablePlaneManager : MonoBehaviour
             CatBehavior catBehavior = cat.GetComponent<CatBehavior>();
             if (catBehavior != null)
             {
-                float duration = 3f; // Set the duration for the eating animation
+                float duration = 10f; // Set the duration for the eating animation
                 catBehavior.TransitionToEating(spawnedFeed, duration);
             }
             else
@@ -233,50 +233,58 @@ public class WalkablePlaneManager : MonoBehaviour
     }
 
     // Method to enable treat placement when the treat button is clicked
-    public void EnableTreatPlacement()
+    public void ToggleTreatPlacement()
     {
-        canPlaceTreat = true;
-        canPlaceFeed = false;
-        canPlaceDrink = false; // Disable drink placement
-        Debug.Log("Treat placement enabled.");
+        // Toggle treat placement
+        canPlaceTreat = !canPlaceTreat;
+
+        // Disable other placements when treat placement is enabled
+        if (canPlaceTreat)
+        {
+            canPlaceFeed = false;
+            canPlaceDrink = false;
+            Debug.Log("Treat placement enabled.");
+        }
+        else
+        {
+            Debug.Log("Treat placement disabled.");
+        }
     }
 
-    // Method to enable feed placement when the feed button is clicked
-    public void EnableFeedPlacement()
+    public void ToggleFeedPlacement()
     {
-        canPlaceFeed = true;
-        canPlaceTreat = false;
-        canPlaceDrink = false; // Disable drink placement
-        Debug.Log("Feed placement enabled.");
+        // Toggle feed placement
+        canPlaceFeed = !canPlaceFeed;
+
+        // Disable other placements when feed placement is enabled
+        if (canPlaceFeed)
+        {
+            canPlaceTreat = false;
+            canPlaceDrink = false;
+            Debug.Log("Feed placement enabled.");
+        }
+        else
+        {
+            Debug.Log("Feed placement disabled.");
+        }
     }
 
-    // New method to enable drink placement when the drink button is clicked
-    public void EnableDrinkPlacement()
+    public void ToggleDrinkPlacement()
     {
-        canPlaceDrink = true; // Enable drink placement
-        canPlaceTreat = false;
-        canPlaceFeed = false; // Disable feed placement
-        Debug.Log("Drink placement enabled.");
+        // Toggle drink placement
+        canPlaceDrink = !canPlaceDrink;
+
+        // Disable other placements when drink placement is enabled
+        if (canPlaceDrink)
+        {
+            canPlaceTreat = false;
+            canPlaceFeed = false;
+            Debug.Log("Drink placement enabled.");
+        }
+        else
+        {
+            Debug.Log("Drink placement disabled.");
+        }
     }
 
-    // Method to disable treat placement
-    public void DisableTreatPlacement()
-    {
-        canPlaceTreat = false;
-        Debug.Log("Treat placement disabled.");
-    }
-
-    // Method to disable feed placement
-    public void DisableFeedPlacement()
-    {
-        canPlaceFeed = false;
-        Debug.Log("Feed placement disabled.");
-    }
-
-    // New method to disable drink placement
-    public void DisableDrinkPlacement()
-    {
-        canPlaceDrink = false;
-        Debug.Log("Drink placement disabled.");
-    }
 }

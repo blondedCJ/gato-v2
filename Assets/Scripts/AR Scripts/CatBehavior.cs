@@ -1,9 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CatBehavior : MonoBehaviour
 {
     private Animator catAnimator;
+    private Collider catCollider;
+    private bool isBeingPetted = false;
+    private bool isPaused = false;
+    private bool isEating = false; // Set this when the cat starts eating
+    private bool isDrinking = false; // Set this when the cat starts drinking
+
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -33,15 +40,20 @@ public class CatBehavior : MonoBehaviour
         "Skeleton_Lie_side_sleep_end_Skeleton"
     };
 
+    private const string PettingAnimationState = "Skeleton_Caress_idle_Skeleton"; // Replace with your actual petting animation state
+    private bool isDragging = false;
+
     private enum CatState { Idle, SitStart, SitLoop, SitEnd, SleepStart, SleepLoop, SleepEnd, Eating }
     private CatState currentState;
 
     // Track the current sleep start state
     private string currentSleepStartState;
+    private Vector2 initialTouchPosition;
 
     void Start()
     {
         catAnimator = GetComponent<Animator>();
+        catCollider = GetComponent<Collider>();
         TransitionToIdle();
     }
 
@@ -98,10 +110,166 @@ public class CatBehavior : MonoBehaviour
                 }
                 break;
         }
+        HandlePettingInput();
+    }
+
+    private void HandlePettingInput()
+    {
+#if UNITY_EDITOR
+        HandleMouseInput();
+#else
+        HandleTouchInput();
+#endif
+    }
+
+    // Method to handle touch input for mobile devices
+private void HandleTouchInput()
+{
+    if (Touchscreen.current != null)
+    {
+        var touch = Touchscreen.current.primaryTouch;
+
+        if (touch.press.wasPressedThisFrame)
+        {
+            // Register the initial touch position
+            initialTouchPosition = touch.position.ReadValue();
+        }
+        else if (touch.press.isPressed)
+        {
+            // Check if a drag has occurred
+            Vector2 currentPosition = touch.position.ReadValue();
+            if (Vector2.Distance(currentPosition, initialTouchPosition) > 10f) // Threshold for dragging
+            {
+                isDragging = true;
+                CheckPettingStart(currentPosition); // Petting starts with drag
+            }
+        }
+        else if (touch.press.wasReleasedThisFrame)
+        {
+            // End petting when the touch is released
+            if (isDragging)
+            {
+                EndPetting();
+                isDragging = false;
+            }
+        }
+    }
+}
+
+    // For mouse input (editor testing)
+    private void HandleMouseInput()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            // Register the initial mouse position
+            initialTouchPosition = Mouse.current.position.ReadValue();
+        }
+        else if (Mouse.current.leftButton.isPressed)
+        {
+            // Check if a drag has occurred
+            Vector2 currentPosition = Mouse.current.position.ReadValue();
+            if (Vector2.Distance(currentPosition, initialTouchPosition) > 10f) // Threshold for dragging
+            {
+                isDragging = true;
+                CheckPettingStart(currentPosition); // Petting starts with drag
+            }
+        }
+        else if (Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            // End petting when the mouse button is released
+            if (isDragging)
+            {
+                EndPetting();
+                isDragging = false;
+            }
+        }
+    }
+
+    // Check if the input position hits the cat's collider
+    private void CheckPettingStart(Vector2 screenPosition)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            if (hit.collider == catCollider && !isBeingPetted)
+            {
+                StartPetting();
+            }
+        }
+    }
+
+    // Start the petting animation
+    private void StartPetting()
+    {
+        if (!isBeingPetted)
+        {
+            isBeingPetted = true;
+            PauseEatingOrDrinking(); // Pause eating or drinking
+            catAnimator.speed = 1;
+            catAnimator.CrossFade("Skeleton_Caress_idle_Skeleton", 0.2f); // Play the petting animation
+        }
+    }
+
+    // End the petting animation and return to idle if not eating/drinking
+    private void EndPetting()
+    {
+        if (isBeingPetted)
+        {
+            isBeingPetted = false;
+            ResumeEatingOrDrinking(); // Resume eating or drinking
+                                      // Only transition to idle if not eating or drinking
+            if (!isEating && !isDrinking)
+            {
+                TransitionToIdle(); // Transition back to idle
+            }
+            else if (isEating) 
+            {
+                // If still eating/drinking, just reset the animation
+                catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f); // Reset to petting animation
+            } else if (isDrinking)
+            {
+                catAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f);
+            }
+        }
+    }
+
+
+    private void PauseEatingOrDrinking()
+    {
+        if (isEating)
+        {
+            isPaused = true;
+            catAnimator.speed = 0; // Pause the eating animation
+            Debug.Log("Eating paused.");
+        }
+        else if (isDrinking)
+        {
+            isPaused = true;
+            catAnimator.speed = 0; // Pause the drinking animation
+            Debug.Log("Drinking paused.");
+        }
+    }
+
+    private void ResumeEatingOrDrinking()
+    {
+        if (isEating)
+        {
+            isPaused = false;
+            catAnimator.speed = 1; // Resume the eating animation
+            Debug.Log("Eating resumed.");
+        }
+        else if (isDrinking)
+        {
+            isPaused = false;
+            catAnimator.speed = 1; // Resume the drinking animation
+            Debug.Log("Drinking resumed.");
+        }
     }
 
     public void TransitionToDrinking(GameObject drinkItem, float duration)
     {
+        isDrinking = true;
         currentState = CatState.Eating; // You can change this to a new enum state for drinking if you want
         catAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f); // Replace with the actual drinking animation name
 
@@ -111,18 +279,27 @@ public class CatBehavior : MonoBehaviour
 
     private IEnumerator DrinkingCoroutine(GameObject drinkItem, float duration)
     {
-        // Wait for the specified duration
-        yield return new WaitForSeconds(duration);
+        float elapsedTime = 0f;
 
-        // Destroy the drink item after drinking
+        while (elapsedTime < duration)
+        {
+            if (!isPaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+
+            yield return null;
+        }
+
         Destroy(drinkItem);
-
-        // Transition back to idle after drinking
         TransitionToIdle();
+        isDrinking = false; // Reset drinking flag
     }
 
+
     public void TransitionToEating(GameObject foodItem, float duration)
-    {
+    {   
+        isEating = true;
         currentState = CatState.Eating; // Set the state to Eating
         catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f); // Trigger the eating animation
 
@@ -132,14 +309,26 @@ public class CatBehavior : MonoBehaviour
 
     private IEnumerator EatingCoroutine(GameObject foodItem, float duration)
     {
-        // Wait for the specified duration
-        yield return new WaitForSeconds(duration);
+        float elapsedTime = 0f;
 
-        // Destroy the food item after eating
+        // Continue the loop until the total duration is reached
+        while (elapsedTime < duration)
+        {
+            // If the cat is not being petted, continue the eating process
+            if (!isPaused)
+            {
+                elapsedTime += Time.deltaTime; // Accumulate time only if not paused
+            }
+
+            yield return null; // Wait for the next frame
+        }
+
+        // Eating completed, destroy the food item
         Destroy(foodItem);
 
-        // Transition back to idle after eating
+        // Transition the cat back to idle after eating
         TransitionToIdle();
+        isEating = false; // Reset eating flag
     }
 
     private IEnumerator WaitForEatingEnd()

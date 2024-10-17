@@ -6,20 +6,25 @@ using System.Collections.Generic;
 
 public class ObjectSpawnerOnPlane : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject cat; // Reference to the cat prefab
-    private ARRaycastManager arRaycastManager; // Raycast manager to detect planes
+    [SerializeField] private GameObject[] catPrefabs; // Array for different cat prefabs
+    private ARRaycastManager arRaycastManager;
     private Camera arCamera;
+    private List<int> userOwnedCats;
+    private UserInventory userInventory; // Reference to the UserInventory script
     private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
-
-    // Boolean to track if the cat has been spawned
     private bool catSpawned = false;
 
     void Awake()
     {
-        // Get ARRaycastManager component
         arRaycastManager = GetComponent<ARRaycastManager>();
-        arCamera = Camera.main;  // Get AR Camera
+        arCamera = Camera.main;
+
+        userInventory = FindObjectOfType<UserInventory>();
+        if (userInventory != null)
+        {
+            userInventory.LoadUserOwnedCats();
+            userOwnedCats = userInventory.userOwnedCats;
+        }
     }
 
     void Update()
@@ -41,7 +46,7 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
             if (!catSpawned && arRaycastManager.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
             {
                 Pose hitPose = hits[0].pose;
-                SpawnCatAtPosition(hitPose.position);
+                SpawnUserOwnedCatAtPosition(hitPose.position);
             }
         }
     }
@@ -60,27 +65,49 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
                 if (arRaycastManager.Raycast(Mouse.current.position.ReadValue(), hits, TrackableType.PlaneWithinPolygon))
                 {
                     Pose hitPose = hits[0].pose;
-                    SpawnCatAtPosition(hitPose.position);
+                    SpawnUserOwnedCatAtPosition(hitPose.position);
                 }
             }
         }
     }
 
-    // Method to spawn cat object
-    private void SpawnCatAtPosition(Vector3 position)
+    // Method to spawn a cat object based on user ownership
+    private void SpawnUserOwnedCatAtPosition(Vector3 position)
     {
-        // Check if the cat has already been spawned
+        if (userOwnedCats.Count > 0)
+        {
+            // Select the first cat the user owns, for example
+            int selectedCatIndex = userOwnedCats[0];
+            if (selectedCatIndex >= 0 && selectedCatIndex < catPrefabs.Length)
+            {
+                GameObject spawnedCat = Instantiate(catPrefabs[selectedCatIndex], position, Quaternion.identity);
+                Vector3 directionToCamera = arCamera.transform.position - spawnedCat.transform.position;
+                directionToCamera.y = 0;
+                spawnedCat.transform.rotation = Quaternion.LookRotation(directionToCamera);
+                catSpawned = true;
+            }
+        } else
+        {
+            Debug.Log("User has no cats");
+        }
+    }
 
+    // Load user-owned cats from PlayerPrefs
+    private void LoadUserOwnedCats()
+    {
+        userOwnedCats = new List<int>();
 
-        // Instantiate the cat object at the specified position
-        GameObject spawnedCat = Instantiate(cat, position, Quaternion.identity);
-
-        // Make the cat object face the camera
-        Vector3 directionToCamera = arCamera.transform.position - spawnedCat.transform.position;
-        directionToCamera.y = 0; // Keep the rotation only on the y-axis
-        spawnedCat.transform.rotation = Quaternion.LookRotation(directionToCamera); // Face toward the camera
-
-        // Set the flag to true, indicating the cat has been spawned
-        catSpawned = true;
+        string ownedCatsString = PlayerPrefs.GetString("userOwnedCats", "");
+        if (!string.IsNullOrEmpty(ownedCatsString))
+        {
+            string[] ownedCatsArray = ownedCatsString.Split(',');
+            foreach (string catIndex in ownedCatsArray)
+            {
+                if (int.TryParse(catIndex, out int index))
+                {
+                    userOwnedCats.Add(index);
+                }
+            }
+        }
     }
 }

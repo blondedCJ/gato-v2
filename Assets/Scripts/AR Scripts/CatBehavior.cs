@@ -10,7 +10,11 @@ public class CatBehavior : MonoBehaviour
     private bool isPaused = false;
     private bool isEating = false; // Set this when the cat starts eating
     private bool isDrinking = false; // Set this when the cat starts drinking
+    private bool isSelected = false;
 
+    public Material selectedMaterial;
+    private Material defaultMaterial;
+    private SkinnedMeshRenderer catRenderer; // Use SkinnedMeshRenderer for animated models
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -43,7 +47,7 @@ public class CatBehavior : MonoBehaviour
     private const string PettingAnimationState = "Skeleton_Caress_idle_Skeleton"; // Replace with your actual petting animation state
     private bool isDragging = false;
 
-    private enum CatState { Idle, SitStart, SitLoop, SitEnd, SleepStart, SleepLoop, SleepEnd, Eating }
+    private enum CatState { Idle, SitStart, SitLoop, SitEnd, SleepStart, SleepLoop, SleepEnd, Eating, PlayDead, Jump }
     private CatState currentState;
 
     // Track the current sleep start state
@@ -54,6 +58,8 @@ public class CatBehavior : MonoBehaviour
     {
         catAnimator = GetComponent<Animator>();
         catCollider = GetComponent<Collider>();
+        catRenderer = GetComponentInChildren<SkinnedMeshRenderer>(); // Ensure it looks for the SkinnedMeshRenderer in children
+        defaultMaterial = catRenderer.material; // Store the default material
         TransitionToIdle();
     }
 
@@ -234,7 +240,6 @@ private void HandleTouchInput()
         }
     }
 
-
     private void PauseEatingOrDrinking()
     {
         if (isEating)
@@ -340,6 +345,34 @@ private void HandleTouchInput()
         TransitionToIdle(); // Return to idle after the eating animation
     }
 
+    public void Select()
+    {
+        isSelected = true;
+        catRenderer.material = selectedMaterial; // Change to selected material
+    }
+
+    public void Deselect()
+    {
+        isSelected = false;
+        catRenderer.material = defaultMaterial; // Reset to default material
+    }
+
+    public void TransitionToPlayDead()
+    {
+        currentState = CatState.PlayDead;
+        catAnimator.CrossFade("Skeleton_Die_R_Skeleton", 0.2f); // Replace with your play dead animation state name
+        StartCoroutine(WaitForTrickEnd("Skeleton_Die_R_Skeleton"));
+    }
+
+    public void TransitionToJump(float jumpHeight = 0.3f, float jumpDuration = 1f)
+    {
+        currentState = CatState.Jump;
+        catAnimator.CrossFade("Skeleton_Jump_Place_IP_Skeleton", 0.2f); // Play jump animation
+
+        // Start the coroutine to handle the jump movement
+        StartCoroutine(JumpCoroutine(jumpHeight, jumpDuration));
+    }
+
     private void TransitionToIdle()
     {
         // Select a random idle state
@@ -361,6 +394,70 @@ private void HandleTouchInput()
         catAnimator.CrossFade(randomSitLoopState, 0.2f);
         StartCoroutine(SitLoopCoroutine()); // Start the sit loop coroutine
     }
+
+    private IEnumerator JumpCoroutine(float jumpHeight, float jumpDuration)
+    {
+        // Calculate the half duration to handle upward and downward movement
+        float halfDuration = jumpDuration / 2f;
+
+        Vector3 initialPosition = transform.position; // Store the starting position
+
+        // Optional delay before starting the jump
+        yield return new WaitForSeconds(0.2f); // Delay of 0.2 seconds before starting the jump
+
+        // Move the cat upwards for the first half of the duration
+        float elapsedTime = 0f;
+        while (elapsedTime < halfDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newY = Mathf.Lerp(initialPosition.y, initialPosition.y + jumpHeight, elapsedTime / halfDuration);
+            transform.position = new Vector3(initialPosition.x, newY, initialPosition.z);
+            yield return null;
+        }
+
+        // Optional delay at the peak of the jump
+        yield return new WaitForSeconds(0.1f); // Delay of 0.1 seconds at the peak of the jump
+
+        // Move the cat back down for the second half of the duration
+        elapsedTime = 0f;
+        while (elapsedTime < halfDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float newY = Mathf.Lerp(initialPosition.y + jumpHeight, initialPosition.y, elapsedTime / halfDuration);
+            transform.position = new Vector3(initialPosition.x, newY, initialPosition.z);
+            yield return null;
+        }
+
+        // Ensure the cat returns to the exact starting position
+        transform.position = initialPosition;
+
+        // Optional delay after landing before transitioning back to idle
+        yield return new WaitForSeconds(0.2f); // Delay of 0.2 seconds after landing
+
+        // Wait for the jump animation to finish before transitioning back to idle
+        StartCoroutine(WaitForTrickEnd("Skeleton_Jump_Place_IP_Skeleton"));
+    }
+
+
+    private IEnumerator WaitForTrickEnd(string trickState)
+    {
+        // Wait for the trick animation to start properly
+        yield return new WaitUntil(() => catAnimator.GetCurrentAnimatorStateInfo(0).IsName(trickState));
+
+        // Wait for the trick animation to finish
+        yield return new WaitUntil(() => catAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+
+        if (trickState == "Skeleton_Die_R_Skeleton") // For Play Dead
+        {
+            // Hold the "Play Dead" state for 2 seconds before transitioning
+            yield return new WaitForSeconds(10f);
+        }
+        // For "Jump", it will immediately transition to idle without delay
+
+        // After the trick, transition back to idle
+        TransitionToIdle();
+    }
+
 
     private IEnumerator SitLoopCoroutine()
     {
@@ -457,7 +554,7 @@ private void HandleTouchInput()
         // Get a random sit loop state
         return sitLoopStates[Random.Range(0, sitLoopStates.Length)];
     }
-
+    
     private string GetCorrespondingSleepLoopState(string sleepStartState)
     {
         // Determine the corresponding sleep loop state based on the sleep start state

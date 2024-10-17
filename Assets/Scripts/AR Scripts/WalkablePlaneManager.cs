@@ -138,6 +138,7 @@ public class WalkablePlaneManager : MonoBehaviour
             {
                 Debug.LogError("CatBehavior not found on the cat object!");
             }
+            StartCoroutine(DisableFeedAfterTime(spawnedTreat, 3f));
         }
         else
         {
@@ -166,7 +167,7 @@ public class WalkablePlaneManager : MonoBehaviour
             {
                 Debug.LogError("CatBehavior not found on the cat object!");
             }
-            StartCoroutine(DisableFeedAfterTime(spawnedFeed, 3f));
+            StartCoroutine(DisableFeedAfterTime(spawnedFeed, 10f));
         }
         else
         {
@@ -266,6 +267,38 @@ public class WalkablePlaneManager : MonoBehaviour
         else
         {
             Debug.Log("Feed placement disabled.");
+        }
+    }
+
+    public void OnPlayDeadButtonPress()
+    {
+        if (cat != null)
+        {
+            CatBehavior catBehavior = cat.GetComponent<CatBehavior>();
+            if (catBehavior != null)
+            {
+                catBehavior.TransitionToPlayDead(); // Trigger the play dead trick
+            }
+            else
+            {
+                Debug.LogError("CatBehavior not found on the cat object!");
+            }
+        }
+    }
+
+    public void OnJumpButtonPress()
+    {
+        if (cat != null)
+        {
+            CatBehavior catBehavior = cat.GetComponent<CatBehavior>();
+            if (catBehavior != null)
+            {
+                catBehavior.TransitionToJump(); // Trigger the jump trick
+            }
+            else
+            {
+                Debug.LogError("CatBehavior not found on the cat object!");
+            }
         }
     }
 

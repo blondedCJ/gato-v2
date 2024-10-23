@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public class CatManager : MonoBehaviour
 {
     public List<CatBehavior> selectedCats = new List<CatBehavior>();
     private Collider catCollider;
     private UserInventory userInventory;
+
 
     void Start()
     {
@@ -66,7 +68,7 @@ public class CatManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             CatBehavior cat = hit.collider.GetComponent<CatBehavior>();
-            if (cat != null)
+            if (cat != null && cat.CanBeSelected()) // Check if the cat can be selected
             {
                 if (selectedCats.Contains(cat))
                 {
@@ -119,6 +121,23 @@ public class CatManager : MonoBehaviour
             {
                 Debug.Log("User does not own any cats.");
             }
+        }
+    }
+
+    private void LogSelectedCats()
+    {
+        if (selectedCats.Count > 0)
+        {
+            Debug.Log("Selected Cats:");
+            foreach (CatBehavior cat in selectedCats)
+            {
+                // Assuming CatBehavior has a property called CatName (or similar)
+                Debug.Log($"- {cat.gameObject.name}"); // Log the name of the cat GameObject
+            }
+        }
+        else
+        {
+            Debug.Log("No cats are currently selected.");
         }
     }
 

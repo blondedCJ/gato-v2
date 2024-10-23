@@ -11,6 +11,9 @@ public class CatBehavior : MonoBehaviour
     private bool isEating = false; // Set this when the cat starts eating
     private bool isDrinking = false; // Set this when the cat starts drinking
     private bool isSelected = false;
+    private bool canBeSelected = false; // By default, the cat can't be selected
+    private float selectionDelay = 1f;  // Delay period after spawning
+    public bool isFinished = false;
 
     public Material selectedMaterial;
     private Material defaultMaterial;
@@ -61,6 +64,7 @@ public class CatBehavior : MonoBehaviour
         catRenderer = GetComponentInChildren<SkinnedMeshRenderer>(); // Ensure it looks for the SkinnedMeshRenderer in children
         defaultMaterial = catRenderer.material; // Store the default material
         TransitionToIdle();
+        StartCoroutine(EnableSelectionAfterDelay());
     }
 
     void Update()
@@ -128,8 +132,19 @@ public class CatBehavior : MonoBehaviour
 #endif
     }
 
+
+    private IEnumerator EnableSelectionAfterDelay()
+    {
+        yield return new WaitForSeconds(selectionDelay);
+        canBeSelected = true; // Allow selection after delay
+    }
+    public bool CanBeSelected()
+    {
+        return canBeSelected;
+    }
+
     // Method to handle touch input for mobile devices
-private void HandleTouchInput()
+    private void HandleTouchInput()
 {
     if (Touchscreen.current != null)
     {
@@ -295,8 +310,8 @@ private void HandleTouchInput()
 
             yield return null;
         }
-
         Destroy(drinkItem);
+        isFinished = true;
         TransitionToIdle();
         isDrinking = false; // Reset drinking flag
     }
@@ -330,9 +345,11 @@ private void HandleTouchInput()
 
         // Eating completed, destroy the food item
         Destroy(foodItem);
+        isFinished = true;
+        
 
-        // Transition the cat back to idle after eating
-        TransitionToIdle();
+    // Transition the cat back to idle after eating
+    TransitionToIdle();
         isEating = false; // Reset eating flag
     }
 

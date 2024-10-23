@@ -5,13 +5,7 @@ public class UserInventory : MonoBehaviour
 {
     public List<int> userOwnedCats { get; private set; } = new List<int>();
     
-
     // Load user-owned cats from PlayerPrefs
-
-    private void Start()
-    {
-        
-    }
     public void LoadUserOwnedCats()
     {
         userOwnedCats = new List<int>();
@@ -30,8 +24,6 @@ public class UserInventory : MonoBehaviour
         }
     }
 
-
-
     // Optionally, save owned cats to PlayerPrefs
     public void SaveUserOwnedCats(List<int> ownedCats)
     {
@@ -39,4 +31,12 @@ public class UserInventory : MonoBehaviour
         PlayerPrefs.SetString("userOwnedCats", ownedCatsString);
         PlayerPrefs.Save();
     }
+
+    public void ResetUserOwnedCats()
+    {
+        userOwnedCats.Clear();
+        SaveUserOwnedCats(userOwnedCats);
+        Debug.Log("User-owned cats have been reset.");
+    }
+
 }

@@ -7,9 +7,9 @@ public class CatStatus : MonoBehaviour
     public GameObject affectionEmote;
     public GameObject thirstEmote;
 
-    public float hungerLevel = 100f;
-    public float affectionLevel = 100f;
-    public float thirstLevel = 100f;
+    public float hungerLevel = 0f;
+    public float affectionLevel = 0f;
+    public float thirstLevel = 0f;
 
     public float decreaseRateAffection = 1f; // Decrease per second
     public float decreaseRateHunger = 50f;    // Decrease per second
@@ -20,7 +20,9 @@ public class CatStatus : MonoBehaviour
     private Vector3 initialPositionAffection;
     private Vector3 initialPositionThirst;
 
-    private float emoteOffset = 0.0015f; // The offset to use for separating emotes
+    public bool isBeingPetted = false;
+
+    private float emoteOffset = 0.001f; // The offset to use for separating emotes
 
     void Start()
     {
@@ -152,10 +154,26 @@ public class CatStatus : MonoBehaviour
         SaveCatStatus();
     }
 
-    public void GiveAffection()
+    public void StartPettingAffection()
     {
-        affectionLevel += 5f;
-        SaveCatStatus();
+        isBeingPetted = true;
+        StartCoroutine(IncreaseAffectionGradually());
+    }
+
+    public void StopPettingAffection()
+    {
+        isBeingPetted = false;
+        StopCoroutine(IncreaseAffectionGradually());
+    }
+
+    private IEnumerator IncreaseAffectionGradually()
+    {
+        while (isBeingPetted)
+        {
+            affectionLevel += 1f; // Increase affection gradually
+            SaveCatStatus(); // Save the status after each increase
+            yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds before increasing again
+        }
     }
 
     public void GiveWater()

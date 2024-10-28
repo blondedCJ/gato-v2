@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public class UserInventory : MonoBehaviour
 {
     public List<int> userOwnedCats { get; private set; } = new List<int>();
-    
+    private static List<string> keys = new List<string>();
+
     // Load user-owned cats from PlayerPrefs
     public void LoadUserOwnedCats()
     {
@@ -34,9 +35,29 @@ public class UserInventory : MonoBehaviour
 
     public void ResetUserOwnedCats()
     {
-        userOwnedCats.Clear();
-        SaveUserOwnedCats(userOwnedCats);
-        Debug.Log("User-owned cats have been reset.");
+        PlayerPrefs.DeleteAll(); // This will delete all PlayerPrefs data
+        PlayerPrefs.Save(); // Ensure changes are saved
+        Debug.Log("All PlayerPrefs data has been reset.");
+    }
+    public static void DisplayAllPlayerPrefs()
+    {
+        Debug.Log("PlayerPrefs Contents:");
+        foreach (var key in keys)
+        {
+            if (PlayerPrefs.HasKey(key))
+            {
+                // Display the value based on its type
+                string value = key switch
+                {
+                    var k when PlayerPrefs.GetInt(k) != 0 => PlayerPrefs.GetInt(k).ToString(),
+                    var k when PlayerPrefs.GetFloat(k) != 0f => PlayerPrefs.GetFloat(k).ToString(),
+                    var k when PlayerPrefs.GetString(k) != "" => PlayerPrefs.GetString(k),
+                    _ => "Key has no value"
+                };
+
+                Debug.Log($"Key: {key}, Value: {value}");
+            }
+        }
     }
 
 }

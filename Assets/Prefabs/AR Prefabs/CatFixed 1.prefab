@@ -2320,7 +2320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFinished: 0
-  selectedMaterial: {fileID: 2100000, guid: f5025f65527b0b543bbbef60a28f5451, type: 2}
+  selectedMaterial: {fileID: 0}
 --- !u!65 &-6843723087421064352
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2363,6 +2363,7 @@ MonoBehaviour:
   decreaseRateAffection: 1
   decreaseRateHunger: 1
   decreaseRateThirst: 1
+  isBeingPetted: 0
 --- !u!1 &8248811361692265121
 GameObject:
   m_ObjectHideFlags: 0

@@ -767,8 +767,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   catPrefabs:
+  - {fileID: 8186739265338542139, guid: ae2d7a49a06de8546a98d9813f8f75af, type: 3}
+  - {fileID: 8186739265338542139, guid: e031ad02c52c1184aa4fa8477c952e91, type: 3}
   - {fileID: 8186739265338542139, guid: 001c5d88fc575ba4eacb77e2938d0409, type: 3}
-  - {fileID: 8186739265338542139, guid: a95ecce6f4061cf4482b883ae4b6e216, type: 3}
+  - {fileID: 8186739265338542139, guid: 28c6679d816f37b4d9930d42bd3f5e2a, type: 3}
 --- !u!114 &151853176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4033,7 +4035,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -141.2, y: 39.2}
+  m_AnchoredPosition: {x: -141.2, y: 39.19995}
   m_SizeDelta: {x: 130.9106, y: 55.128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &725393665

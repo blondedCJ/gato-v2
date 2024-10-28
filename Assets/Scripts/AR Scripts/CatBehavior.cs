@@ -14,6 +14,9 @@ public class CatBehavior : MonoBehaviour
     private bool canBeSelected = false; // By default, the cat can't be selected
     private float selectionDelay = 1f;  // Delay period after spawning
     public bool isFinished = false;
+    private CatStatus currentlyPettedCat; // Track the specific cat being petted
+    private Animator currentCatAnimator;  // Track the specific cat's animator
+
 
     public Material selectedMaterial;
     private Material defaultMaterial;
@@ -132,7 +135,6 @@ public class CatBehavior : MonoBehaviour
 #endif
     }
 
-
     private IEnumerator EnableSelectionAfterDelay()
     {
         yield return new WaitForSeconds(selectionDelay);
@@ -207,51 +209,68 @@ public class CatBehavior : MonoBehaviour
     }
 
     // Check if the input position hits the cat's collider
+    // Check if the input position hits the cat's collider
     private void CheckPettingStart(Vector2 screenPosition)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.collider == catCollider && !isBeingPetted)
+            CatStatus catStatus = hit.collider.GetComponent<CatStatus>();
+            if (catStatus != null && !isBeingPetted)
             {
+                currentlyPettedCat = catStatus; // Store reference to the specific cat being petted
+                currentCatAnimator = hit.collider.GetComponent<Animator>(); // Get the animator of the cat being petted
                 StartPetting();
             }
         }
     }
 
-    // Start the petting animation
+    // Start the petting animation and give affection gradually
     private void StartPetting()
     {
-        if (!isBeingPetted)
+        if (!isBeingPetted && currentlyPettedCat != null && currentCatAnimator != null)
         {
             isBeingPetted = true;
             PauseEatingOrDrinking(); // Pause eating or drinking
-            catAnimator.speed = 1;
-            catAnimator.CrossFade("Skeleton_Caress_idle_Skeleton", 0.2f); // Play the petting animation
+
+            // Use the specific cat's animator
+            currentCatAnimator.speed = 1;
+            currentCatAnimator.CrossFade("Skeleton_Caress_idle_Skeleton", 0.2f); // Play the petting animation
+
+            // Start giving affection gradually
+            currentlyPettedCat.StartPettingAffection();
         }
     }
 
-    // End the petting animation and return to idle if not eating/drinking
+    // End the petting animation and stop affection increase
     private void EndPetting()
     {
-        if (isBeingPetted)
+        if (isBeingPetted && currentCatAnimator != null)
         {
             isBeingPetted = false;
             ResumeEatingOrDrinking(); // Resume eating or drinking
-                                      // Only transition to idle if not eating or drinking
+
+            // Only transition to idle if not eating or drinking
             if (!isEating && !isDrinking)
             {
                 TransitionToIdle(); // Transition back to idle
             }
-            else if (isEating) 
+            else if (isEating)
             {
-                // If still eating/drinking, just reset the animation
-                catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f); // Reset to petting animation
-            } else if (isDrinking)
-            {
-                catAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f);
+                currentCatAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f);
             }
+            else if (isDrinking)
+            {
+                currentCatAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f);
+            }
+
+            // Stop affection increase
+            currentlyPettedCat.StopPettingAffection();
+
+            // Clear references when petting ends
+            currentlyPettedCat = null;
+            currentCatAnimator = null;
         }
     }
 

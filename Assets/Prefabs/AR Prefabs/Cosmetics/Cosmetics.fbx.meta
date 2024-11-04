@@ -1,0 +1,369 @@
+fileFormatVersion: 2
+guid: 18dd4a0de93f3ca4fbdbf1ed4c1d31ef
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 00b1ad68f1d642c088a5d400d39c0f57_RGB_WhiteHeadband_BaseColor
+    second: {fileID: 2800000, guid: 5b62b797d534ddc44846e53eaba6322e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 010dd300bab5441fb0c8287c48417ef9_N_MaidHeadband_Normal
+    second: {fileID: 2800000, guid: fe0372fc494db6d4a88cebc04792e742, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 02ff2696aa204a968092f44260c55e13_N_FlowerHeadband_Normal
+    second: {fileID: 2800000, guid: 83ddbed05256a4e49a4b8b4916bf3451, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 0388c8b048054570b722be046a6b5303_RGB_CaptainHat_BaseColor
+    second: {fileID: 2800000, guid: c80cebad9d0bef5428c4e59b68580386, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 0d9ee35a0af5453096f5a6ea404a8940_RGB_ElegantHat_BaseColor
+    second: {fileID: 2800000, guid: f65feaf74458a9a41bf1ab2feb00ac5b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 145ced426b97425f8cdaf70033812369_N_Bandana_Normal
+    second: {fileID: 2800000, guid: 5864d49cd47779648918aca639f9bdd7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 1c5651013a35472ea7fd1b9f732c1eae_N_CatCap_Normal
+    second: {fileID: 2800000, guid: 9fa165479ee2c4f479a318a9f009676f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 2175083ee1074da8b8a6c1063f9d849f_N_StrawHat_Normal
+    second: {fileID: 2800000, guid: 94559d596bb4e444da51828b21226a16, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 2f58b260221c46998f72556cdc83a5db_RGB_StrawHat_BaseColor
+    second: {fileID: 2800000, guid: 09bcaf0f50bdaa84d8a76d27dc24e1a4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 30a145ff62064eadb79e005e2f5395a4_RGB_WarriorHelmet_BaseColor
+    second: {fileID: 2800000, guid: b8097863cbae629408650b78e45fde52, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 3344940e3c914d69b46acd707e580141_RGB_MaidHeadband_BaseColor
+    second: {fileID: 2800000, guid: ac327b14f3c311e4c8c59c9de9228375, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 34d5240eaf2c4f4fad68a92835005136_N_BunnyHeadband_Normal
+    second: {fileID: 2800000, guid: 636bbf9c2556b27428c089375da3810e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 3cb1c54e371040fd9a10d91ca2a85831_N_CatHeadband_Normal
+    second: {fileID: 2800000, guid: 89d76b4159455964fa7c1c012394fc0b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 40540c3cffb54bb3b481fd31595a206e_N_Headband_Normal
+    second: {fileID: 2800000, guid: c344d6afeae682f46b0a7ad7122bba51, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 40f38999aedb43d8b46eb57208efbc0d_RGB_Prop002_BeanieHat_BaseColor
+    second: {fileID: 2800000, guid: 942f2525effcb394a82d490c20328730, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 43251ab54c11495793288f835099d6ff_N_VisorCap_Normal
+    second: {fileID: 2800000, guid: 4003166440b7acb4faf4296e8c69ca89, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 47c8018ecadf461989fc7119b5863ea7_RGB_BandanaHat_BaseColor
+    second: {fileID: 2800000, guid: f0de7f70ab3cd144f84c093a07f2aeb8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 4ab73b715eb0487a91c2d2282c928ea2_RGB_JesterHat_BaseColor
+    second: {fileID: 2800000, guid: ace69afbd01bfc44b8d9694117cac8e0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 4b003f0b15a744e2aaa1584c7c6f41ea_N_FedoraHat_Normal
+    second: {fileID: 2800000, guid: bbfdb28e24b50c04b8556aa9991fa178, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5473c451333f4602a49e5e05554730b0_N_ClocheHat_Normal
+    second: {fileID: 2800000, guid: 24405c330e422a94c82f967a98fa16af, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 561d045b098d41958b61b96b8b93d125_N_PirateHat_Normal
+    second: {fileID: 2800000, guid: 057c33ffbbe3bd14990b22ef398b4b8e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5bb1008cfbd84c0abf0efe279506a4ce_RGB_PinkCatCap_BaseColor
+    second: {fileID: 2800000, guid: 693635cd8ed68d6429099fde4434c8f5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5bca88f68cbf451ba8d28d7a8fb49732_RGB_RedHeadband_BaseColor
+    second: {fileID: 2800000, guid: e46114ba94a02104788009255744d592, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5e5a968067da410e84c4df2d5ffe248a_N_WarriorHelmet_Normal
+    second: {fileID: 2800000, guid: 1abd2e11eba10f840b6e03999e41a4de, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5ed63132e68b4992880b594ca1eec0ac_RGB_StarHeadband_BaseColor
+    second: {fileID: 2800000, guid: 4789e14a8896a7c44a1b24e0bdcfb2e7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 71d11981af3c4537ab0c6defd5901318_N_BandanaHat_Normal
+    second: {fileID: 2800000, guid: e5449a117209670478f01ad504329098, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 743af334dddb4d749fb4c5c23f10e15e_N_LatexBeretHat_Normal
+    second: {fileID: 2800000, guid: 156abde20e54b174e9bbb4bfeebf0c79, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 77ba741403f941e896d09ea9d883b233_RGB_VisorCap_BaseColor
+    second: {fileID: 2800000, guid: 8030dabb991eeb541b326d34831f171a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 7fffa8dd189445fe82c07229766c1d65_N_JesterHat_Normal
+    second: {fileID: 2800000, guid: b60656cf9f31ef442b56250e9d25ae35, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 800987c16267476db9bd2785d0cdac21_RGB_FlowerHeadband_BaseColor
+    second: {fileID: 2800000, guid: f82e680ca095d234ebbbd380fccdb477, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 8c913991211a49c58eb19ec9068b7424_N_WhiteHeadband_Normal
+    second: {fileID: 2800000, guid: 47f0941e753e5d04aa9405a474cc8368, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 8dd149fc471c4b029328f7280f3d5306_RGB_PinkBunnyHeadband_BaseColor
+    second: {fileID: 2800000, guid: facd2e4224ea3164b89bd795b9dbc8f7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 93446c86272846ba8e914dcfc03f1154_RGB_BambooHat_BaseColor
+    second: {fileID: 2800000, guid: a2f122162e9e8494f9f96e21eae92f9e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 9875df2e2fdb49099332034c3e43de01_RGB_DeerHeadband_BaseColor
+    second: {fileID: 2800000, guid: ab0d2f3dfb00d6c43be1310c201be0fc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 9b04281fd85149e58f4a01f0f825f3a4_N_OutdoorHat_Normal
+    second: {fileID: 2800000, guid: cb5f82e3abf82814b92b2f037f301144, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 9bed1875da0846358e48a833f300eb0b_N_DeerHeadband_Normal
+    second: {fileID: 2800000, guid: 3b7cb490a3cfefa4a8318e5a722e48ee, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: a9bc29b9213f43908644526cf3f80aa8_N_Cap_Normal
+    second: {fileID: 2800000, guid: 67b16a15797a83a429f7fb69d9ff232f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: b057950883ea4d31bd00ed2b452abf6d_RGB_YellowBunnyHeadband_BaseColor
+    second: {fileID: 2800000, guid: 4ac6ab87d68f11c4abf975e1b7aab805, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: b96d5bd53c6b4affb5e635f98a569cf3_RGB_BonnetHat_BaseColor
+    second: {fileID: 2800000, guid: d5ac6239a06e6d048b14a16d1821ff1b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: bc840c01872b45438d7619db90d49821_N_Prop002_BeanieHat_Normal
+    second: {fileID: 2800000, guid: 2d5560350f980644383a397c23afeed5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: cf8d7fc606eb443389243d2aa36d4bf7_RGB_LatexBeretHat_BaseColor
+    second: {fileID: 2800000, guid: 128f13d149d32c74895065540f31a9fa, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: d1dd0bb12c254500af76ff0de19fcebc_N_ElegantHat_Normal
+    second: {fileID: 2800000, guid: 038308447b7ecd34b845bc7912a7a369, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: dbce1cc9240544d6b2e877f7f2cf138a_N_BambooHat_Normal
+    second: {fileID: 2800000, guid: a6d427b6b74cfb44fb96bbfe3311d233, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: dd9bd9ad546c41c181a38d6b7b225534_RGB_ClocheHat_BaseColor
+    second: {fileID: 2800000, guid: 1c9c2a70f95774c40ae5be7c4154539c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: e05fd5846e6849cb9c68ff3050c90ff4_RGB_LeatherHat_BaseColor
+    second: {fileID: 2800000, guid: 1050140e50866aa4d9741a0448cfbee7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: e890cee11ecc43df9f93a9bc4ee3fc4e_RGB_Bandana_BaseColor
+    second: {fileID: 2800000, guid: 30c83b0fdcb162849b5b0ac51ccc89cd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ec84f2453619403e9a9aa64649579fc3_RGB_CatHeadband_BaseColor
+    second: {fileID: 2800000, guid: 8f1968d248fbf204ca7c9a429f11e3e7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: f6b1aa79d82f4419b80248999970119b_N_LeatherHat_Normal
+    second: {fileID: 2800000, guid: 56bf2a735a278a342ae894d985aa157a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: f8c281d310534300a4678d5a21e08f49_RGB_PirateHat_BaseColor
+    second: {fileID: 2800000, guid: 47025784c417c594a988a8b0761f08c9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: fa1229e83f6b4977873d52007fb6e54e_RGB_FedoraHat_BaseColor
+    second: {fileID: 2800000, guid: 458138c1ff60cbd489765c3cd4e12eec, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: fa31e32b75ef469ba3846ff6300e13f7_RGB_OutdoorHat_BaseColor
+    second: {fileID: 2800000, guid: 6e69177a2b87e8f4fbb1fa8c90ee7e6d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: fbcbee4ec73b43ac9636a1f7fa5ea6d8_RGB_FlowerCrown_BaseColor
+    second: {fileID: 2800000, guid: b6e1d5a016b0e964c90099c4e6bcc37f, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

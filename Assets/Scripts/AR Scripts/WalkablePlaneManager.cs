@@ -18,6 +18,10 @@ public class WalkablePlaneManager : MonoBehaviour
     private bool canPlaceFeed = false;
     private bool canPlaceDrink = false;
 
+    private Dictionary<GameObject, GameObject> catTreats = new Dictionary<GameObject, GameObject>();
+    private Dictionary<GameObject, GameObject> catFeeds = new Dictionary<GameObject, GameObject>();
+    private Dictionary<GameObject, GameObject> catDrinks = new Dictionary<GameObject, GameObject>();
+
     private void Awake()
     {
         arCamera = Camera.main;
@@ -93,6 +97,7 @@ public class WalkablePlaneManager : MonoBehaviour
             Debug.Log("Added cat to list: " + cat.name);
         }
     }
+
     private void ProcessTouch(Vector2 position)
     {
         Ray ray = arCamera.ScreenPointToRay(position);
@@ -116,17 +121,17 @@ public class WalkablePlaneManager : MonoBehaviour
                 }
 
                 // Perform actions based on the selected cat
-                if (canPlaceTreat)
+                if (canPlaceTreat && !catTreats.ContainsKey(selectedCat))
                 {
                     Debug.Log("Spawning treat in front of: " + selectedCat.name);
                     SpawnTreatInFrontOfCat(selectedCat);
                 }
-                else if (canPlaceFeed)
+                else if (canPlaceFeed && !catFeeds.ContainsKey(selectedCat))
                 {
                     Debug.Log("Spawning feed in front of: " + selectedCat.name);
                     SpawnFeedInFrontOfCat(selectedCat);
                 }
-                else if (canPlaceDrink)
+                else if (canPlaceDrink && !catDrinks.ContainsKey(selectedCat))
                 {
                     Debug.Log("Spawning drink in front of: " + selectedCat.name);
                     SpawnDrinkInFrontOfCat(selectedCat);
@@ -147,93 +152,61 @@ public class WalkablePlaneManager : MonoBehaviour
     {
         Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.25f + Vector3.up * 0.1f;
         GameObject spawnedTreat = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
+        catTreats[selectedCat] = spawnedTreat;
 
-        if (spawnedTreat != null)
+        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+        CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+
+        if (catBehavior != null)
         {
-            Debug.Log("Treat instantiated successfully at: " + spawnedTreat.transform.position);
-
-            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
-            CatStatus catStatus = selectedCat.GetComponent<CatStatus>(); // Get the CatStatus
-
-            if (catBehavior != null)
-            {
-                float duration = 5f; // Set the duration for the eating animation
-                catBehavior.TransitionToEating(spawnedTreat, duration);
-                catStatus.TreatCat(); // Update the hunger level
-            }
-            else
-            {
-                Debug.LogError("CatBehavior not found on the cat object!");
-            }
-            StartCoroutine(DisableFeedAfterTime(spawnedTreat, 3f));
+            float duration = 5f; // Set duration for the eating animation
+            catBehavior.TransitionToEating(spawnedTreat, duration);
+            catStatus.TreatCat(); // Update hunger level
         }
-        else
-        {
-            Debug.LogError("Failed to instantiate treat.");
-        }
+
+        StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 3f, catTreats));
     }
-
 
     private void SpawnFeedInFrontOfCat(GameObject selectedCat)
     {
         Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.25f + Vector3.up * 0.1f;
         GameObject spawnedFeed = Instantiate(feedPrefab, spawnPosition, Quaternion.identity);
+        catFeeds[selectedCat] = spawnedFeed;
 
-        if (spawnedFeed != null)
-        {
-            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
-            CatStatus catStatus = selectedCat.GetComponent<CatStatus>(); // Get the CatStatus
+        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+        CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
-            if (catBehavior != null)
-            {
-                float duration = 10f; // Set the duration for the eating animation
-                catBehavior.TransitionToEating(spawnedFeed, duration);
-                catStatus.FeedCat(); // Update the hunger level fully
-            } 
-            else
-            {
-                Debug.LogError("CatBehavior not found on the cat object!");
-            }
-            StartCoroutine(DisableFeedAfterTime(spawnedFeed, 10f));
-        }
-        else
+        if (catBehavior != null)
         {
-            Debug.LogError("Failed to instantiate feed.");
+            float duration = 10f; // Set duration for the eating animation
+            catBehavior.TransitionToEating(spawnedFeed, duration);
+            catStatus.FeedCat(); // Update hunger level fully
         }
+
+        StartCoroutine(DisableFeedAfterTime(spawnedFeed, selectedCat, 10f, catFeeds));
     }
-
 
     private void SpawnDrinkInFrontOfCat(GameObject selectedCat)
     {
         Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.25f + Vector3.up * 0.1f;
         GameObject spawnedDrink = Instantiate(drinkPrefab, spawnPosition, Quaternion.identity);
+        catDrinks[selectedCat] = spawnedDrink;
 
-        if (spawnedDrink != null)
-        {
-            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
-            CatStatus catStatus = selectedCat.GetComponent<CatStatus>(); // Get the CatStatus
+        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+        CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
-            if (catBehavior != null)
-            {
-                float duration = 10f; // Set the duration for the drinking animation
-                catBehavior.TransitionToDrinking(spawnedDrink, duration);
-                
-            }
-            else
-            {
-                Debug.LogError("CatBehavior not found on the cat object!");
-            }
-            catStatus.GiveWater(); // Update the thirst level
-        }
-        else
+        if (catBehavior != null)
         {
-            Debug.LogError("Failed to instantiate drink.");
+            float duration = 10f; // Set duration for the drinking animation
+            catBehavior.TransitionToDrinking(spawnedDrink, duration);
+            catStatus.GiveWater(); // Update thirst level
         }
+
+        StartCoroutine(DisableFeedAfterTime(spawnedDrink, selectedCat, 10f, catDrinks));
     }
 
-
-    // Coroutine to disable feed after a specified time
-    private IEnumerator DisableFeedAfterTime(GameObject feed, float delay)
+    // Coroutine to disable feed after a specified time and remove it from the dictionary
+    private IEnumerator DisableFeedAfterTime(GameObject feed, GameObject cat, float delay, Dictionary<GameObject, GameObject> dictionary)
     {
         yield return new WaitForSeconds(delay);
 
@@ -241,6 +214,7 @@ public class WalkablePlaneManager : MonoBehaviour
         {
             Destroy(feed);
             Debug.Log("Feed has been removed after " + delay + " seconds.");
+            dictionary.Remove(cat);
         }
     }
 

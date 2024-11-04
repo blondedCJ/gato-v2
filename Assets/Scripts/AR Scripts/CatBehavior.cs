@@ -17,10 +17,12 @@ public class CatBehavior : MonoBehaviour
     private CatStatus currentlyPettedCat; // Track the specific cat being petted
     private Animator currentCatAnimator;  // Track the specific cat's animator
 
-
     public Material selectedMaterial;
     private Material defaultMaterial;
     private SkinnedMeshRenderer catRenderer; // Use SkinnedMeshRenderer for animated models
+
+    private bool canPerformPlayDead = true;
+    private bool canPerformJump = true;
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -365,7 +367,6 @@ public class CatBehavior : MonoBehaviour
         // Eating completed, destroy the food item
         Destroy(foodItem);
         isFinished = true;
-        
 
     // Transition the cat back to idle after eating
     TransitionToIdle();
@@ -384,29 +385,53 @@ public class CatBehavior : MonoBehaviour
     public void Select()
     {
         isSelected = true;
-        catRenderer.material = selectedMaterial; // Change to selected material
     }
 
     public void Deselect()
     {
         isSelected = false;
-        catRenderer.material = defaultMaterial; // Reset to default material
     }
 
     public void TransitionToPlayDead()
     {
+        if (!canPerformPlayDead) return;
+
+        canPerformPlayDead = false;
         currentState = CatState.PlayDead;
-        catAnimator.CrossFade("Skeleton_Die_R_Skeleton", 0.2f); // Replace with your play dead animation state name
+        catAnimator.CrossFade("Skeleton_Die_R_Skeleton", 0.1f);
         StartCoroutine(WaitForTrickEnd("Skeleton_Die_R_Skeleton"));
+
+        // Start cooldown coroutine
+        StartCoroutine(PlayDeadCooldown());
     }
 
-    public void TransitionToJump(float jumpHeight = 0.3f, float jumpDuration = 1f)
+    public void TransitionToJump(float jumpHeight = 0.5f, float jumpDuration = 0.8f)
     {
+        if (!canPerformJump) return;
+
+        canPerformJump = false;
         currentState = CatState.Jump;
-        catAnimator.CrossFade("Skeleton_Jump_Place_IP_Skeleton", 0.2f); // Play jump animation
+        catAnimator.CrossFade("Skeleton_Jump_Place_IP_Skeleton", 0.1f);
 
         // Start the coroutine to handle the jump movement
         StartCoroutine(JumpCoroutine(jumpHeight, jumpDuration));
+
+        // Start cooldown coroutine
+        StartCoroutine(JumpCooldown());
+    }
+
+    // Coroutine to reset Play Dead cooldown
+    private IEnumerator PlayDeadCooldown()
+    {
+        yield return new WaitForSeconds(5f);
+        canPerformPlayDead = true;
+    }
+
+    // Coroutine to reset Jump cooldown
+    private IEnumerator JumpCooldown()
+    {
+        yield return new WaitForSeconds(5f);
+        canPerformJump = true;
     }
 
     private void TransitionToIdle()

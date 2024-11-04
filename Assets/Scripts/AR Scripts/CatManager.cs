@@ -14,13 +14,16 @@ public class CatManager : MonoBehaviour
     {
         // Reference to UserInventory component
         userInventory = FindObjectOfType<UserInventory>();
-
         // Ensure the user-owned cats are loaded when the game starts
         if (userInventory != null)
         {
             userInventory.LoadUserOwnedCats();
             DisplayUserOwnedCats();
         }
+        UnlockNewCat(0);
+        UnlockNewCat(1);
+        UnlockNewCat(2);
+        UnlockNewCat(3);
     }
 
     void Update()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,21 +13,25 @@ public class CosmeticManager : MonoBehaviour
         VisorCap, WarriorHelmet, Cube001_0, Cube003_3, StarShades
     }
 
+    public GameObject cosmeticScrollView; // Assign this in the Inspector
+
     private HashSet<Cosmetic> ownedCosmetics = new HashSet<Cosmetic>();
-    private List<CatBehavior> selectedCats = new List<CatBehavior>();
+    private Cosmetic? selectedCosmetic = null; // Nullable to check if any cosmetic is selected
+
     private const string OwnedCosmeticsKey = "userOwnedCosmetics";
 
     private void Start()
     {
-        
         LoadOwnedCosmetics();
     }
 
     void Update()
     {
-        HandleCatSelectionInput();
-        UnlockCosmetic(Cosmetic.StarShades);
-        ApplyCosmeticToSelected(Cosmetic.StarShades);
+        // Check if the scroll view is active before allowing cat selection
+        if (cosmeticScrollView.activeSelf)
+        {
+            HandleCatSelectionInput();
+        }
     }
 
     private void HandleCatSelectionInput()
@@ -38,54 +43,83 @@ public class CosmeticManager : MonoBehaviour
 #endif
     }
 
-    // Method to handle touch input for selecting cats on mobile devices
+    public void ToggleCosmeticSelectionByIndex(int cosmeticIndex)
+    {
+        if (!cosmeticScrollView.activeSelf) return;
+
+        Cosmetic cosmetic = (Cosmetic)cosmeticIndex;
+        ToggleCosmeticSelection(cosmetic);
+    }
+
+    public void ToggleCosmeticSelection(Cosmetic cosmetic)
+    {
+        if (selectedCosmetic == cosmetic)
+        {
+            selectedCosmetic = null;
+            Debug.Log($"{cosmetic} deselected.");
+        }
+        else
+        {
+            selectedCosmetic = cosmetic;
+            Debug.Log($"{cosmetic} selected.");
+        }
+    }
+
     private void HandleTouchInput()
     {
-        if (Touchscreen.current != null)
+        if (Touchscreen.current != null && selectedCosmetic.HasValue)
         {
             var touch = Touchscreen.current.primaryTouch;
 
             if (touch.press.wasPressedThisFrame)
             {
                 Vector2 screenPosition = touch.position.ReadValue();
-                SelectCat(screenPosition);
+                ToggleCosmeticForCat(screenPosition);
             }
         }
     }
 
-    // Method to handle mouse input for selecting cats in the editor
     private void HandleMouseInput()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame && selectedCosmetic.HasValue)
         {
             Vector2 screenPosition = Mouse.current.position.ReadValue();
-            SelectCat(screenPosition);
+            ToggleCosmeticForCat(screenPosition);
         }
     }
 
-    private void SelectCat(Vector2 screenPosition)
+    private void ToggleCosmeticForCat(Vector2 screenPosition)
     {
+        if (selectedCosmetic == null)
+        {
+            Debug.LogWarning("No cosmetic is currently selected.");
+            return;
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             CatBehavior cat = hit.collider.GetComponent<CatBehavior>();
-            if (cat != null && cat.CanBeSelected()) // Check if the cat can be selected
+            if (cat != null)
             {
-                if (selectedCats.Contains(cat))
+                CatCosmeticHandler cosmeticHandler = cat.GetComponent<CatCosmeticHandler>();
+                if (cosmeticHandler != null)
                 {
-                    selectedCats.Remove(cat); // Deselect if already selected
-                    cat.Deselect(); // Visual indication for deselection
-                }
-                else
-                {
-                    selectedCats.Add(cat); // Add to selected cats
-                    cat.Select(); // Visual indication for selection
+                    // Toggle cosmetic on/off and save to PlayerPrefs
+                    if (cosmeticHandler.IsCosmeticApplied((Cosmetic)selectedCosmetic))
+                    {
+                        cosmeticHandler.RemoveCosmetic((Cosmetic)selectedCosmetic);
+                    }
+                    else
+                    {
+                        cosmeticHandler.ApplyCosmetic((Cosmetic)selectedCosmetic);
+                    }
+                    cosmeticHandler.SaveCosmetics();
                 }
             }
         }
     }
 
-    // Unlock a cosmetic and save it in PlayerPrefs
     public void UnlockCosmetic(Cosmetic cosmetic)
     {
         if (!ownedCosmetics.Contains(cosmetic))
@@ -100,34 +134,6 @@ public class CosmeticManager : MonoBehaviour
         }
     }
 
-    public void ApplyCosmeticToSelected(Cosmetic cosmetic)
-    {
-        // Check if the cosmetic is owned
-        if (!ownedCosmetics.Contains(cosmetic))
-        {
-            Debug.LogWarning("Cosmetic " + cosmetic + " is not owned.");
-            return;
-        }
-
-        foreach (CatBehavior cat in selectedCats)
-        {
-            CatCosmeticHandler cosmeticHandler = cat.GetComponent<CatCosmeticHandler>();
-            if (cosmeticHandler != null)
-            {
-                cosmeticHandler.ApplyCosmetic(cosmetic); // Ensure this accepts the correct type
-                Debug.Log("Applied " + cosmetic + " to " + cat.name);
-            }
-            else
-            {
-                Debug.LogError("No CatCosmeticHandler found on " + cat.name);
-            }
-        }
-
-        // Clear selection after applying cosmetic
-        selectedCats.Clear();
-    }
-
-    // Save owned cosmetics to PlayerPrefs
     private void SaveOwnedCosmetics()
     {
         List<string> ownedCosmeticNames = new List<string>();
@@ -141,7 +147,6 @@ public class CosmeticManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    // Load owned cosmetics from PlayerPrefs
     private void LoadOwnedCosmetics()
     {
         if (PlayerPrefs.HasKey(OwnedCosmeticsKey))
@@ -156,6 +161,16 @@ public class CosmeticManager : MonoBehaviour
                     ownedCosmetics.Add(cosmetic);
                 }
             }
+        }
+    }
+
+    // Method to clear selection when scroll view is turned off
+    public void OnScrollViewToggled(bool isActive)
+    {
+        if (!isActive)
+        {
+            selectedCosmetic = null;
+            Debug.Log("Cleared selected cosmetic as scroll view is hidden.");
         }
     }
 }

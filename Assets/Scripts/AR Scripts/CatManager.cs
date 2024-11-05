@@ -2,13 +2,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class CatManager : MonoBehaviour
 {
     public List<CatBehavior> selectedCats = new List<CatBehavior>();
     private Collider catCollider;
     private UserInventory userInventory;
+    private Outline outline; // Reference to the outline component
 
+    private void Awake()
+    {
+        outline = GetComponent<Outline>();
+        if (outline != null)
+        {
+            outline.enabled = false; // Make sure outline is off initially
+        }
+    }
 
     void Start()
     {
@@ -20,10 +30,6 @@ public class CatManager : MonoBehaviour
             userInventory.LoadUserOwnedCats();
             DisplayUserOwnedCats();
         }
-        UnlockNewCat(0);
-        UnlockNewCat(1);
-        UnlockNewCat(2);
-        UnlockNewCat(3);
     }
 
     void Update()
@@ -76,11 +82,19 @@ public class CatManager : MonoBehaviour
                 if (selectedCats.Contains(cat))
                 {
                     selectedCats.Remove(cat); // Deselect if already selected
+                    if (outline != null)
+                    {
+                        outline.enabled = false; // Disable the outline when deselected
+                    }
                     cat.Deselect(); // You can add a visual indication here, like changing color or outline
                 }
                 else
                 {
                     selectedCats.Add(cat); // Add to selected cats
+                    if (outline != null)
+                    {
+                        outline.enabled = true; // Enable the outline when selected
+                    }
                     cat.Select(); // You can add a visual indication here
                 }
             }

@@ -2674,10 +2674,9 @@ MonoBehaviour:
     cosmeticObject: {fileID: 5572560656344850407, guid: 2758e40a5301d5e4881b98abcd410b65,
       type: 3}
   - cosmetic: 13
-    cosmeticObject: {fileID: 2627359044484296843, guid: d640b6eb01eed1c45907114e3312dc77,
-      type: 3}
-  - cosmetic: 14
     cosmeticObject: {fileID: 8601296787285175217}
+  - cosmetic: 14
+    cosmeticObject: {fileID: 920030525469906246}
   - cosmetic: 15
     cosmeticObject: {fileID: 3983564316363702913}
   - cosmetic: 16
@@ -3224,6 +3223,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 82e6071e16641d548afe8ab4e64f7d53, type: 3}
+--- !u!1 &920030525469906246 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 703523079474151405, guid: 82e6071e16641d548afe8ab4e64f7d53,
+    type: 3}
+  m_PrefabInstance: {fileID: 362522590243072683}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7673525095838245215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8032774714827328500, guid: 82e6071e16641d548afe8ab4e64f7d53,

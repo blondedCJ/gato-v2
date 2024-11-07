@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic; // Import for using List
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,7 +12,7 @@ public class WalkablePlaneManager : MonoBehaviour
     [SerializeField]
     private GameObject drinkPrefab;
 
-    private List<GameObject> cats; // List to store all cats
+    private List<GameObject> cats;
     private Camera arCamera;
     private bool canPlaceTreat = false;
     private bool canPlaceFeed = false;
@@ -21,6 +21,7 @@ public class WalkablePlaneManager : MonoBehaviour
     private Dictionary<GameObject, GameObject> catTreats = new Dictionary<GameObject, GameObject>();
     private Dictionary<GameObject, GameObject> catFeeds = new Dictionary<GameObject, GameObject>();
     private Dictionary<GameObject, GameObject> catDrinks = new Dictionary<GameObject, GameObject>();
+    private HashSet<GameObject> activeEatingCats = new HashSet<GameObject>(); // Track cats that are currently eating or drinking
 
     private void Awake()
     {
@@ -34,19 +35,16 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void Start()
     {
-        // Find all cats in the scene with the tag "Cat"
         cats = new List<GameObject>(GameObject.FindGameObjectsWithTag("Cat"));
     }
 
     void Update()
     {
-        // Refresh the list of cats if needed (e.g., if cats can be spawned dynamically)
         if (cats == null || cats.Count == 0)
         {
             cats = new List<GameObject>(GameObject.FindGameObjectsWithTag("Cat"));
         }
 
-        // Handle input if there are cats in the scene
         if (cats.Count > 0)
         {
             HandleInput();
@@ -80,39 +78,20 @@ public class WalkablePlaneManager : MonoBehaviour
         }
     }
 
-    private void AddCatsInScene()
-    {
-        GameObject[] initialCats = GameObject.FindGameObjectsWithTag("Cat");
-        foreach (GameObject cat in initialCats)
-        {
-            AddCatToList(cat);
-        }
-    }
-
-    public void AddCatToList(GameObject cat)
-    {
-        if (!cats.Contains(cat))
-        {
-            cats.Add(cat);
-            Debug.Log("Added cat to list: " + cat.name);
-        }
-    }
-
     private void ProcessTouch(Vector2 position)
     {
         Ray ray = arCamera.ScreenPointToRay(position);
-        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 2.0f); // Visualize raycast
+        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 2.0f);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             GameObject hitObject = hit.collider.gameObject;
 
-            if (cats.Contains(hitObject))
+            if (cats.Contains(hitObject) && !activeEatingCats.Contains(hitObject))
             {
-                GameObject selectedCat = hitObject; // The cat that was hit
+                GameObject selectedCat = hitObject;
                 Debug.Log("Raycast hit the cat: " + selectedCat.name);
 
-                // Ensure CatBehavior is present
                 CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
                 if (catBehavior == null)
                 {
@@ -120,26 +99,18 @@ public class WalkablePlaneManager : MonoBehaviour
                     return;
                 }
 
-                // Perform actions based on the selected cat
                 if (canPlaceTreat && !catTreats.ContainsKey(selectedCat))
                 {
-                    Debug.Log("Spawning treat in front of: " + selectedCat.name);
                     SpawnTreatInFrontOfCat(selectedCat);
                 }
                 else if (canPlaceFeed && !catFeeds.ContainsKey(selectedCat))
                 {
-                    Debug.Log("Spawning feed in front of: " + selectedCat.name);
                     SpawnFeedInFrontOfCat(selectedCat);
                 }
                 else if (canPlaceDrink && !catDrinks.ContainsKey(selectedCat))
                 {
-                    Debug.Log("Spawning drink in front of: " + selectedCat.name);
                     SpawnDrinkInFrontOfCat(selectedCat);
                 }
-            }
-            else
-            {
-                Debug.Log("Raycast hit: " + hitObject.name);
             }
         }
         else
@@ -150,7 +121,7 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void SpawnTreatInFrontOfCat(GameObject selectedCat)
     {
-        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.25f + Vector3.up * 0.1f;
+        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
         GameObject spawnedTreat = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
         catTreats[selectedCat] = spawnedTreat;
 
@@ -159,9 +130,9 @@ public class WalkablePlaneManager : MonoBehaviour
 
         if (catBehavior != null)
         {
-            float duration = 5f; // Set duration for the eating animation
-            catBehavior.TransitionToEating(spawnedTreat, duration);
-            catStatus.TreatCat(); // Update hunger level
+            activeEatingCats.Add(selectedCat); // Mark as eating
+            catBehavior.TransitionToEating(spawnedTreat, 5f);
+            catStatus.TreatCat();
         }
 
         StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 3f, catTreats));
@@ -169,7 +140,7 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void SpawnFeedInFrontOfCat(GameObject selectedCat)
     {
-        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.25f + Vector3.up * 0.1f;
+        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
         GameObject spawnedFeed = Instantiate(feedPrefab, spawnPosition, Quaternion.identity);
         catFeeds[selectedCat] = spawnedFeed;
 
@@ -178,9 +149,9 @@ public class WalkablePlaneManager : MonoBehaviour
 
         if (catBehavior != null)
         {
-            float duration = 10f; // Set duration for the eating animation
-            catBehavior.TransitionToEating(spawnedFeed, duration);
-            catStatus.FeedCat(); // Update hunger level fully
+            activeEatingCats.Add(selectedCat);
+            catBehavior.TransitionToEating(spawnedFeed, 10f);
+            catStatus.FeedCat();
         }
 
         StartCoroutine(DisableFeedAfterTime(spawnedFeed, selectedCat, 10f, catFeeds));
@@ -188,7 +159,7 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void SpawnDrinkInFrontOfCat(GameObject selectedCat)
     {
-        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.25f + Vector3.up * 0.1f;
+        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
         GameObject spawnedDrink = Instantiate(drinkPrefab, spawnPosition, Quaternion.identity);
         catDrinks[selectedCat] = spawnedDrink;
 
@@ -197,15 +168,14 @@ public class WalkablePlaneManager : MonoBehaviour
 
         if (catBehavior != null)
         {
-            float duration = 10f; // Set duration for the drinking animation
-            catBehavior.TransitionToDrinking(spawnedDrink, duration);
-            catStatus.GiveWater(); // Update thirst level
+            activeEatingCats.Add(selectedCat);
+            catBehavior.TransitionToDrinking(spawnedDrink, 10f);
+            catStatus.GiveWater();
         }
 
         StartCoroutine(DisableFeedAfterTime(spawnedDrink, selectedCat, 10f, catDrinks));
     }
 
-    // Coroutine to disable feed after a specified time and remove it from the dictionary
     private IEnumerator DisableFeedAfterTime(GameObject feed, GameObject cat, float delay, Dictionary<GameObject, GameObject> dictionary)
     {
         yield return new WaitForSeconds(delay);
@@ -213,8 +183,8 @@ public class WalkablePlaneManager : MonoBehaviour
         if (feed != null)
         {
             Destroy(feed);
-            Debug.Log("Feed has been removed after " + delay + " seconds.");
             dictionary.Remove(cat);
+            activeEatingCats.Remove(cat); // Mark as no longer eating or drinking
         }
     }
 
@@ -225,11 +195,6 @@ public class WalkablePlaneManager : MonoBehaviour
         {
             canPlaceFeed = false;
             canPlaceDrink = false;
-            Debug.Log("Treat placement enabled.");
-        }
-        else
-        {
-            Debug.Log("Treat placement disabled.");
         }
     }
 
@@ -240,11 +205,6 @@ public class WalkablePlaneManager : MonoBehaviour
         {
             canPlaceTreat = false;
             canPlaceDrink = false;
-            Debug.Log("Feed placement enabled.");
-        }
-        else
-        {
-            Debug.Log("Feed placement disabled.");
         }
     }
 
@@ -255,11 +215,15 @@ public class WalkablePlaneManager : MonoBehaviour
         {
             canPlaceTreat = false;
             canPlaceFeed = false;
-            Debug.Log("Drink placement enabled.");
         }
-        else
+    }
+
+    public void AddCatToList(GameObject cat)
+    {
+        if (!cats.Contains(cat))
         {
-            Debug.Log("Drink placement disabled.");
+            cats.Add(cat);
+            Debug.Log("Added cat to list: " + cat.name);
         }
     }
 }

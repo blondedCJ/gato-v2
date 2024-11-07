@@ -478,6 +478,7 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 8d62d7d1426b3534f8eee26810b5b0d9, type: 2}
+  - {fileID: 2100000, guid: bc0879baea32ae44ea3f359f19b5eeca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1310,7 +1311,7 @@ GameObject:
   - component: {fileID: 6769969995969864883}
   - component: {fileID: 7534470373251706403}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: Cat Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

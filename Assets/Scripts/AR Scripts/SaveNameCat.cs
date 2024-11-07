@@ -19,7 +19,7 @@ public class SaveNameCat : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Cat name saved!");
         CatGiftComplete();
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(1);
     }
 
     public void CatGiftComplete()

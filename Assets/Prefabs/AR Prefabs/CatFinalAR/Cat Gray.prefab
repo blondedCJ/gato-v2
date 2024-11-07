@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 916995270905131250}
   - component: {fileID: 2462720081626966040}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: CatName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -577,6 +577,7 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d21087bcf4542fb48ac9dba0a4862577, type: 2}
+  - {fileID: 2100000, guid: bc0879baea32ae44ea3f359f19b5eeca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2506,7 +2507,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ff0aa180179da4ea678b26ef259038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cosmetics: []
   cosmeticItems:
   - cosmetic: 0
     cosmeticObject: {fileID: 47689560322565285}

@@ -52,7 +52,7 @@ public class LogoScreenNext : MonoBehaviour
         if (!isTransitioning)
         {
             StopAllCoroutines(); // Stop any other coroutines (like the automatic transition)
-            StartCoroutine(FadeAndLoadScene());
+            StartCoroutine(LoadNextScene());
         }
     }
 
@@ -61,8 +61,8 @@ public class LogoScreenNext : MonoBehaviour
         // Wait for the specified time before transitioning
         yield return new WaitForSeconds(waitTime);
 
-        // Start the fade and load scene
-        yield return FadeAndLoadScene();
+        // Start the load scene without fade
+        yield return LoadNextScene();
     }
 
     private IEnumerator FadeIn()
@@ -80,24 +80,22 @@ public class LogoScreenNext : MonoBehaviour
         fadeCanvasGroup.alpha = 0f;
     }
 
-    private IEnumerator FadeAndLoadScene()
+    private IEnumerator LoadNextScene()
     {
         isTransitioning = true;
 
-        // Fade out
-        float timeElapsed = 0f;
-        while (timeElapsed < fadeDuration)
+        // Begin loading the next scene in the background
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
+        asyncLoad.allowSceneActivation = false;
+
+        // Wait until the next scene is loaded to 90%
+        while (asyncLoad.progress < 0.9f)
         {
-            fadeCanvasGroup.alpha = timeElapsed / fadeDuration;
-            timeElapsed += Time.deltaTime;
             yield return null;
         }
 
-        // Ensure it's fully opaque
-        fadeCanvasGroup.alpha = 1f;
-
-        // Load the next scene
-        SceneManager.LoadScene(1);
+        // Activate the loaded scene to finalize the transition
+        asyncLoad.allowSceneActivation = true;
     }
 
     private IEnumerator TextBreathingEffect()

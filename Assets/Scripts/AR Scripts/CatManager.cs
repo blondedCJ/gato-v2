@@ -34,6 +34,10 @@ public class CatManager : MonoBehaviour
     void Update()
     {
         HandleCatSelectionInput();
+        UnlockNewCat(0);
+        UnlockNewCat(1);
+        UnlockNewCat(2);
+        UnlockNewCat(3);
     }
 
     private void HandleCatSelectionInput()

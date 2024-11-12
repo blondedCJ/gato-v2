@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Cat
   - ARPlane
+  - Treat
+  - Feed
+  - Bag
+  - CatName
   layers:
   - Default
   - TransparentFX

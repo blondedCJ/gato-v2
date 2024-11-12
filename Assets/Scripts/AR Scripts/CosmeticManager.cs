@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CosmeticManager : MonoBehaviour
 {
@@ -13,25 +14,42 @@ public class CosmeticManager : MonoBehaviour
         VisorCap, WarriorHelmet, Cube001_0, Cube003_3, StarShades
     }
 
-    public GameObject cosmeticScrollView; // Assign this in the Inspector
+    public GameObject cosmeticScrollView;
 
+    [Serializable]
+    public class CosmeticButtonMapping
+    {
+        public Cosmetic cosmetic;
+        public Button button;
+    }
+
+    public List<CosmeticButtonMapping> cosmeticButtonMappings; // List for Inspector
+
+    private Dictionary<Cosmetic, Button> cosmeticButtons = new Dictionary<Cosmetic, Button>();
     private HashSet<Cosmetic> ownedCosmetics = new HashSet<Cosmetic>();
-    private Cosmetic? selectedCosmetic = null; // Nullable to check if any cosmetic is selected
+    private Cosmetic? selectedCosmetic = null;
 
     private const string OwnedCosmeticsKey = "userOwnedCosmetics";
 
     private void Start()
     {
+        // Populate the dictionary with mapped values from the list
+        foreach (var mapping in cosmeticButtonMappings)
+        {
+            cosmeticButtons[mapping.cosmetic] = mapping.button;
+        }
+        UnlockCosmetic(Cosmetic.WarriorHelmet); 
         LoadOwnedCosmetics();
+        UpdateCosmeticButtons();
+
     }
 
     void Update()
     {
-        // Check if the scroll view is active before allowing cat selection
         if (cosmeticScrollView.activeSelf)
         {
             HandleCatSelectionInput();
-        }
+        } 
     }
 
     private void HandleCatSelectionInput()
@@ -105,7 +123,6 @@ public class CosmeticManager : MonoBehaviour
                 CatCosmeticHandler cosmeticHandler = cat.GetComponent<CatCosmeticHandler>();
                 if (cosmeticHandler != null)
                 {
-                    // Toggle cosmetic on/off and save to PlayerPrefs
                     if (cosmeticHandler.IsCosmeticApplied((Cosmetic)selectedCosmetic))
                     {
                         cosmeticHandler.RemoveCosmetic((Cosmetic)selectedCosmetic);
@@ -126,6 +143,7 @@ public class CosmeticManager : MonoBehaviour
         {
             ownedCosmetics.Add(cosmetic);
             SaveOwnedCosmetics();
+            UpdateCosmeticButtons();
             Debug.Log(cosmetic + " unlocked!");
         }
         else
@@ -156,7 +174,7 @@ public class CosmeticManager : MonoBehaviour
 
             foreach (string cosmeticName in cosmeticNames)
             {
-                if (System.Enum.TryParse(cosmeticName, out Cosmetic cosmetic))
+                if (Enum.TryParse(cosmeticName, out Cosmetic cosmetic))
                 {
                     ownedCosmetics.Add(cosmetic);
                 }
@@ -164,13 +182,23 @@ public class CosmeticManager : MonoBehaviour
         }
     }
 
-    // Method to clear selection when scroll view is turned off
-    public void OnScrollViewToggled(bool isActive)
+    // Disable cosmetic buttons if cosmetic is not owned
+    private void UpdateCosmeticButtons()
     {
-        if (!isActive)
+        foreach (var cosmeticButtonPair in cosmeticButtons)
         {
+            Cosmetic cosmetic = cosmeticButtonPair.Key;
+            Button button = cosmeticButtonPair.Value;
+
+            // If the cosmetic is not owned, deactivate the button GameObject (and its children)
+            button.gameObject.SetActive(ownedCosmetics.Contains(cosmetic));
+        }
+    }
+
+    // Call this method when the scroll view is toggled
+    public void ClearSelection()
+    {
             selectedCosmetic = null;
             Debug.Log("Cleared selected cosmetic as scroll view is hidden.");
-        }
     }
 }

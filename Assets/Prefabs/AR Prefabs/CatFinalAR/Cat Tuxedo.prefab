@@ -2403,6 +2403,7 @@ GameObject:
   - component: {fileID: -6843723087421064352}
   - component: {fileID: -2679166941327610209}
   - component: {fileID: 4648725634713488911}
+  - component: {fileID: 1249350390854507096}
   m_Layer: 0
   m_Name: Cat Tuxedo
   m_TagString: Cat
@@ -2597,6 +2598,19 @@ MonoBehaviour:
     cosmeticObject: {fileID: 9112496539998128256}
   - cosmetic: 25
     cosmeticObject: {fileID: 5641934675155225359}
+--- !u!114 &1249350390854507096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8186739265338542139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 362757f5cccd51b49b2b971fc57c71a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catNameText: {fileID: 233705946029604534}
 --- !u!1 &8248811361692265121
 GameObject:
   m_ObjectHideFlags: 0

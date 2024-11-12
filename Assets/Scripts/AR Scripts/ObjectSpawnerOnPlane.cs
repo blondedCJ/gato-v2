@@ -14,8 +14,8 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
     private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private bool catSpawned = false;
     private int currentCatIndex = 0;
+    private bool allCatsSpawned = false; // Flag to prevent further spawning
     WalkablePlaneManager walkablePlaneManager;
-
 
     void Awake()
     {
@@ -56,7 +56,6 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
         walkablePlaneManager = GetComponent<WalkablePlaneManager>();
     }
 
-
     void Update()
     {
 #if UNITY_EDITOR
@@ -66,10 +65,9 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
 #endif
     }
 
-    // Method to handle touch input (New Input System) for mobile devices
     private void HandleTouchInput()
     {
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        if (!allCatsSpawned && Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
 
@@ -81,17 +79,15 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
         }
     }
 
-    // Method to handle mouse input for Unity Editor testing
     private void HandleMouseInput()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (!allCatsSpawned && Mouse.current.leftButton.wasPressedThisFrame)
         {
             Ray ray = arCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
 
             if (!catSpawned && Physics.Raycast(ray, out hit))
             {
-                // Cast against AR planes to simulate placement
                 if (arRaycastManager.Raycast(Mouse.current.position.ReadValue(), hits, TrackableType.PlaneWithinPolygon))
                 {
                     Pose hitPose = hits[0].pose;
@@ -101,16 +97,14 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
         }
     }
 
-    // Method to spawn a cat object based on user ownership
     private void SpawnUserOwnedCatAtPosition(Vector3 position)
     {
-        if (userOwnedCats.Count > 0)
+        if (userOwnedCats.Count > 0 && currentCatIndex >= 0)
         {
-            Debug.Log("User Owned Cats: " + string.Join(", ", userOwnedCats)); // Log the owned cats
+            Debug.Log("User Owned Cats: " + string.Join(", ", userOwnedCats));
 
-            // Select the next cat in the user's owned list
             int selectedCatIndex = userOwnedCats[currentCatIndex];
-            Debug.Log("Spawning Cat with Index: " + selectedCatIndex); // Log the selected cat
+            Debug.Log("Spawning Cat with Index: " + selectedCatIndex);
 
             if (selectedCatIndex >= 0 && selectedCatIndex < catPrefabs.Length)
             {
@@ -120,18 +114,15 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
                 spawnedCat.transform.rotation = Quaternion.LookRotation(directionToCamera);
                 walkablePlaneManager.AddCatToList(spawnedCat);
 
-                
-
-                // Increment the index and wrap around if needed
                 currentCatIndex++;
                 if (currentCatIndex >= userOwnedCats.Count)
                 {
-                    Debug.Log("All cats spawned. No more cats to spawn."); // Log when all cats are spawned
-                    currentCatIndex = -1; // Set to -1 so the next call to increment will go back to 0
+                    Debug.Log("All cats spawned. No more cats to spawn.");
+                    allCatsSpawned = true; // Set the flag to true, no more cats to spawn
                 }
                 else
                 {
-                    Debug.Log("Next Cat Index: " + currentCatIndex); // Log the next index
+                    Debug.Log("Next Cat Index: " + currentCatIndex);
                 }
             }
             else
@@ -141,14 +132,10 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
         }
         else
         {
-            Debug.Log("User has no cats");
+            Debug.Log("User has no cats or all cats already spawned.");
         }
     }
 
-
-
-
-    // Load user-owned cats from PlayerPrefs
     private void LoadUserOwnedCats()
     {
         userOwnedCats = new List<int>();

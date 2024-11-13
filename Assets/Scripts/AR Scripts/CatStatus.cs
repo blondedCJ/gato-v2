@@ -170,7 +170,7 @@ public class CatStatus : MonoBehaviour
     {
         while (isBeingPetted)
         {
-            affectionLevel += 1f; // Increase affection gradually
+            affectionLevel += 50f; // Increase affection gradually
             SaveCatStatus(); // Save the status after each increase
             yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds before increasing again
         }

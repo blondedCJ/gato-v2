@@ -405,7 +405,7 @@ public class CatBehavior : MonoBehaviour
         StartCoroutine(PlayDeadCooldown());
     }
 
-    public void TransitionToJump(float jumpHeight = 0.5f, float jumpDuration = 0.8f)
+    public void TransitionToJump(float jumpHeight = 0.5f, float jumpDuration = 0.92f)
     {
         if (!canPerformJump) return;
 

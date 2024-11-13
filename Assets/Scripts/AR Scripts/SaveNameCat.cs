@@ -33,7 +33,7 @@ public class SaveNameCat : MonoBehaviour
         CatGiftComplete();
 
         // Load the next scene
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(3);
     }
 
     private void PrintAllCatNames()

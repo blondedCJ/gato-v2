@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/FLOoOOooOOOooW/Logo.unity
     guid: 405d2a2d048a7bd4c90c6e466d4392c1
   - enabled: 1
+    path: Assets/Scenes/FLOoOOooOOOooW/LoadingScreen to Menu.unity
+    guid: dbd2c5c3947bbcd49a9d41116f88d55a
+  - enabled: 1
+    path: Assets/Scenes/FLOoOOooOOOooW/MainMenu.unity
+    guid: 01d1a92aa2bdcbf4c988a4448ecb9f4b
+  - enabled: 1
     path: Assets/Scenes/FLOoOOooOOOooW/LoadingScreen.unity
     guid: 1f783fd4b35d8984382d92e06e4a30b2
   - enabled: 1

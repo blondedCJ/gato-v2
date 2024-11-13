@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class LoadingScreenNext : MonoBehaviour
 {
     public Slider progressBar;       // Assign the slider in the Inspector
-    public float fillSpeed = 0.5f;   // Speed at which the progress bar fills, adjust as needed
+    public float fillSpeed = 0.2f;   // Speed at which the progress bar fills, adjust as needed
 
     private void Start()
     {
@@ -22,13 +22,13 @@ public class LoadingScreenNext : MonoBehaviour
         if (PlayerPrefs.GetInt("GiftSceneCompleted", 0) == 1)
         {
             // If the tutorial is completed, load the main scene
-            sceneToLoad = 3;
+            sceneToLoad = 5;
             Debug.Log("Loading main scene as tutorial is completed.");
         }
         else
         {
             // Otherwise, load the tutorial scene
-            sceneToLoad = 2;
+            sceneToLoad = 4;
             Debug.Log("Loading tutorial scene.");
         }
 

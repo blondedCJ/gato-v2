@@ -180,13 +180,44 @@ public class WalkablePlaneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        if (feed != null)
+        if (feed == null)
+        {
+            Debug.LogWarning($"{cat.name}'s feed/drink object was already destroyed before coroutine completion.");
+        }
+        else
         {
             Destroy(feed);
+            Debug.Log($"{cat.name} has finished eating/drinking. Feed/Drink object successfully destroyed.");
+        }
+
+        // Ensure cleanup from dictionary and activeEatingCats set
+        if (dictionary.ContainsKey(cat))
+        {
             dictionary.Remove(cat);
-            activeEatingCats.Remove(cat); // Mark as no longer eating or drinking
+            Debug.Log($"{cat.name} removed from dictionary after finishing eating/drinking.");
+        }
+        else
+        {
+            Debug.LogWarning($"{cat.name} was not found in the dictionary when trying to remove it.");
+        }
+
+        if (activeEatingCats.Contains(cat))
+        {
+            activeEatingCats.Remove(cat);
+            Debug.Log($"{cat.name} removed from activeEatingCats and is ready for new interactions.");
+        }
+        else
+        {
+            Debug.LogWarning($"{cat.name} was not found in activeEatingCats when trying to remove it.");
         }
     }
+
+
+    private void OnDestroy()
+    {
+        Debug.Log($"{gameObject.name} is being destroyed.");
+    }
+
 
     public void ToggleTreatPlacement()
     {

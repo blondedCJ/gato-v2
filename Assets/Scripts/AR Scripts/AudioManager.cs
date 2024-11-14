@@ -1,78 +1,105 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager instance;
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource;  // Music audio source
+    [SerializeField] private AudioSource sfxSource;    // SFX audio source
 
-    [Header("------------ Audio Source ------------")]
-    [SerializeField] AudioSource musicSource;
-    [SerializeField] AudioSource SFXSource;
+    [Header("Button Click SFX")]
+    [SerializeField] private AudioClip click; // Button click sound clip
 
-    [Header("------------ Audio Clip ------------")]
-    public AudioClip background;
-    public AudioClip click;
+    // Singleton instance
+    public static AudioManager Instance;
 
     private void Awake()
     {
-        if (instance == null)
+        // Ensure there's only one instance of AudioManager
+        if (Instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Persist across scenes
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Destroy this instance if one already exists
         }
     }
 
     private void Start()
     {
-        musicSource.clip = background;
-        musicSource.Play();
-
-        // Set initial volume from PlayerPrefs
-        if (!PlayerPrefs.HasKey("musicVolume"))
-        {
-            PlayerPrefs.SetFloat("musicVolume", 1f);
-        }
-        AudioListener.volume = PlayerPrefs.GetFloat("musicVolume");
+        // Load saved volume settings
+        LoadVolumeSettings();
     }
 
-    private void Update()
+    public void SetSliders(Slider music, Slider sfx)
     {
-        AudioListener.volume = PlayerPrefs.GetFloat("musicVolume");
+        music.onValueChanged.AddListener(OnMusicVolumeChanged);
+        sfx.onValueChanged.AddListener(OnSFXVolumeChanged);
+
+        // Load the saved settings for the sliders
+        music.value = PlayerPrefs.GetFloat("musicVolume", 1f);
+        sfx.value = PlayerPrefs.GetFloat("sfxVolume", 1f);
+
+        // Set the initial volume for the audio sources
+        musicSource.volume = music.value;
+        sfxSource.volume = sfx.value;
     }
 
+    // Play the button click SFX
     public void PlayButtonClickSFX()
     {
-        // Check if SFXSource is null
-        if (SFXSource == null)
+        if (sfxSource != null && click != null)
         {
-            Debug.LogError("SFXSource is not assigned in AudioManager!");
+            sfxSource.PlayOneShot(click); // Play the button click sound
         }
+    }
 
-        // Check if the click sound is null
-        if (click == null)
-        {
-            Debug.LogError("Click sound (AudioClip) is not assigned in AudioManager!");
-        }
+    private void OnMusicVolumeChanged(float value)
+    {
+        musicSource.volume = value;
+        SaveVolumeSettings();
+    }
 
-        // Only play the sound if both SFXSource and click are assigned
-        if (SFXSource != null && click != null)
+    private void OnSFXVolumeChanged(float value)
+    {
+        sfxSource.volume = value;
+        SaveVolumeSettings();
+    }
+
+    // Save volume settings in PlayerPrefs
+    private void SaveVolumeSettings()
+    {
+        PlayerPrefs.SetFloat("musicVolume", musicSource.volume);
+        PlayerPrefs.SetFloat("sfxVolume", sfxSource.volume);
+        PlayerPrefs.Save();
+    }
+
+    // Load volume settings from PlayerPrefs
+    private void LoadVolumeSettings()
+    {
+        if (PlayerPrefs.HasKey("musicVolume"))
         {
-            Debug.Log("Playing button click sound...");
-            SFXSource.PlayOneShot(click); // Play the button click sound
+            musicSource.volume = PlayerPrefs.GetFloat("musicVolume");
         }
         else
         {
-            Debug.LogWarning("Button click sound not played because one or more references are missing.");
+            musicSource.volume = 1f;  // Default music volume
+        }
+
+        if (PlayerPrefs.HasKey("sfxVolume"))
+        {
+            sfxSource.volume = PlayerPrefs.GetFloat("sfxVolume");
+        }
+        else
+        {
+            sfxSource.volume = 1f;  // Default SFX volume
         }
     }
 
-
-    public void ChangeVolume(float newVolume)
+    private void OnDestroy()
     {
-        PlayerPrefs.SetFloat("musicVolume", newVolume);
-        PlayerPrefs.Save();
+        // Clean up listeners
     }
 }

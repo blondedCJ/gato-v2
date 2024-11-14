@@ -23,6 +23,8 @@ public class WalkablePlaneManager : MonoBehaviour
     private Dictionary<GameObject, GameObject> catDrinks = new Dictionary<GameObject, GameObject>();
     private HashSet<GameObject> activeEatingCats = new HashSet<GameObject>(); // Track cats that are currently eating or drinking
 
+    GoalsManager goalsManager;
+
     private void Awake()
     {
         arCamera = Camera.main;
@@ -36,6 +38,13 @@ public class WalkablePlaneManager : MonoBehaviour
     private void Start()
     {
         cats = new List<GameObject>(GameObject.FindGameObjectsWithTag("Cat"));
+        // Get a reference to the GoalsManager
+        goalsManager = FindObjectOfType<GoalsManager>();
+
+        if (goalsManager == null)
+        {
+            Debug.LogWarning("GoalsManager not found in the scene.");
+        }
     }
 
     void Update()
@@ -133,6 +142,7 @@ public class WalkablePlaneManager : MonoBehaviour
             activeEatingCats.Add(selectedCat); // Mark as eating
             catBehavior.TransitionToEating(spawnedTreat, 5f);
             catStatus.TreatCat();
+            goalsManager.IncrementTreatsGoal();
         }
 
         StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 3f, catTreats));
@@ -171,6 +181,7 @@ public class WalkablePlaneManager : MonoBehaviour
             activeEatingCats.Add(selectedCat);
             catBehavior.TransitionToDrinking(spawnedDrink, 10f);
             catStatus.GiveWater();
+            goalsManager.IncrementWaterGoal();
         }
 
         StartCoroutine(DisableFeedAfterTime(spawnedDrink, selectedCat, 10f, catDrinks));

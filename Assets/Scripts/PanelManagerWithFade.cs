@@ -45,6 +45,15 @@ public class PanelManagerWithFade : MonoBehaviour
         }
     }
 
+    public void ShowPanel()
+    {
+        if (!isPanelActive) // Only trigger if the panel is not already active
+        {
+            StopAllCoroutines(); // Ensure no coroutines are overlapping
+            StartCoroutine(FadeIn());
+        }
+    }
+
     public void HidePanel()
     {
         if (isPanelActive) // Only trigger if the panel is active
@@ -91,6 +100,43 @@ public class PanelManagerWithFade : MonoBehaviour
         }
 
         Time.timeScale = 0; // Pause the game
+        isPanelActive = true; // Update the panel state
+    }
+
+    private IEnumerator FadeIn()
+    {
+        float elapsedTime = 0f;
+
+        // Make the panel interactive as we start fading in
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+
+        // Fade in the panel and dark overlay
+        while (elapsedTime < fadeDuration)
+        {
+            float alpha = Mathf.Lerp(0, 1, elapsedTime / fadeDuration);
+            canvasGroup.alpha = alpha;
+
+            // Fade in the dark overlay if it's assigned
+            if (darkOverlay != null)
+            {
+                darkOverlay.alpha = Mathf.Lerp(0, 0.8f, elapsedTime / fadeDuration); // Adjust the 0.5f to control how dark the overlay gets
+            }
+
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        // Ensure the panel is fully visible at the end
+        canvasGroup.alpha = 1;
+
+        // Ensure the dark overlay is at the correct opacity
+        if (darkOverlay != null)
+        {
+            darkOverlay.alpha = 0.8f; // Final opacity of the dark overlay
+            darkOverlay.interactable = true;
+            darkOverlay.blocksRaycasts = true;
+        }
         isPanelActive = true; // Update the panel state
     }
 

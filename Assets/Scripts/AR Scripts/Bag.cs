@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Bag : MonoBehaviour
 {
@@ -31,6 +33,10 @@ public class Bag : MonoBehaviour
     [SerializeField] private RectTransform feedButton;  // Assign in Inspector
     [SerializeField] private RectTransform drinkButton; // Assign in Inspector
 
+    [SerializeField] private Button buttonTreat; // Assign in Inspector
+    [SerializeField] private Button buttonFeed;  // Assign in Inspector
+    [SerializeField] private Button buttonDrink; // Assign in Inspector
+
     private Vector3 treatButtonTargetPosition = new Vector3(327, -444, 0);
     private Vector3 feedButtonTargetPosition = new Vector3(41, -504, 0);
     private Vector3 drinkButtonTargetPosition = new Vector3(-74, -774, 0);
@@ -38,6 +44,16 @@ public class Bag : MonoBehaviour
     private Vector3 treatButtonOriginalPosition;
     private Vector3 feedButtonOriginalPosition;
     private Vector3 drinkButtonOriginalPosition;
+
+
+                                        
+    public Image treatButtonImage;
+    public Image feedButtonImage;
+    public Image waterButtonImage;
+
+    public Sprite defaultTreatImage;
+    public Sprite defaultFeedImage;
+    public Sprite defaultWaterImage;
 
     [SerializeField] private float buttonMoveDuration = 0.5f; // Speed of button animation
 
@@ -106,6 +122,8 @@ public class Bag : MonoBehaviour
         // Set the target scale back to the original size
         targetScale = originalScale;
 
+        
+
         // Start coroutine to move buttons back to their original positions
         StartCoroutine(MoveButtons(treatButton, treatButtonTargetPosition, treatButtonOriginalPosition, buttonMoveDuration));
         StartCoroutine(MoveButtons(feedButton, feedButtonTargetPosition, feedButtonOriginalPosition, buttonMoveDuration));
@@ -130,7 +148,17 @@ public class Bag : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+        treatButtonImage.sprite = defaultTreatImage;
+        feedButtonImage.sprite = defaultFeedImage;
+        waterButtonImage.sprite = defaultWaterImage;
 
+        buttonTreat.OnDeselect(null);
+        buttonFeed.OnDeselect(null);
+        buttonDrink.OnDeselect(null);
+
+        buttonTreat.interactable = true;
+        buttonFeed.interactable = true;
+        buttonDrink.interactable = true;
         // Ensure the button reaches its final position
         button.anchoredPosition = endPosition;
     }

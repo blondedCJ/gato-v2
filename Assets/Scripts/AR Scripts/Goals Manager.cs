@@ -20,10 +20,10 @@ public class GoalsManager : MonoBehaviour
     public const string PlayTimeGoalAchievedKey = "PlayTimeGoalAchieved";
 
     // Cash rewards for each goal
-    private const int TreatsGoalCashReward = 50;
-    private const int WaterGoalCashReward = 30;
-    private const int JumpGoalCashReward = 100;
-    private const int PlayTimeGoalCashReward = 200;
+    private const int TreatsGoalCashReward = 20;
+    private const int WaterGoalCashReward = 100;
+    private const int JumpGoalCashReward = 40;
+    private const int PlayTimeGoalCashReward = 20;
 
     // Goal limits
     private const int TreatsGoalLimit = 5;

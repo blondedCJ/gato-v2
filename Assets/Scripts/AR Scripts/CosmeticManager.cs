@@ -38,7 +38,32 @@ public class CosmeticManager : MonoBehaviour
         {
             cosmeticButtons[mapping.cosmetic] = mapping.button;
         }
-        UnlockCosmetic(Cosmetic.WarriorHelmet); 
+        UnlockCosmetic(Cosmetic.JesterHat);
+        UnlockCosmetic(Cosmetic.MaidHeadband);
+        UnlockCosmetic(Cosmetic.Bandana);
+        UnlockCosmetic(Cosmetic.BonnetHat);
+        UnlockCosmetic(Cosmetic.CaptainHat);
+        UnlockCosmetic(Cosmetic.CatCap);
+        UnlockCosmetic(Cosmetic.ClocheHat);
+        UnlockCosmetic(Cosmetic.DeerHeadband);
+        UnlockCosmetic(Cosmetic.FedoraHat);
+        UnlockCosmetic(Cosmetic.FlowerHeadband);
+        UnlockCosmetic(Cosmetic.LeatherHat);
+        UnlockCosmetic(Cosmetic.OutdoorHat);
+        UnlockCosmetic(Cosmetic.StrawHat);
+        UnlockCosmetic(Cosmetic.BambooHat);
+        UnlockCosmetic(Cosmetic.BandanaHat);
+        UnlockCosmetic(Cosmetic.ElegantHat);
+        UnlockCosmetic(Cosmetic.FlowerCrown);
+        UnlockCosmetic(Cosmetic.LatexBeretHat);
+        UnlockCosmetic(Cosmetic.PirateHat);
+        UnlockCosmetic(Cosmetic.Prop002_BeanieHat);
+        UnlockCosmetic(Cosmetic.Prop003_Cap);
+        UnlockCosmetic(Cosmetic.VisorCap);
+        UnlockCosmetic(Cosmetic.WarriorHelmet);
+        UnlockCosmetic(Cosmetic.Cube001_0);
+        UnlockCosmetic(Cosmetic.Cube003_3);
+        UnlockCosmetic(Cosmetic.StarShades);
         LoadOwnedCosmetics();
         UpdateCosmeticButtons();
 

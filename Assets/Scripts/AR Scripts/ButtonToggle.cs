@@ -20,7 +20,7 @@ public class SpriteToggle : MonoBehaviour
         }
 
         // Set initial sprite
-        buttonImage.sprite = sprite1;
+        SetSprite(sprite1);
     }
 
     public void OnButtonClick()
@@ -28,14 +28,24 @@ public class SpriteToggle : MonoBehaviour
         // Toggle between the sprites
         if (isSprite1Active)
         {
-            buttonImage.sprite = sprite2;
+            SetSprite(sprite2);
         }
         else
         {
-            buttonImage.sprite = sprite1;
+            SetSprite(sprite1);
         }
+    }
 
-        // Toggle the active state
-        isSprite1Active = !isSprite1Active;
+    // Public method to reset the button image
+    public void ResetToDefault()
+    {
+        SetSprite(sprite1);
+    }
+
+    // Helper method to set the sprite and synchronize the state
+    private void SetSprite(Sprite sprite)
+    {
+        buttonImage.sprite = sprite;
+        isSprite1Active = sprite == sprite1;
     }
 }

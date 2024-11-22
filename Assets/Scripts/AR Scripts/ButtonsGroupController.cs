@@ -7,7 +7,7 @@ public class ButtonsGroupController : MonoBehaviour
     [SerializeField]
     private List<Button> buttons;  // List of buttons in the group
 
-    private Button currentlySelectedButton = null;
+    public Button currentlySelectedButton = null;
 
     private void Start()
     {
@@ -18,7 +18,7 @@ public class ButtonsGroupController : MonoBehaviour
         }
     }
 
-    private void OnButtonClicked(Button selectedButton)
+    public void OnButtonClicked(Button selectedButton)
     {
         if (currentlySelectedButton == selectedButton)
         {

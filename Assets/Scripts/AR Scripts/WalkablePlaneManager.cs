@@ -15,9 +15,9 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private List<GameObject> cats;
     private Camera arCamera;
-    private bool canPlaceTreat = false;
-    private bool canPlaceFeed = false;
-    private bool canPlaceDrink = false;
+    public bool canPlaceTreat = false;
+    public bool canPlaceFeed = false;
+    public bool canPlaceDrink = false;
 
     private Dictionary<GameObject, GameObject> catTreats = new Dictionary<GameObject, GameObject>();
     private Dictionary<GameObject, GameObject> catFeeds = new Dictionary<GameObject, GameObject>();

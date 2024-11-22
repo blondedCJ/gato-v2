@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.XR.Management;
 
 public class LoadingScreenNext : MonoBehaviour
 {
@@ -32,6 +33,9 @@ public class LoadingScreenNext : MonoBehaviour
             Debug.Log("Loading tutorial scene.");
         }
 
+        // Reset AR session before starting the loading process
+        yield return ResetARSession();
+
         // Begin loading the scene asynchronously
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneToLoad);
 
@@ -57,4 +61,28 @@ public class LoadingScreenNext : MonoBehaviour
             yield return null;
         }
     }
+
+    private IEnumerator ResetARSession()
+    {
+        // Check if AR is initialized
+        if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
+        {
+            // Stop AR subsystems
+            XRGeneralSettings.Instance.Manager.StopSubsystems();
+            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+        }
+
+        // Reinitialize the AR session
+        XRGeneralSettings.Instance.Manager.InitializeLoaderSync();
+
+        if (XRGeneralSettings.Instance.Manager.activeLoader == null)
+        {
+            Debug.LogError("Failed to initialize XR loader. Check XR settings in Project Settings.");
+            yield break;
+        }
+
+        XRGeneralSettings.Instance.Manager.StartSubsystems();
+        yield return null;
+    }
+
 }

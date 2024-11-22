@@ -26,4 +26,17 @@ public class MainMenuButtons : MonoBehaviour
 
     }
 
+    public void Exit()
+    {
+        Debug.Log("Exiting the game...");
+
+#if UNITY_EDITOR
+        // Stops the play mode in the Unity editor.
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        // Exits the application in a built game.
+        Application.Quit();
+#endif
+    }
+
 }

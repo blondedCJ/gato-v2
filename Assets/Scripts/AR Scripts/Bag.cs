@@ -100,6 +100,14 @@ public class Bag : MonoBehaviour
         }
     }
 
+    public void closeBag()
+    {
+        if (isBagOpen)  
+        {
+            CloseBag();
+        }
+    }
+
     private void OpenBag()
     {
         bagAnimator.SetBool("isClosed", false);

@@ -145,7 +145,8 @@ public class WalkablePlaneManager : MonoBehaviour
         int playerBalance = int.Parse(coinBalanceText.text);
 
         // condition
-        if (playerBalance >= treatcost) {
+        if (playerBalance >= treatcost)
+        {
             playerBalance -= treatcost; // Deduct coins
             coinBalanceText.text = playerBalance.ToString(); // Update the UI balance
 
@@ -156,7 +157,8 @@ public class WalkablePlaneManager : MonoBehaviour
             CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
             CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
-            if (catBehavior != null) {
+            if (catBehavior != null)
+            {
                 activeEatingCats.Add(selectedCat); // Mark as eating
                 catBehavior.TransitionToEating(spawnedTreat, 5f);
                 catStatus.TreatCat();
@@ -185,7 +187,8 @@ public class WalkablePlaneManager : MonoBehaviour
         int playerBalance = int.Parse(coinBalanceText.text);
 
         // condition
-        if (playerBalance >= feedingcost) {
+        if (playerBalance >= feedingcost)
+        {
             playerBalance -= feedingcost; // Deduct coins
             coinBalanceText.text = playerBalance.ToString(); // Update the UI balance
 
@@ -196,7 +199,8 @@ public class WalkablePlaneManager : MonoBehaviour
             CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
             CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
-            if (catBehavior != null) {
+            if (catBehavior != null)
+            {
                 activeEatingCats.Add(selectedCat);
                 catBehavior.TransitionToEating(spawnedFeed, 10f);
                 catStatus.FeedCat();
@@ -210,7 +214,9 @@ public class WalkablePlaneManager : MonoBehaviour
             PlayerPrefs.SetInt(CashKey, currentCash);
             PlayerPrefs.Save();
 
-        } else {
+        }
+        else
+        {
             Debug.Log("Not enough balance to feed!");
         }
 
@@ -231,8 +237,9 @@ public class WalkablePlaneManager : MonoBehaviour
         int playerBalance = int.Parse(coinBalanceText.text);
 
         // condition
-        if (playerBalance >= drinkingCost) {
-            
+        if (playerBalance >= drinkingCost)
+        {
+
             playerBalance -= drinkingCost; // Deduct coins
             coinBalanceText.text = playerBalance.ToString(); // Update the UI balance
 
@@ -243,7 +250,8 @@ public class WalkablePlaneManager : MonoBehaviour
             CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
             CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
-            if (catBehavior != null) {
+            if (catBehavior != null)
+            {
                 activeEatingCats.Add(selectedCat);
                 catBehavior.TransitionToDrinking(spawnedDrink, 10f);
                 catStatus.GiveWater();
@@ -257,7 +265,9 @@ public class WalkablePlaneManager : MonoBehaviour
             currentCash -= drinkingCost;
             PlayerPrefs.SetInt(CashKey, currentCash);
             PlayerPrefs.Save();
-        } else {
+        }
+        else
+        {
             Debug.Log("Not enough balance to transition to drinking!");
         }
     }
@@ -343,6 +353,4 @@ public class WalkablePlaneManager : MonoBehaviour
             Debug.Log("Added cat to list: " + cat.name);
         }
     }
-
-
 }

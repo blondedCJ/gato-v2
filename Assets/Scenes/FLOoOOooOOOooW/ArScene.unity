@@ -3262,6 +3262,9 @@ MonoBehaviour:
     type: 3}
   drinkPrefab: {fileID: 1232563965717026826, guid: 3dcffbe91a1e9e94f8ffcb6413335fd1,
     type: 3}
+  canPlaceTreat: 0
+  canPlaceFeed: 0
+  canPlaceDrink: 0
 --- !u!114 &151853181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14994,18 +14997,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SpriteToggle, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -45534,6 +45525,9 @@ MonoBehaviour:
   scaleSpeed: 2
   floatSpeed: 1
   floatHeight: 0.1
+  walkablePlaneManager: {fileID: 151853176}
+  buttonsGroupController: {fileID: 2098883008}
+  spriteToggle: {fileID: 718399374}
   treatButton: {fileID: 885817345}
   feedButton: {fileID: 718399370}
   drinkButton: {fileID: 1657085284}
@@ -45587,6 +45581,7 @@ MonoBehaviour:
   - {fileID: 718399371}
   - {fileID: 1657085285}
   - {fileID: 885817346}
+  currentlySelectedButton: {fileID: 0}
 --- !u!114 &2098883009
 MonoBehaviour:
   m_ObjectHideFlags: 0

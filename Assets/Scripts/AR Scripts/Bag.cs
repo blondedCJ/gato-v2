@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class Bag : MonoBehaviour
 {
@@ -28,6 +29,9 @@ public class Bag : MonoBehaviour
     private float floatHeight = 0.2f; // Height of the float movement
 
     private Vector3 initialPosition;
+
+    public WalkablePlaneManager walkablePlaneManager;
+    public ButtonsGroupController buttonsGroupController;
 
     [SerializeField] private RectTransform treatButton; // Assign in Inspector
     [SerializeField] private RectTransform feedButton;  // Assign in Inspector
@@ -100,6 +104,7 @@ public class Bag : MonoBehaviour
     {
         bagAnimator.SetBool("isClosed", false);
         bagAnimator.SetBool("isOpened", true);
+
         isBagOpen = true;
 
         // Set the target scale to the enlarged size
@@ -117,12 +122,26 @@ public class Bag : MonoBehaviour
     {
         bagAnimator.SetBool("isOpened", false);
         bagAnimator.SetBool("isClosed", true);
+
+        walkablePlaneManager.canPlaceDrink = false;
+        walkablePlaneManager.canPlaceFeed = false;
+        walkablePlaneManager.canPlaceTreat = false;
+
+        buttonsGroupController.currentlySelectedButton = null;
+        buttonsGroupController.ResetButtons();
+
+        treatButtonImage.sprite = defaultTreatImage;
+        feedButtonImage.sprite = defaultFeedImage;
+        waterButtonImage.sprite = defaultWaterImage;
+
+        treatButton.GetComponent<SpriteToggle>().ResetToDefault();
+        feedButton.GetComponent<SpriteToggle>().ResetToDefault();
+        buttonDrink.GetComponent<SpriteToggle>().ResetToDefault();
+
         isBagOpen = false;
 
         // Set the target scale back to the original size
         targetScale = originalScale;
-
-        
 
         // Start coroutine to move buttons back to their original positions
         StartCoroutine(MoveButtons(treatButton, treatButtonTargetPosition, treatButtonOriginalPosition, buttonMoveDuration));
@@ -148,17 +167,6 @@ public class Bag : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        treatButtonImage.sprite = defaultTreatImage;
-        feedButtonImage.sprite = defaultFeedImage;
-        waterButtonImage.sprite = defaultWaterImage;
-
-        buttonTreat.OnDeselect(null);
-        buttonFeed.OnDeselect(null);
-        buttonDrink.OnDeselect(null);
-
-        buttonTreat.interactable = true;
-        buttonFeed.interactable = true;
-        buttonDrink.interactable = true;
         // Ensure the button reaches its final position
         button.anchoredPosition = endPosition;
     }

@@ -1,23 +1,39 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.Management;
 public class OpenAR : MonoBehaviour
 {
+    private ARSession arSession;
 
-    public void LoadScene()
+    private void Awake()
     {
-        Debug.Log("Attempting to load AR scene...");
-        try
+        arSession = FindObjectOfType<ARSession>();
+    }
+
+    public void GoToNonARScene(int index)
+    {
+        StartCoroutine(TransitionToNonARScene(index));
+    }
+
+    private IEnumerator TransitionToNonARScene(int index)
+    {
+        if (arSession != null)
         {
-            SceneManager.LoadScene("AR Scene", LoadSceneMode.Single);
-            Debug.Log("Scene loaded successfully");
+            Debug.Log("Resetting AR Session...");
+            arSession.Reset();
         }
-        catch (System.Exception ex)
+
+        if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
         {
-            Debug.LogError("Error loading scene: " + ex.Message);
+            XRGeneralSettings.Instance.Manager.StopSubsystems();
+            Debug.Log("Stopped AR Subsystems.");
         }
+
+        yield return null; // Wait for reset
+
+        SceneManager.LoadScene(index);
     }
 
 }

@@ -20,6 +20,16 @@ public class ToggleUIComponents : MonoBehaviour
             component.SetActive(!component.activeSelf); // Toggle active state
         }
     }
+    public void closeComponents()
+    {
+        foreach (GameObject component in uiComponents)
+        {
+            if (component.activeSelf)  // Check if the component is currently open (active)
+            {
+                component.SetActive(false);  // Close it by setting it to inactive
+            }
+        }
+    }
     public void BringFurnitureToFront()
     {
         if (Furniture != null && Cosmetics != null)

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,6 +23,9 @@ public class WalkablePlaneManager : MonoBehaviour
     private Dictionary<GameObject, GameObject> catFeeds = new Dictionary<GameObject, GameObject>();
     private Dictionary<GameObject, GameObject> catDrinks = new Dictionary<GameObject, GameObject>();
     private HashSet<GameObject> activeEatingCats = new HashSet<GameObject>(); // Track cats that are currently eating or drinking
+
+    private TMP_Text coinBalanceText;
+    public const string CashKey = "PlayerCash";
 
     GoalsManager goalsManager;
 
@@ -130,61 +134,142 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void SpawnTreatInFrontOfCat(GameObject selectedCat)
     {
-        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
-        GameObject spawnedTreat = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
-        catTreats[selectedCat] = spawnedTreat;
 
-        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
-        CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+        // Find the UI element by tag
+        GameObject coinBalanceObject = GameObject.FindWithTag("Balance");
+        coinBalanceText = coinBalanceObject.GetComponent<TMP_Text>();
 
-        if (catBehavior != null)
+        const int treatcost = 5; // feed cost
+
+        // Parse the balance from the UI text
+        int playerBalance = int.Parse(coinBalanceText.text);
+
+        // condition
+        if (playerBalance >= treatcost)
         {
-            activeEatingCats.Add(selectedCat); // Mark as eating
-            catBehavior.TransitionToEating(spawnedTreat, 5f);
-            catStatus.TreatCat();
-            goalsManager.IncrementTreatsGoal();
-        }
+            playerBalance -= treatcost; // Deduct coins
+            coinBalanceText.text = playerBalance.ToString(); // Update the UI balance
 
-        StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 3f, catTreats));
+            Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
+            GameObject spawnedTreat = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
+            catTreats[selectedCat] = spawnedTreat;
+
+            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+            CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+
+            if (catBehavior != null)
+            {
+                activeEatingCats.Add(selectedCat); // Mark as eating
+                catBehavior.TransitionToEating(spawnedTreat, 5f);
+                catStatus.TreatCat();
+                goalsManager.IncrementTreatsGoal();
+            }
+
+            StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 3f, catTreats));
+
+            //   ty
+            int currentCash = PlayerPrefs.GetInt(CashKey, 0);
+            currentCash -= treatcost;
+            PlayerPrefs.SetInt(CashKey, currentCash);
+            PlayerPrefs.Save();
+        }
     }
 
     private void SpawnFeedInFrontOfCat(GameObject selectedCat)
     {
-        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
-        GameObject spawnedFeed = Instantiate(feedPrefab, spawnPosition, Quaternion.identity);
-        catFeeds[selectedCat] = spawnedFeed;
+        // Find the UI element by tag
+        GameObject coinBalanceObject = GameObject.FindWithTag("Balance");
+        coinBalanceText = coinBalanceObject.GetComponent<TMP_Text>();
 
-        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
-        CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+        const int feedingcost = 20; // feed cost
 
-        if (catBehavior != null)
+        // Parse the balance from the UI text
+        int playerBalance = int.Parse(coinBalanceText.text);
+
+        // condition
+        if (playerBalance >= feedingcost)
         {
-            activeEatingCats.Add(selectedCat);
-            catBehavior.TransitionToEating(spawnedFeed, 10f);
-            catStatus.FeedCat();
+            playerBalance -= feedingcost; // Deduct coins
+            coinBalanceText.text = playerBalance.ToString(); // Update the UI balance
+
+            Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
+            GameObject spawnedFeed = Instantiate(feedPrefab, spawnPosition, Quaternion.identity);
+            catFeeds[selectedCat] = spawnedFeed;
+
+            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+            CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+
+            if (catBehavior != null)
+            {
+                activeEatingCats.Add(selectedCat);
+                catBehavior.TransitionToEating(spawnedFeed, 10f);
+                catStatus.FeedCat();
+            }
+
+            StartCoroutine(DisableFeedAfterTime(spawnedFeed, selectedCat, 10f, catFeeds));
+
+            // save
+            int currentCash = PlayerPrefs.GetInt(CashKey, 0);
+            currentCash -= feedingcost;
+            PlayerPrefs.SetInt(CashKey, currentCash);
+            PlayerPrefs.Save();
+
+        }
+        else
+        {
+            Debug.Log("Not enough balance to feed!");
         }
 
-        StartCoroutine(DisableFeedAfterTime(spawnedFeed, selectedCat, 10f, catFeeds));
+
     }
+
+
 
     private void SpawnDrinkInFrontOfCat(GameObject selectedCat)
     {
-        Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
-        GameObject spawnedDrink = Instantiate(drinkPrefab, spawnPosition, Quaternion.identity);
-        catDrinks[selectedCat] = spawnedDrink;
+        // Find the UI element by tag
+        GameObject coinBalanceObject = GameObject.FindWithTag("Balance");
+        coinBalanceText = coinBalanceObject.GetComponent<TMP_Text>();
 
-        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
-        CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+        const int drinkingCost = 10; // drinkingcost
 
-        if (catBehavior != null)
+        // Parse the balance from the UI text
+        int playerBalance = int.Parse(coinBalanceText.text);
+
+        // condition
+        if (playerBalance >= drinkingCost)
         {
-            activeEatingCats.Add(selectedCat);
-            catBehavior.TransitionToDrinking(spawnedDrink, 10f);
-            catStatus.GiveWater();
-            goalsManager.IncrementWaterGoal();
-        }
 
-        StartCoroutine(DisableFeedAfterTime(spawnedDrink, selectedCat, 10f, catDrinks));
+            playerBalance -= drinkingCost; // Deduct coins
+            coinBalanceText.text = playerBalance.ToString(); // Update the UI balance
+
+            Vector3 spawnPosition = selectedCat.transform.position + selectedCat.transform.forward * 0.2f + Vector3.up * 0.1f;
+            GameObject spawnedDrink = Instantiate(drinkPrefab, spawnPosition, Quaternion.identity);
+            catDrinks[selectedCat] = spawnedDrink;
+
+            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+            CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+
+            if (catBehavior != null)
+            {
+                activeEatingCats.Add(selectedCat);
+                catBehavior.TransitionToDrinking(spawnedDrink, 10f);
+                catStatus.GiveWater();
+                goalsManager.IncrementWaterGoal();
+            }
+
+            StartCoroutine(DisableFeedAfterTime(spawnedDrink, selectedCat, 10f, catDrinks));
+
+            // save
+            int currentCash = PlayerPrefs.GetInt(CashKey, 0);
+            currentCash -= drinkingCost;
+            PlayerPrefs.SetInt(CashKey, currentCash);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            Debug.Log("Not enough balance to transition to drinking!");
+        }
     }
 
     private IEnumerator DisableFeedAfterTime(GameObject feed, GameObject cat, float delay, Dictionary<GameObject, GameObject> dictionary)

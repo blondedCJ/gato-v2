@@ -10,6 +10,7 @@ TagManager:
   - Feed
   - Bag
   - CatName
+  - Balance
   layers:
   - Default
   - TransparentFX

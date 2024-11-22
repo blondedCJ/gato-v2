@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -308,6 +309,7 @@ public class CatBehavior : MonoBehaviour
         }
     }
 
+ 
     public void TransitionToDrinking(GameObject drinkItem, float duration)
     {
         isDrinking = true;

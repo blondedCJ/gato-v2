@@ -29,6 +29,11 @@ public class CatManager : MonoBehaviour
         // Get a reference to the GoalsManager
         goalsManager = FindObjectOfType<GoalsManager>();
 
+        UnlockNewCat(0);
+        UnlockNewCat(1);
+        UnlockNewCat(2);
+        UnlockNewCat(3);
+
         if (goalsManager == null)
         {
             Debug.LogWarning("GoalsManager not found in the scene.");

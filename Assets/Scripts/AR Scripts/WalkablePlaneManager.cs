@@ -219,10 +219,7 @@ public class WalkablePlaneManager : MonoBehaviour
         {
             Debug.Log("Not enough balance to feed!");
         }
-
-
     }
-
 
 
     private void SpawnDrinkInFrontOfCat(GameObject selectedCat)

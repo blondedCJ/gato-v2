@@ -3,17 +3,25 @@ using UnityEngine;
 
 public class CatStatus : MonoBehaviour
 {
+    [SerializeField]
+    private Transform[] heartSpawnPoints; // Assign spawn points in the Inspector
+
     public GameObject hungerEmote;
     public GameObject affectionEmote;
     public GameObject thirstEmote;
+    public GameObject sickEmote;
+    public GameObject dirtyEmote;
 
     public float hungerLevel = 0f;
     public float affectionLevel = 0f;
     public float thirstLevel = 0f;
 
-    public float decreaseRateAffection = 1f; // Decrease per second
-    public float decreaseRateHunger = 50f;    // Decrease per second
-    public float decreaseRateThirst = 1f;     // Decrease per second
+    public float decreaseRateAffection = 0.0023f; // Decrease per second
+    public float decreaseRateHunger = 0.0023f;    // Decrease per second
+    public float decreaseRateThirst = 0.0046f;    // Decrease per second
+
+    private float timeSinceHungry = 0f;
+    private float timeSinceUnpetted = 0f;
 
     private string catID;
     private Vector3 initialPositionHunger;
@@ -53,6 +61,13 @@ public class CatStatus : MonoBehaviour
             affectionLevel = Mathf.Clamp(affectionLevel, 0f, 100f);
             thirstLevel = Mathf.Clamp(thirstLevel, 0f, 100f);
 
+            // Track time since the cat has been hungry or unpetted
+            if (hungerLevel <= 20f) timeSinceHungry += timeSinceLastUpdate;
+            else timeSinceHungry = 0f;
+
+            if (!isBeingPetted && affectionLevel <= 20f) timeSinceUnpetted += timeSinceLastUpdate;
+            else timeSinceUnpetted = 0f;
+
             UpdateEmotes();
             SaveCatStatus();
 
@@ -69,6 +84,8 @@ public class CatStatus : MonoBehaviour
         if (hungerLevel <= 30f) activeEmoteCount++;
         if (affectionLevel <= 30f) activeEmoteCount++;
         if (thirstLevel <= 30f) activeEmoteCount++;
+        if (timeSinceHungry > 30f) activeEmoteCount++; // Sick condition
+        if (timeSinceUnpetted > 60f) activeEmoteCount++; // Dirty condition
 
         // Base position (centered)
         Vector3 basePosition = initialPositionHunger; // Use hunger emote's initial position as the center
@@ -111,6 +128,30 @@ public class CatStatus : MonoBehaviour
         else
         {
             thirstEmote.SetActive(false);
+        }
+
+        // Show sick emote if cat has been hungry for too long
+        if (timeSinceHungry > 30f)
+        {
+            sickEmote.SetActive(true);
+            sickEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
+            currentEmoteIndex++;
+        }
+        else
+        {
+            sickEmote.SetActive(false);
+        }
+
+        // Show dirty emote if cat has been unpetted for too long
+        if (timeSinceUnpetted > 60f)
+        {
+            dirtyEmote.SetActive(true);
+            dirtyEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
+            currentEmoteIndex++;
+        }
+        else
+        {
+            dirtyEmote.SetActive(false);
         }
     }
 
@@ -181,4 +222,16 @@ public class CatStatus : MonoBehaviour
         thirstLevel = 100f;
         SaveCatStatus();
     }
+
+    public Transform[] GetHeartSpawnPoints()
+    {
+        if (heartSpawnPoints != null && heartSpawnPoints.Length > 0)
+        {
+            return heartSpawnPoints;
+        }
+
+        Debug.LogWarning("Heart spawn points not assigned for " + gameObject.name);
+        return null;
+    }
+
 }

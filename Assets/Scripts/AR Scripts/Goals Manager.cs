@@ -56,6 +56,13 @@ public class GoalsManager : MonoBehaviour
         LoadAchievementsStatus();
         UpdateUI();
         UpdateCashUI();  // Update cash display on startup
+
+        int currentCash = PlayerPrefs.GetInt(CashKey, 0);
+        currentCash += 99999;
+        PlayerPrefs.SetInt(CashKey, currentCash);
+        PlayerPrefs.Save();
+
+        UpdateCashUI();
     }
 
     private void Update()

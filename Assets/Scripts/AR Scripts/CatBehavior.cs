@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +7,6 @@ public class CatBehavior : MonoBehaviour
     private Animator catAnimator;
     private Collider catCollider;
     private bool isBeingPetted = false;
-    private bool isPaused = false;
     private bool isEating = false; // Set this when the cat starts eating
     private bool isDrinking = false; // Set this when the cat starts drinking
     private bool isSelected = false;
@@ -24,6 +22,15 @@ public class CatBehavior : MonoBehaviour
 
     private bool canPerformPlayDead = true;
     private bool canPerformJump = true;
+
+    public Transform[] heartSpawnPoints; // Array of transforms where hearts will spawn
+    public GameObject[] heartPrefabs;    // Array of heart prefabs
+    public int heartCount = 5;           // Number of hearts to spawn per pet
+    public float spawnInterval = 0.1f;   // Time between each heart spawn
+    public float fallSpeed = 2f;         // Speed at which the hearts fall
+    public float destroyTime = 3f;       // Time to destroy the hearts after spawning
+
+    private IEnumerator heartSpawnRoutine; // To store the heart spawn coroutine
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -71,6 +78,17 @@ public class CatBehavior : MonoBehaviour
         defaultMaterial = catRenderer.material; // Store the default material
         TransitionToIdle();
         StartCoroutine(EnableSelectionAfterDelay());
+
+        foreach (GameObject heart in heartPrefabs)
+        {
+            heart.SetActive(false);
+
+            if (heart.TryGetComponent<Rigidbody>(out Rigidbody rb))
+            {
+                rb.isKinematic = true; // Disable gravity for original hearts
+                Debug.Log("kinematic is true");
+            }
+        }
     }
 
     void Update()
@@ -138,6 +156,167 @@ public class CatBehavior : MonoBehaviour
 #endif
     }
 
+    // Start continuous heart spawning while petting
+    private void StartHeartSpawning()
+    {
+        if (heartSpawnRoutine != null)
+        {
+            StopCoroutine(heartSpawnRoutine); // Stop any previous heart spawn coroutine
+        }
+
+        heartSpawnRoutine = SpawnHeartsContinuously(); // Start the continuous heart spawning
+        StartCoroutine(heartSpawnRoutine);
+    }
+
+    // Stop heart spawning when petting ends
+    private void StopHeartSpawning()
+    {
+        if (heartSpawnRoutine != null)
+        {
+            StopCoroutine(heartSpawnRoutine); // Stop the heart spawning coroutine
+            heartSpawnRoutine = null;
+        }
+        // Optionally, you can clear the hearts or reset their state here
+    }
+
+    // Continuous heart spawning while petting
+    private IEnumerator SpawnHeartsContinuously()
+    {
+        while (isBeingPetted) // Continue spawning hearts as long as petting is active
+        {
+            SpawnHearts(); // Spawn a heart
+            yield return new WaitForSeconds(0.5f); // Wait before spawning the next heart (adjust time as needed)
+        }
+    }
+
+    public void SpawnHearts()
+    {
+        if (currentlyPettedCat == null)
+        {
+            Debug.LogWarning("No cat is currently being petted. Cannot spawn hearts.");
+            return;
+        }
+
+        // Get the spawn points from the currently petted cat
+        Transform[] catHeartSpawnPoints = currentlyPettedCat.GetHeartSpawnPoints();
+
+        if (catHeartSpawnPoints == null || catHeartSpawnPoints.Length == 0)
+        {
+            Debug.LogWarning("No spawn points found for the currently petted cat.");
+            return;
+        }
+
+        StartCoroutine(SpawnHeartRoutine(catHeartSpawnPoints));
+    }
+
+    private IEnumerator SpawnHeartRoutine(Transform[] spawnPoints)
+    {
+        for (int i = 0; i < heartCount; i++)
+        {
+            // Randomly select a spawn point and heart prefab
+            int randomSpawnIndex = Random.Range(0, spawnPoints.Length);
+            Transform spawnPoint = spawnPoints[randomSpawnIndex];
+
+            int randomHeartIndex = Random.Range(0, heartPrefabs.Length);
+            GameObject selectedHeart = heartPrefabs[randomHeartIndex];
+
+            // Spawn a heart at the selected spawn point
+            GameObject heart = Instantiate(selectedHeart, spawnPoint.position, Quaternion.identity);
+
+            // Set a random scale
+            float randomScale = Random.Range(0.05f, 0.15f); // Adjust the min and max sizes as needed
+            heart.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
+
+            // Set a random rotation
+            heart.transform.rotation = Random.rotation; // Randomizes all axes
+
+            // Ensure the heart is active in the scene
+            heart.SetActive(true);
+
+            // Handle Rigidbody or manual movement
+            Rigidbody rb = heart.GetComponent<Rigidbody>();
+
+            StartCoroutine(MoveHeartUp(heart)); // Updated to move up
+
+            if (rb != null)
+            {
+                rb.isKinematic = false; // Enable gravity for the heart
+            }
+            else
+            {
+                
+            }
+
+            // Destroy the heart after some time
+            Destroy(heart, destroyTime);
+
+            // Wait before spawning the next heart
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+
+    private IEnumerator MoveHeartUp(GameObject heart)
+    {
+        // Define the target position (higher than the current position)
+        Vector3 targetPosition = heart.transform.position + Vector3.up * 1f; // Adjust the height as needed
+
+        // Store the starting position
+        Vector3 startPosition = heart.transform.position;
+
+        // Set the duration of the float (the time it takes for the heart to reach the target position)
+        float floatDuration = Random.Range(1f, 3f); // Randomize float speed for variety
+        float timeElapsed = 0f;
+
+        // Floating phase (moving upward)
+        while (timeElapsed < floatDuration)
+        {
+            // Interpolate the position between start and target over time for smooth floating
+            heart.transform.position = Vector3.Lerp(startPosition, targetPosition, timeElapsed / floatDuration);
+
+            // Increment time
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+
+        // Ensure it reaches the target position at the end
+        heart.transform.position = targetPosition;
+
+        // Fade out the heart after reaching the top
+        StartCoroutine(FadeOutHeart(heart));
+    }
+
+    private IEnumerator FadeOutHeart(GameObject heart)
+    {
+        Renderer renderer = heart.GetComponent<Renderer>();
+
+        if (renderer != null && renderer.material.HasProperty("_Color"))
+        {
+            Color initialColor = renderer.material.color;
+            float fadeDuration = 3f; // Time it takes to fully fade out
+            float timeElapsed = 0f;
+
+            while (timeElapsed < fadeDuration)
+            {
+                // Gradually reduce the alpha of the material's color
+                float alpha = Mathf.Lerp(initialColor.a, 0f, timeElapsed / fadeDuration);
+                renderer.material.color = new Color(initialColor.r, initialColor.g, initialColor.b, alpha);
+
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            // Ensure the alpha is fully set to 0
+            renderer.material.color = new Color(initialColor.r, initialColor.g, initialColor.b, 0f);
+        }
+
+        // Destroy the heart object after fading out
+        Destroy(heart);
+    }
+
+
+
     private IEnumerator EnableSelectionAfterDelay()
     {
         yield return new WaitForSeconds(selectionDelay);
@@ -164,7 +343,7 @@ public class CatBehavior : MonoBehaviour
         {
             // Check if a drag has occurred
             Vector2 currentPosition = touch.position.ReadValue();
-            if (Vector2.Distance(currentPosition, initialTouchPosition) > 10f) // Threshold for dragging
+            if (Vector2.Distance(currentPosition, initialTouchPosition) > 30f) // Threshold for dragging
             {
                 isDragging = true;
                 CheckPettingStart(currentPosition); // Petting starts with drag
@@ -194,9 +373,17 @@ public class CatBehavior : MonoBehaviour
         {
             // Check if a drag has occurred
             Vector2 currentPosition = Mouse.current.position.ReadValue();
-            if (Vector2.Distance(currentPosition, initialTouchPosition) > 10f) // Threshold for dragging
+            if (Vector2.Distance(currentPosition, initialTouchPosition) > 100f) // Threshold for dragging
             {
                 isDragging = true;
+
+                // If the cat starts eating or drinking while dragging, end petting
+                if (isBeingPetted && (isEating || isDrinking))
+                {
+                    EndPetting();
+                    return;
+                }
+
                 CheckPettingStart(currentPosition); // Petting starts with drag
             }
         }
@@ -212,9 +399,16 @@ public class CatBehavior : MonoBehaviour
     }
 
     // Check if the input position hits the cat's collider
-    // Check if the input position hits the cat's collider
     private void CheckPettingStart(Vector2 screenPosition)
     {
+        // Prevent petting if the cat is eating or drinking
+        if (isEating || isDrinking)
+        {
+            Debug.Log("Petting is disabled while the cat is eating or drinking.");
+            EndPetting(); // Ensure ongoing petting is stopped
+            return;
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -225,9 +419,11 @@ public class CatBehavior : MonoBehaviour
                 currentlyPettedCat = catStatus; // Store reference to the specific cat being petted
                 currentCatAnimator = hit.collider.GetComponent<Animator>(); // Get the animator of the cat being petted
                 StartPetting();
+                StartHeartSpawning(); // Start continuous heart spawning when petting starts
             }
         }
     }
+
 
     // Start the petting animation and give affection gradually
     private void StartPetting()
@@ -235,8 +431,6 @@ public class CatBehavior : MonoBehaviour
         if (!isBeingPetted && currentlyPettedCat != null && currentCatAnimator != null)
         {
             isBeingPetted = true;
-            PauseEatingOrDrinking(); // Pause eating or drinking
-
             // Use the specific cat's animator
             currentCatAnimator.speed = 1;
             currentCatAnimator.CrossFade("Skeleton_Caress_idle_Skeleton", 0.2f); // Play the petting animation
@@ -252,8 +446,6 @@ public class CatBehavior : MonoBehaviour
         if (isBeingPetted && currentCatAnimator != null)
         {
             isBeingPetted = false;
-            ResumeEatingOrDrinking(); // Resume eating or drinking
-
             // Only transition to idle if not eating or drinking
             if (!isEating && !isDrinking)
             {
@@ -268,6 +460,8 @@ public class CatBehavior : MonoBehaviour
                 currentCatAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f);
             }
 
+            StopHeartSpawning();
+
             // Stop affection increase
             currentlyPettedCat.StopPettingAffection();
 
@@ -277,39 +471,6 @@ public class CatBehavior : MonoBehaviour
         }
     }
 
-    private void PauseEatingOrDrinking()
-    {
-        if (isEating)
-        {
-            isPaused = true;
-            catAnimator.speed = 0; // Pause the eating animation
-            Debug.Log("Eating paused.");
-        }
-        else if (isDrinking)
-        {
-            isPaused = true;
-            catAnimator.speed = 0; // Pause the drinking animation
-            Debug.Log("Drinking paused.");
-        }
-    }
-
-    private void ResumeEatingOrDrinking()
-    {
-        if (isEating)
-        {
-            isPaused = false;
-            catAnimator.speed = 1; // Resume the eating animation
-            Debug.Log("Eating resumed.");
-        }
-        else if (isDrinking)
-        {
-            isPaused = false;
-            catAnimator.speed = 1; // Resume the drinking animation
-            Debug.Log("Drinking resumed.");
-        }
-    }
-
- 
     public void TransitionToDrinking(GameObject drinkItem, float duration)
     {
         isDrinking = true;
@@ -326,11 +487,7 @@ public class CatBehavior : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-            if (!isPaused)
-            {
-                elapsedTime += Time.deltaTime;
-            }
-
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
         Destroy(drinkItem);
@@ -357,12 +514,7 @@ public class CatBehavior : MonoBehaviour
         // Continue the loop until the total duration is reached
         while (elapsedTime < duration)
         {
-            // If the cat is not being petted, continue the eating process
-            if (!isPaused)
-            {
-                elapsedTime += Time.deltaTime; // Accumulate time only if not paused
-            }
-
+            elapsedTime += Time.deltaTime; // Accumulate time only if not paused
             yield return null; // Wait for the next frame
         }
 

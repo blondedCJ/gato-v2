@@ -161,6 +161,7 @@ public class WalkablePlaneManager : MonoBehaviour
             {
                 activeEatingCats.Add(selectedCat); // Mark as eating
                 catBehavior.TransitionToEating(spawnedTreat, 5f);
+                
                 catStatus.TreatCat();
                 goalsManager.IncrementTreatsGoal();
             }
@@ -219,10 +220,7 @@ public class WalkablePlaneManager : MonoBehaviour
         {
             Debug.Log("Not enough balance to feed!");
         }
-
-
     }
-
 
 
     private void SpawnDrinkInFrontOfCat(GameObject selectedCat)

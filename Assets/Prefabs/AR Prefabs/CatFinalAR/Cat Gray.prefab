@@ -2493,8 +2493,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.24, y: 0.28, z: 0.67}
-  m_Center: {x: 0, y: 0.15, z: -0.06}
+  m_Size: {x: 0.24, y: 0.26, z: 0.25}
+  m_Center: {x: 0, y: 0.13, z: 0.03}
 --- !u!114 &-2679166941327610209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3711,6 +3711,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Smelly Emote
+      objectReference: {fileID: 0}
+    - target: {fileID: 3838343865822630922, guid: 430cff126063dd442a69f9679371fffd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

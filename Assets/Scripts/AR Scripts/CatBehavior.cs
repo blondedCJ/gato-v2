@@ -343,7 +343,7 @@ public class CatBehavior : MonoBehaviour
         {
             // Check if a drag has occurred
             Vector2 currentPosition = touch.position.ReadValue();
-            if (Vector2.Distance(currentPosition, initialTouchPosition) > 10f) // Threshold for dragging
+            if (Vector2.Distance(currentPosition, initialTouchPosition) > 30f) // Threshold for dragging
             {
                 isDragging = true;
                 CheckPettingStart(currentPosition); // Petting starts with drag
@@ -373,9 +373,17 @@ public class CatBehavior : MonoBehaviour
         {
             // Check if a drag has occurred
             Vector2 currentPosition = Mouse.current.position.ReadValue();
-            if (Vector2.Distance(currentPosition, initialTouchPosition) > 10f) // Threshold for dragging
+            if (Vector2.Distance(currentPosition, initialTouchPosition) > 100f) // Threshold for dragging
             {
                 isDragging = true;
+
+                // If the cat starts eating or drinking while dragging, end petting
+                if (isBeingPetted && (isEating || isDrinking))
+                {
+                    EndPetting();
+                    return;
+                }
+
                 CheckPettingStart(currentPosition); // Petting starts with drag
             }
         }
@@ -391,13 +399,14 @@ public class CatBehavior : MonoBehaviour
     }
 
     // Check if the input position hits the cat's collider
-    // Check if the input position hits the cat's collider
     private void CheckPettingStart(Vector2 screenPosition)
     {
+        // Prevent petting if the cat is eating or drinking
         if (isEating || isDrinking)
         {
             Debug.Log("Petting is disabled while the cat is eating or drinking.");
-            return; // Disable petting if the cat is eating or drinking
+            EndPetting(); // Ensure ongoing petting is stopped
+            return;
         }
 
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);

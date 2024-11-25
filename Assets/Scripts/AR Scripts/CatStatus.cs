@@ -23,6 +23,9 @@ public class CatStatus : MonoBehaviour
     private float timeSinceHungry = 0f;
     private float timeSinceUnpetted = 0f;
 
+    private bool isSick = false;
+    private bool isDirty = false;
+
     private string catID;
     private Vector3 initialPositionHunger;
     private Vector3 initialPositionAffection;
@@ -68,11 +71,25 @@ public class CatStatus : MonoBehaviour
             if (!isBeingPetted && affectionLevel <= 20f) timeSinceUnpetted += timeSinceLastUpdate;
             else timeSinceUnpetted = 0f;
 
+            // Update emotes and save the status
             UpdateEmotes();
             SaveCatStatus();
 
             yield return null;
         }
+    }
+
+
+    public void ResetSick()
+    {
+        isSick = false;
+        SaveCatStatus(); // Save after resetting
+    }
+
+    public void ResetDirty()
+    {
+        isDirty = false;
+        SaveCatStatus(); // Save after resetting
     }
 
     private void UpdateEmotes()
@@ -84,8 +101,8 @@ public class CatStatus : MonoBehaviour
         if (hungerLevel <= 30f) activeEmoteCount++;
         if (affectionLevel <= 30f) activeEmoteCount++;
         if (thirstLevel <= 30f) activeEmoteCount++;
-        if (timeSinceHungry > 30f) activeEmoteCount++; // Sick condition
-        if (timeSinceUnpetted > 60f) activeEmoteCount++; // Dirty condition
+        if (timeSinceHungry > 30f && isSick) activeEmoteCount++; // Sick condition
+        if (timeSinceUnpetted > 60f && isDirty) activeEmoteCount++; // Dirty condition
 
         // Base position (centered)
         Vector3 basePosition = initialPositionHunger; // Use hunger emote's initial position as the center
@@ -131,7 +148,7 @@ public class CatStatus : MonoBehaviour
         }
 
         // Show sick emote if cat has been hungry for too long
-        if (timeSinceHungry > 30f)
+        if (false)
         {
             sickEmote.SetActive(true);
             sickEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
@@ -143,7 +160,7 @@ public class CatStatus : MonoBehaviour
         }
 
         // Show dirty emote if cat has been unpetted for too long
-        if (timeSinceUnpetted > 60f)
+        if (false)
         {
             dirtyEmote.SetActive(true);
             dirtyEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
@@ -155,14 +172,19 @@ public class CatStatus : MonoBehaviour
         }
     }
 
-    private void SaveCatStatus()
-    {
-        PlayerPrefs.SetFloat(catID + "_Hunger", hungerLevel);
-        PlayerPrefs.SetFloat(catID + "_Affection", affectionLevel);
-        PlayerPrefs.SetFloat(catID + "_Thirst", thirstLevel);
-        PlayerPrefs.SetString(catID + "_LastUpdate", System.DateTime.Now.ToString()); // Store last update time
-        PlayerPrefs.Save();
-    }
+private void SaveCatStatus()
+{
+    PlayerPrefs.SetFloat(catID + "_Hunger", hungerLevel);
+    PlayerPrefs.SetFloat(catID + "_Affection", affectionLevel);
+    PlayerPrefs.SetFloat(catID + "_Thirst", thirstLevel);
+
+    // Save sick and dirty statuses as integers (1 for true, 0 for false)
+    PlayerPrefs.SetInt(catID + "_IsSick", isSick ? 1 : 0);
+    PlayerPrefs.SetInt(catID + "_IsDirty", isDirty ? 1 : 0);
+    PlayerPrefs.SetString(catID + "_LastUpdate", System.DateTime.Now.ToString()); // Store last update time
+    PlayerPrefs.Save(); // Commit changes
+}
+
 
     private void LoadCatStatus()
     {
@@ -180,6 +202,11 @@ public class CatStatus : MonoBehaviour
             hungerLevel -= timeSinceLastUpdate * decreaseRateHunger;
             affectionLevel -= timeSinceLastUpdate * decreaseRateAffection;
             thirstLevel -= timeSinceLastUpdate * decreaseRateThirst;
+
+            // Clamp values to avoid negative values
+            hungerLevel = Mathf.Clamp(hungerLevel, 0f, 100f);
+            affectionLevel = Mathf.Clamp(affectionLevel, 0f, 100f);
+            thirstLevel = Mathf.Clamp(thirstLevel, 0f, 100f);
         }
     }
 

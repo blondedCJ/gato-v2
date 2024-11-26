@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CatBehavior : MonoBehaviour
 {
@@ -31,6 +32,11 @@ public class CatBehavior : MonoBehaviour
     public float destroyTime = 3f;       // Time to destroy the hearts after spawning
 
     private IEnumerator heartSpawnRoutine; // To store the heart spawn coroutine
+
+    // initiate timer slider variables
+    public Slider slider;
+    public float timer = 10f;
+    public bool stopTimer = false;
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -473,12 +479,18 @@ public class CatBehavior : MonoBehaviour
 
     public void TransitionToDrinking(GameObject drinkItem, float duration)
     {
+        //set value slider
+        slider.maxValue = timer;
+        slider.value = timer;
+        startTimer();
+
         isDrinking = true;
         currentState = CatState.Eating; // You can change this to a new enum state for drinking if you want
         catAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f); // Replace with the actual drinking animation name
 
         // Optionally, destroy the drink item after the specified duration
         StartCoroutine(DrinkingCoroutine(drinkItem, duration));
+
     }
 
     private IEnumerator DrinkingCoroutine(GameObject drinkItem, float duration)
@@ -498,7 +510,13 @@ public class CatBehavior : MonoBehaviour
 
 
     public void TransitionToEating(GameObject foodItem, float duration)
-    {   
+    {
+        //set value slider
+        slider.maxValue = timer;
+        slider.value = timer;
+        startTimer();
+
+
         isEating = true;
         currentState = CatState.Eating; // Set the state to Eating
         catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f); // Trigger the eating animation
@@ -795,4 +813,32 @@ public class CatBehavior : MonoBehaviour
 
         return string.Empty;
     }
+
+
+    // timer slider
+    public void startTimer() {
+        StartCoroutine(StartTimerTicker());
+
+    }
+    IEnumerator StartTimerTicker() {
+        while (stopTimer == false) {
+            timer -= Time.deltaTime;
+            yield return new WaitForSeconds(0.001f);
+            if (timer <= 0) {
+                stopTimer = true;
+                timer = 10f;       // Reset timer value
+                slider.value = 10; // Reset slider value
+            }
+            if (stopTimer == false) {
+                slider.value = timer;
+            }
+        }
+        // reset boolean
+        stopTimer = false;
+    }
+
+
+
 }
+
+

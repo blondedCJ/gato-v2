@@ -3621,7 +3621,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -274, y: 288}
+  m_AnchoredPosition: {x: -274, y: 295.7}
   m_SizeDelta: {x: 368, y: 224}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &178747791
@@ -3862,7 +3862,7 @@ GameObject:
   - component: {fileID: 179138732}
   m_Layer: 5
   m_Name: Slider (1)
-  m_TagString: Untagged
+  m_TagString: Loading Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7659,10 +7659,10 @@ RectTransform:
   - {fileID: 309122763}
   m_Father: {fileID: 1646756007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.5, y: -413}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &331474184
 MonoBehaviour:
@@ -9123,7 +9123,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 151853183}
         m_TargetAssemblyTypeName: UserInventory, Assembly-CSharp
-        m_MethodName: ResetUserOwnedCats
+        m_MethodName: RemoveSicknessFromAllCats
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15181,7 +15181,7 @@ GameObject:
   - component: {fileID: 707547711}
   m_Layer: 5
   m_Name: LoadingScreen
-  m_TagString: Untagged
+  m_TagString: Loading Screen
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16292,7 +16292,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -409, y: 288}
+  m_AnchoredPosition: {x: -409, y: 295}
   m_SizeDelta: {x: 368, y: 224}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &725393665
@@ -19131,7 +19131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -20, y: 556.59955}
+  m_AnchoredPosition: {x: -20, y: 573}
   m_SizeDelta: {x: 550, y: 550}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &833388973
@@ -23087,10 +23087,10 @@ RectTransform:
   - {fileID: 1174045559}
   m_Father: {fileID: 1646756007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.5, y: -991}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1016385955
 MonoBehaviour:
@@ -25054,7 +25054,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 22, y: 18.399902}
+  m_AnchoredPosition: {x: 22, y: 33}
   m_SizeDelta: {x: 550, y: 550}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1082139593
@@ -28121,10 +28121,10 @@ RectTransform:
   - {fileID: 321278694}
   m_Father: {fileID: 1646756007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.5, y: -124}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1257584165
 MonoBehaviour:
@@ -30729,7 +30729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -20, y: -291}
+  m_AnchoredPosition: {x: -20, y: -267}
   m_SizeDelta: {x: 351, y: 320.8}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1357903482
@@ -35644,10 +35644,10 @@ RectTransform:
   - {fileID: 1994802908}
   m_Father: {fileID: 1646756007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.5, y: -702}
-  m_SizeDelta: {x: 200, y: 200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1524540943
 MonoBehaviour:
@@ -40228,7 +40228,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 151853183}
         m_TargetAssemblyTypeName: UserInventory, Assembly-CSharp
-        m_MethodName: ResetUserOwnedCats
+        m_MethodName: RemoveDirtyFromAllCats
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -41914,9 +41914,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -127.5, y: -141}
+  m_AnchoredPosition: {x: -19, y: -26}
   m_SizeDelta: {x: 200, y: 200}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1860935045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46725,6 +46725,7 @@ GameObject:
   - component: {fileID: 2098883008}
   - component: {fileID: 2098883009}
   - component: {fileID: 2098883010}
+  - component: {fileID: 2098883011}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -46844,8 +46845,8 @@ RectTransform:
   - {fileID: 833388972}
   - {fileID: 1409205209}
   - {fileID: 1955017}
-  - {fileID: 1482976791}
   - {fileID: 1298392194}
+  - {fileID: 1482976791}
   - {fileID: 707547710}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46954,6 +46955,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f99b134d25835f458adca391e2a3f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2098883011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098882999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbc31cfe3077074cae97d95da40c2bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingScreen: {fileID: 707547709}
+  loadingSlider: {fileID: 179138732}
 --- !u!1 &2099970465
 GameObject:
   m_ObjectHideFlags: 0

@@ -60,6 +60,26 @@ public class UserInventory : MonoBehaviour
         }
     }
 
-    
+    public void RemoveSicknessFromAllCats()
+    {
+        CatStatus[] allCats = FindObjectsOfType<CatStatus>();
+
+        foreach (CatStatus cat in allCats)
+        {
+            cat.RemoveSickStatus();
+        }
+
+    }
+
+    public void RemoveDirtyFromAllCats()
+    {
+        CatStatus[] allCats = FindObjectsOfType<CatStatus>();
+
+        foreach (CatStatus cat in allCats)
+        {
+            cat.RemoveDirtyStatus();
+        }
+    }
+
 
 }

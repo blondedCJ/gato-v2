@@ -11,6 +11,8 @@ TagManager:
   - Bag
   - CatName
   - Balance
+  - Loading Screen
+  - Loading Slider
   layers:
   - Default
   - TransparentFX

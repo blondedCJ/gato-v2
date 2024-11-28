@@ -9,14 +9,13 @@ public class NotificationAndroid : MonoBehaviour
 {
     // Request authorisation to send notification
     public void RequestAuthorization() {
-        if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS")) {
-            Permission.RequestUserPermission("android.POST_NOTIFICATIONS");
+        if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATOINS")) {
+            Permission.RequestUserPermission("androind.POST_NOTIFICATIONS");
         }
     }
 
     // Register a notification channel
-    public void RegisterNotificationChannel() 
-    {
+    public void RegisterNotificationChannel() {
         var channel = new AndroidNotificationChannel {
             Id = "default_channel",
             Name = "Default Channel",
@@ -31,7 +30,7 @@ public class NotificationAndroid : MonoBehaviour
         var notification = new AndroidNotification();
         notification.Title = title;
         notification.Text = text;
-        notification.FireTime = System.DateTime.Now.AddHours(fireTimeinHours);
+        notification.FireTime = System.DateTime.Now.AddSeconds(fireTimeinHours); // seconds for awhile
         notification.SmallIcon = "icon_0";
         notification.LargeIcon = "icon_1";
 

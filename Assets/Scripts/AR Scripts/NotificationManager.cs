@@ -15,10 +15,14 @@ public class NotificationManager : MonoBehaviour
     }
 
     private void OnApplicationFocus(bool focus) {
+        // on the app
         if (focus == true) {
             AndroidNotificationCenter.CancelAllNotifications();
-            androidNotification.SendNotification("Paws && Play","Hello! Come back", 0);
-
+            androidNotification.SendNotification("Play the game", "Hello! Come back.", 0);
+        }
+        // off the app
+        if (focus == false) {
+            androidNotification.SendNotification("15 Seconds", "This is fifteen seconds", 15);
         }
     }
 

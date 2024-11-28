@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CatStatus : MonoBehaviour
 {
@@ -20,33 +23,35 @@ public class CatStatus : MonoBehaviour
     public float decreaseRateHunger = 0.0023f;    // Decrease per second
     public float decreaseRateThirst = 0.0046f;    // Decrease per second
 
-    private float timeSinceHungry = 0f;
-    private float timeSinceUnpetted = 0f;
-
-    private bool isSick = false;
-    private bool isDirty = false;
-
     private string catID;
+    private bool isSick;
+    private bool isDirty;
+
     private Vector3 initialPositionHunger;
     private Vector3 initialPositionAffection;
     private Vector3 initialPositionThirst;
 
+    public GameObject loadingScreen; // Assign the loading screen GameObject in the Inspector
+    public Slider loadingSlider;     // Assign the Slider UI element in the Inspector
+
     public bool isBeingPetted = false;
+
+    FakeLoadingScreen fakeLoadingScreen;
 
     private float emoteOffset = 0.001f; // The offset to use for separating emotes
 
     void Start()
     {
+        // Initialize other components
         catID = gameObject.name;
-
-        // Save the initial positions of the emotes
         initialPositionHunger = hungerEmote.transform.localPosition;
         initialPositionAffection = affectionEmote.transform.localPosition;
         initialPositionThirst = thirstEmote.transform.localPosition;
-
+        fakeLoadingScreen = GameObject.Find("Canvas").GetComponent<FakeLoadingScreen>();
         LoadCatStatus();
         StartCoroutine(UpdateStatus());
     }
+
 
     private IEnumerator UpdateStatus()
     {
@@ -64,12 +69,8 @@ public class CatStatus : MonoBehaviour
             affectionLevel = Mathf.Clamp(affectionLevel, 0f, 100f);
             thirstLevel = Mathf.Clamp(thirstLevel, 0f, 100f);
 
-            // Track time since the cat has been hungry or unpetted
-            if (hungerLevel <= 20f) timeSinceHungry += timeSinceLastUpdate;
-            else timeSinceHungry = 0f;
-
-            if (!isBeingPetted && affectionLevel <= 20f) timeSinceUnpetted += timeSinceLastUpdate;
-            else timeSinceUnpetted = 0f;
+            CheckForSickness(); // Check if the cat should become sick
+            CheckForDirtiness();
 
             // Update emotes and save the status
             UpdateEmotes();
@@ -79,112 +80,92 @@ public class CatStatus : MonoBehaviour
         }
     }
 
-
-    public void ResetSick()
+    private void CheckForSickness()
     {
-        isSick = false;
-        SaveCatStatus(); // Save after resetting
+        if (!PlayerPrefs.HasKey(catID + "_LastFed"))
+        {
+            PlayerPrefs.SetString(catID + "_LastFed", DateTime.Now.ToString());
+            return;
+        }
+
+        DateTime lastFedTime = DateTime.Parse(PlayerPrefs.GetString(catID + "_LastFed"));
+        TimeSpan timeSinceLastFed = DateTime.Now - lastFedTime;
+
+        // If more than a day has passed since the cat was last fed, it gets sick
+        if (timeSinceLastFed.TotalMilliseconds >= 100 && !isSick)
+        {
+            isSick = true;
+            Debug.Log($"{catID} has gotten sick due to not being fed for a day.");
+        }
     }
 
-    public void ResetDirty()
+    private void CheckForDirtiness()
     {
-        isDirty = false;
-        SaveCatStatus(); // Save after resetting
+        if (!PlayerPrefs.HasKey(catID + "_LastPetted"))
+        {
+            PlayerPrefs.SetString(catID + "_LastPetted", DateTime.Now.ToString());
+            return;
+        }
+
+        DateTime lastPettedTime = DateTime.Parse(PlayerPrefs.GetString(catID + "_LastPetted"));
+        TimeSpan timeSinceLastPetted = DateTime.Now - lastPettedTime;
+
+        // If more than a day has passed since the cat was last petted, it gets dirty
+        if (timeSinceLastPetted.TotalMilliseconds >= 100 && !isDirty)
+        {
+            isDirty = true;
+            Debug.Log($"{catID} has gotten dirty due to not being petted for a day.");
+        }
     }
 
     private void UpdateEmotes()
     {
-        // Count how many emotes will be active
-        int activeEmoteCount = 0;
+        // Create a list to hold active emotes
+        List<GameObject> activeEmotes = new List<GameObject>();
 
-        // Determine how many emotes are active
-        if (hungerLevel <= 30f) activeEmoteCount++;
-        if (affectionLevel <= 30f) activeEmoteCount++;
-        if (thirstLevel <= 30f) activeEmoteCount++;
-        if (timeSinceHungry > 30f && isSick) activeEmoteCount++; // Sick condition
-        if (timeSinceUnpetted > 60f && isDirty) activeEmoteCount++; // Dirty condition
+        // Check which emotes should be active and add them to the list
+        if (hungerLevel <= 30f) activeEmotes.Add(hungerEmote);
+        if (affectionLevel <= 30f) activeEmotes.Add(affectionEmote);
+        if (thirstLevel <= 30f) activeEmotes.Add(thirstEmote);
+        if (isSick) activeEmotes.Add(sickEmote);
+        if (isDirty) activeEmotes.Add(dirtyEmote);
 
-        // Base position (centered)
-        Vector3 basePosition = initialPositionHunger; // Use hunger emote's initial position as the center
-        int currentEmoteIndex = 0; // To track the placement of each active emote
+        // Deactivate all emotes initially
+        hungerEmote.SetActive(false);
+        affectionEmote.SetActive(false);
+        thirstEmote.SetActive(false);
+        sickEmote.SetActive(false);
+        dirtyEmote.SetActive(false);    
 
-        // Calculate starting offset based on the number of active emotes
-        float startingOffset = -(activeEmoteCount - 1) * emoteOffset / 2;
+        // Calculate the spacing for active emotes
+        int activeEmoteCount = activeEmotes.Count;
+        if (activeEmoteCount > 0)
+        {
+            float totalWidth = (activeEmoteCount - 1) * emoteOffset; // Total width for emotes
+            float startingX = -(totalWidth / 2f); // Center the emotes
 
-        // Show hunger emote if hunger level is low and position it
-        if (hungerLevel <= 30f)
-        {
-            hungerEmote.SetActive(true);
-            hungerEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
-            currentEmoteIndex++;
-        }
-        else
-        {
-            hungerEmote.SetActive(false);
-        }
-
-        // Show affection emote if affection level is low and position it
-        if (affectionLevel <= 30f)
-        {
-            affectionEmote.SetActive(true);
-            affectionEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
-            currentEmoteIndex++;
-        }
-        else
-        {
-            affectionEmote.SetActive(false);
-        }
-
-        // Show thirst emote if thirst level is low and position it
-        if (thirstLevel <= 30f)
-        {
-            thirstEmote.SetActive(true);
-            thirstEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
-            currentEmoteIndex++;
-        }
-        else
-        {
-            thirstEmote.SetActive(false);
-        }
-
-        // Show sick emote if cat has been hungry for too long
-        if (false)
-        {
-            sickEmote.SetActive(true);
-            sickEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
-            currentEmoteIndex++;
-        }
-        else
-        {
-            sickEmote.SetActive(false);
-        }
-
-        // Show dirty emote if cat has been unpetted for too long
-        if (false)
-        {
-            dirtyEmote.SetActive(true);
-            dirtyEmote.transform.localPosition = basePosition + new Vector3(startingOffset + emoteOffset * currentEmoteIndex, 0, 0);
-            currentEmoteIndex++;
-        }
-        else
-        {
-            dirtyEmote.SetActive(false);
+            for (int i = 0; i < activeEmoteCount; i++)
+            {
+                GameObject emote = activeEmotes[i];
+                emote.SetActive(true);
+                emote.transform.localPosition = initialPositionHunger + new Vector3(startingX + (emoteOffset * i), 0, 0);
+            }
         }
     }
 
-private void SaveCatStatus()
-{
-    PlayerPrefs.SetFloat(catID + "_Hunger", hungerLevel);
-    PlayerPrefs.SetFloat(catID + "_Affection", affectionLevel);
-    PlayerPrefs.SetFloat(catID + "_Thirst", thirstLevel);
 
-    // Save sick and dirty statuses as integers (1 for true, 0 for false)
-    PlayerPrefs.SetInt(catID + "_IsSick", isSick ? 1 : 0);
-    PlayerPrefs.SetInt(catID + "_IsDirty", isDirty ? 1 : 0);
-    PlayerPrefs.SetString(catID + "_LastUpdate", System.DateTime.Now.ToString()); // Store last update time
-    PlayerPrefs.Save(); // Commit changes
-}
+    private void SaveCatStatus()
+    {
+        PlayerPrefs.SetFloat(catID + "_Hunger", hungerLevel);
+        PlayerPrefs.SetFloat(catID + "_Affection", affectionLevel);
+        PlayerPrefs.SetFloat(catID + "_Thirst", thirstLevel);
 
+        PlayerPrefs.SetInt(catID + "_IsSick", isSick ? 1 : 0);
+        PlayerPrefs.SetInt(catID + "_IsDirty", isDirty ? 1 : 0);
+        PlayerPrefs.SetString(catID + "_LastUpdate", DateTime.Now.ToString());
+
+        PlayerPrefs.Save();
+    }
 
     private void LoadCatStatus()
     {
@@ -192,18 +173,18 @@ private void SaveCatStatus()
         affectionLevel = PlayerPrefs.GetFloat(catID + "_Affection", 100f);
         thirstLevel = PlayerPrefs.GetFloat(catID + "_Thirst", 100f);
 
-        // Check if there is a stored last update time
+        isSick = PlayerPrefs.GetInt(catID + "_IsSick", 0) == 1;
+        isDirty = PlayerPrefs.GetInt(catID + "_IsDirty", 0) == 1;
+
         if (PlayerPrefs.HasKey(catID + "_LastUpdate"))
         {
-            System.DateTime lastUpdate = System.DateTime.Parse(PlayerPrefs.GetString(catID + "_LastUpdate"));
-            float timeSinceLastUpdate = (float)(System.DateTime.Now - lastUpdate).TotalSeconds;
+            DateTime lastUpdate = DateTime.Parse(PlayerPrefs.GetString(catID + "_LastUpdate"));
+            float timeSinceLastUpdate = (float)(DateTime.Now - lastUpdate).TotalSeconds;
 
-            // Update status based on elapsed time since last update
             hungerLevel -= timeSinceLastUpdate * decreaseRateHunger;
             affectionLevel -= timeSinceLastUpdate * decreaseRateAffection;
             thirstLevel -= timeSinceLastUpdate * decreaseRateThirst;
 
-            // Clamp values to avoid negative values
             hungerLevel = Mathf.Clamp(hungerLevel, 0f, 100f);
             affectionLevel = Mathf.Clamp(affectionLevel, 0f, 100f);
             thirstLevel = Mathf.Clamp(thirstLevel, 0f, 100f);
@@ -213,13 +194,23 @@ private void SaveCatStatus()
     public void FeedCat()
     {
         hungerLevel += 100f;
+        hungerLevel = Mathf.Clamp(hungerLevel, 0f, 100f);
+
+        // Update the last fed time
+        PlayerPrefs.SetString(catID + "_LastFed", DateTime.Now.ToString());
+
         SaveCatStatus();
+        Debug.Log($"{catID} has been fed. Hunger level is now {hungerLevel}.");
     }
 
     public void TreatCat()
     {
         hungerLevel += 30f;
+        hungerLevel = Mathf.Clamp(hungerLevel, 0f, 100f);
+
+        PlayerPrefs.SetString(catID + "_LastFed", DateTime.Now.ToString());
         SaveCatStatus();
+        Debug.Log($"{catID} has been treated. Hunger level is now {hungerLevel}.");
     }
 
     public void StartPettingAffection()
@@ -238,6 +229,7 @@ private void SaveCatStatus()
     {
         while (isBeingPetted)
         {
+            PlayerPrefs.SetString(catID + "_LastPetted", DateTime.Now.ToString());
             affectionLevel += 50f; // Increase affection gradually
             SaveCatStatus(); // Save the status after each increase
             yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds before increasing again
@@ -261,4 +253,33 @@ private void SaveCatStatus()
         return null;
     }
 
+    public void RemoveSickStatus()
+    {
+        if (isSick)
+        {
+            isSick = false;
+            fakeLoadingScreen.StartLoading(true);
+            SaveCatStatus();
+            Debug.Log($"{catID}: Sick status removed.");
+        }
+        else
+        {
+            Debug.Log($"{catID}: Cat is already clean and healthy.");
+        }
+    }
+
+    public void RemoveDirtyStatus()
+    {
+        if (isDirty)
+        {
+            isDirty = false;
+            fakeLoadingScreen.StartLoading(true);
+            SaveCatStatus();
+            Debug.Log($"{catID}: Dirty status removed.");
+        }
+        else
+        {
+            Debug.Log($"{catID}: Cat is already clean and healthy.");
+        }
+    }
 }

@@ -166,7 +166,7 @@ public class WalkablePlaneManager : MonoBehaviour
                 goalsManager.IncrementTreatsGoal();
             }
 
-            StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 3f, catTreats));
+            StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 5f, catTreats));
 
             //   ty
             int currentCash = PlayerPrefs.GetInt(CashKey, 0);

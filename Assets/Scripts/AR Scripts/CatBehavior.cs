@@ -35,7 +35,7 @@ public class CatBehavior : MonoBehaviour
 
     // initiate timer slider variables
     public Slider slider;
-    public float timer = 10f;
+    public float timer;
     public bool stopTimer = false;
 
     // Animation state names
@@ -82,6 +82,8 @@ public class CatBehavior : MonoBehaviour
         catCollider = GetComponent<Collider>();
         catRenderer = GetComponentInChildren<SkinnedMeshRenderer>(); // Ensure it looks for the SkinnedMeshRenderer in children
         defaultMaterial = catRenderer.material; // Store the default material
+        slider.gameObject.SetActive(false);
+        slider.enabled = false; 
         TransitionToIdle();
         StartCoroutine(EnableSelectionAfterDelay());
 
@@ -480,6 +482,8 @@ public class CatBehavior : MonoBehaviour
     public void TransitionToDrinking(GameObject drinkItem, float duration)
     {
         //set value slider
+        slider.gameObject.SetActive(true);
+        slider.enabled = true;
         slider.maxValue = timer;
         slider.value = timer;
         startTimer();
@@ -503,6 +507,8 @@ public class CatBehavior : MonoBehaviour
             yield return null;
         }
         Destroy(drinkItem);
+        slider.gameObject.SetActive(false);
+        slider.enabled = false;
         isFinished = true;
         TransitionToIdle();
         isDrinking = false; // Reset drinking flag
@@ -511,7 +517,18 @@ public class CatBehavior : MonoBehaviour
 
     public void TransitionToEating(GameObject foodItem, float duration)
     {
+        if (foodItem.ToString() == "CatTreat Variant(Clone) (UnityEngine.GameObject)") {
+            timer = 5f;
+        } else
+        {
+            timer = 10f;
+        }
+
+        Debug.Log(foodItem.ToString());
+
         //set value slider
+        slider.gameObject.SetActive(true);
+        slider.enabled = true;
         slider.maxValue = timer;
         slider.value = timer;
         startTimer();
@@ -528,6 +545,7 @@ public class CatBehavior : MonoBehaviour
     private IEnumerator EatingCoroutine(GameObject foodItem, float duration)
     {
         float elapsedTime = 0f;
+        Debug.Log(duration);
 
         // Continue the loop until the total duration is reached
         while (elapsedTime < duration)
@@ -536,8 +554,12 @@ public class CatBehavior : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
+        slider.gameObject.SetActive(false);
+        slider.enabled = false;
+
         // Eating completed, destroy the food item
         Destroy(foodItem);
+
         isFinished = true;
 
     // Transition the cat back to idle after eating

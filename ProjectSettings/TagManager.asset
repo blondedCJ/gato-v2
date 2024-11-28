@@ -13,6 +13,8 @@ TagManager:
   - Balance
   - Loading Screen
   - Loading Slider
+  - Food
+  - Dangerous
   layers:
   - Default
   - TransparentFX

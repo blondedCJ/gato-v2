@@ -20,6 +20,8 @@ public class ToggleButtonsVisibility : MonoBehaviour
     public GameObject button14;
     public GameObject button15;
     public GameObject button16;
+    public GameObject button17;
+    public GameObject button18;
 
 
     // Reference to the toggle button
@@ -80,7 +82,9 @@ public class ToggleButtonsVisibility : MonoBehaviour
         button13.gameObject.SetActive(areButtonsVisible);
         button14.gameObject.SetActive(areButtonsVisible);
         button15.gameObject.SetActive(areButtonsVisible);
-        button16.gameObject.SetActive(areButtonsVisible);
+        button16.gameObject.SetActive(areButtonsVisible); 
+        button17.gameObject.SetActive(areButtonsVisible);
+        button18.gameObject.SetActive(areButtonsVisible);
         // Move the toggle button to the bottom or back to its original position
         toggleButtonRect.anchoredPosition = areButtonsVisible ? originalPosition : bottomRightPosition;
     }       

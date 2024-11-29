@@ -30,7 +30,7 @@ public class ToggleUIComponents : MonoBehaviour
             }
         }
     }
-    public void BringFurnitureToFront()
+    public void BringGlassesToFront()
     {
         if (Furniture != null && Cosmetics != null)
         {
@@ -45,7 +45,7 @@ public class ToggleUIComponents : MonoBehaviour
         }
     }
 
-    public void BringCosmeticsToFront()
+    public void BringHatsToFront()
     {
         if (Furniture != null && Cosmetics != null)
         {

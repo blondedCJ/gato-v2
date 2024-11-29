@@ -9,71 +9,56 @@ public class ToggleUIComponents : MonoBehaviour
     [SerializeField] private GameObject Cosmetics;
     [SerializeField] private GameObject FurnitureTab;
     [SerializeField] private GameObject CosmeticTab;
-    [SerializeField] private float yOffset = -1156; // Amount to adjust the y position\
-    [SerializeField] private float hiddenYOffset = -1197f; // Y position when tab is moved to back
+    [SerializeField] private float xOffset = 187; // Amount to adjust the x position
+    [SerializeField] private float hiddenXOffset = 100f; // X position when tab is moved to back
     [SerializeField] private float moveDuration = 0.5f; // Duration of the smooth transition
 
-    public void ToggleComponents()
-    {
-        foreach (GameObject component in uiComponents)
-        {
+    public void ToggleComponents() {
+        foreach (GameObject component in uiComponents) {
             component.SetActive(!component.activeSelf); // Toggle active state
         }
     }
-    public void closeComponents()
-    {
-        foreach (GameObject component in uiComponents)
-        {
+    public void CloseComponents() {
+        foreach (GameObject component in uiComponents) {
             if (component.activeSelf)  // Check if the component is currently open (active)
             {
                 component.SetActive(false);  // Close it by setting it to inactive
             }
         }
     }
-    public void BringGlassesToFront()
-    {
-        if (Furniture != null && Cosmetics != null)
-        {
+    public void BringFurnitureToFront() {
+        if (Furniture != null && Cosmetics != null) {
             // Bring FurnitureTab to the front
             Furniture.transform.SetAsLastSibling();
-            SetTabPosition(FurnitureTab, yOffset);
-            SetTabPosition(CosmeticTab, hiddenYOffset);
-        }
-        else
-        {
+            SetTabPosition(FurnitureTab, xOffset);
+            SetTabPosition(CosmeticTab, hiddenXOffset);
+        } else {
             Debug.LogWarning("FurnitureTab or CosmeticTab is not assigned.");
         }
     }
 
-    public void BringHatsToFront()
-    {
-        if (Furniture != null && Cosmetics != null)
-        {
+    public void BringCosmeticsToFront() {
+        if (Furniture != null && Cosmetics != null) {
             // Bring CosmeticTab to the front
             Cosmetics.transform.SetAsLastSibling();
-            SetTabPosition(CosmeticTab, yOffset);
-            SetTabPosition(FurnitureTab, hiddenYOffset);
-        }
-        else
-        {
+            SetTabPosition(CosmeticTab, xOffset);
+            SetTabPosition(FurnitureTab, hiddenXOffset);
+        } else {
             Debug.LogWarning("FurnitureTab or CosmeticTab is not assigned.");
         }
     }
 
-    private void SetTabPosition(GameObject tab, float targetYPos)
-    {
+    private void SetTabPosition(GameObject tab, float targetXPos) {
         RectTransform tabTransform = tab.GetComponent<RectTransform>();
-        StartCoroutine(SmoothMove(tabTransform, targetYPos));
+        StartCoroutine(SmoothMove(tabTransform, targetXPos));
     }
 
-    private IEnumerator SmoothMove(RectTransform tabTransform, float targetYPos)
-    {
+    private IEnumerator SmoothMove(RectTransform tabTransform, float targetXPos) {
         float elapsedTime = 0f;
         Vector2 startPos = tabTransform.anchoredPosition;
-        Vector2 targetPos = new Vector2(startPos.x, targetYPos);
+        Vector2 targetPos = new Vector2(targetXPos, startPos.y); // Change only the x-coordinate
 
-        while (elapsedTime < moveDuration)
-        {
+        while (elapsedTime < moveDuration) {
             tabTransform.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsedTime / moveDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -81,5 +66,4 @@ public class ToggleUIComponents : MonoBehaviour
 
         tabTransform.anchoredPosition = targetPos; // Ensure it ends at the exact target position
     }
-
 }

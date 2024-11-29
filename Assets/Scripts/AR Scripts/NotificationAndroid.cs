@@ -8,9 +8,13 @@ using UnityEngine.Android;
 public class NotificationAndroid : MonoBehaviour
 {
     // Request authorisation to send notification
+    // Request authorization to send notifications
     public void RequestAuthorization() {
-        if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATOINS")) {
-            Permission.RequestUserPermission("androind.POST_NOTIFICATIONS");
+        if (Application.platform == RuntimePlatform.Android && GetAndroidAPILevel() >= 33) // Android 13+
+        {
+            if (!Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS")) {
+                Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS");
+            }
         }
     }
 
@@ -36,6 +40,13 @@ public class NotificationAndroid : MonoBehaviour
 
         AndroidNotificationCenter.SendNotification(notification, "default_channel");
 
+    }
+
+    // Get Android API level
+    private int GetAndroidAPILevel() {
+        using (var versionClass = new AndroidJavaClass("android.os.Build$VERSION")) {
+            return versionClass.GetStatic<int>("SDK_INT");
+        }
     }
 
 

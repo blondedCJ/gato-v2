@@ -39,6 +39,8 @@ public class CatManager : MonoBehaviour
             userInventory.LoadUserOwnedCats();
             DisplayUserOwnedCats();
         }
+        UnlockNewCat(0);
+
     }
 
     void Update()

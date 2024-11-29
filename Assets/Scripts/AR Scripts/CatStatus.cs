@@ -92,7 +92,7 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastFed = DateTime.Now - lastFedTime;
 
         // If more than a day has passed since the cat was last fed, it gets sick
-        if (timeSinceLastFed.TotalMilliseconds >= 100 && !isSick)
+        if (timeSinceLastFed.TotalDays >= 100 && !isSick)
         {
             isSick = true;
             Debug.Log($"{catID} has gotten sick due to not being fed for a day.");
@@ -111,7 +111,7 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastPetted = DateTime.Now - lastPettedTime;
 
         // If more than a day has passed since the cat was last petted, it gets dirty
-        if (timeSinceLastPetted.TotalMilliseconds >= 100 && !isDirty)
+        if (timeSinceLastPetted.TotalDays >= 100 && !isDirty)
         {
             isDirty = true;
             Debug.Log($"{catID} has gotten dirty due to not being petted for a day.");
@@ -282,4 +282,6 @@ public class CatStatus : MonoBehaviour
             Debug.Log($"{catID}: Cat is already clean and healthy.");
         }
     }
+
+    
 }

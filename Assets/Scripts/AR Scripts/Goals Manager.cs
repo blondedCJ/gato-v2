@@ -13,11 +13,13 @@ public class GoalsManager : MonoBehaviour
     private const string WaterGoalKey = "WaterGoalProgress";
     private const string JumpGoalKey = "JumpGoalProgress";
     private const string PlayTimeGoalKey = "PlayTimeGoalProgress";
+    private const string BannerGoalKey = "BannerGoalProgress";
 
     public const string TreatsGoalAchievedKey = "TreatsGoalAchieved";
     public const string WaterGoalAchievedKey = "WaterGoalAchieved";
     public const string JumpGoalAchievedKey = "JumpGoalAchieved";
     public const string PlayTimeGoalAchievedKey = "PlayTimeGoalAchieved";
+    public const string BannerGoalAchievedKey = "BannerGoalAchieved";
 
     // Cash rewards for each goal
     private const int TreatsGoalCashReward = 20;
@@ -31,9 +33,12 @@ public class GoalsManager : MonoBehaviour
     private const int JumpGoalLimit = 20;
     private const int PlayTimeGoalLimit = 5;
 
+    // Goal limits for banner
+    private const int BannerGoalLimit = 5;
+
     private int treatsGiven = 0;
     private int waterGiven = 0;
-    private int jumpsPerformed = 0;
+    private int jumpsPerformed = 0;                                                             
     private int playHours = 0;
 
     private float playTimeCounter = 0f;
@@ -43,6 +48,7 @@ public class GoalsManager : MonoBehaviour
     public TMP_Text jumpProgressText;
     public TMP_Text playTimeProgressText;
     public TMP_Text cashBalanceText;  // Text UI for displaying cash balance
+    public TMP_Text goalBannerText; // Banner
 
     public Image treatsAchievementImage;
     public Image waterAchievementImage;
@@ -50,20 +56,21 @@ public class GoalsManager : MonoBehaviour
     public Image playTimeAchievementImage;
     public Sprite achievedSprite;
 
-    private void Start()
-    {
+    public Slider goalsCompleted; // The slider representing goal completion
+    public TMP_Text goalsCompletedText; // The text showing the number of completed goals
+
+
+    private void Start() {
         LoadGoalsProgress();
         LoadAchievementsStatus();
         UpdateUI();
-        UpdateCashUI();  // Update cash display on startup
+        UpdateCashUI(); // Update cash display on startup
 
-        int currentCash = PlayerPrefs.GetInt(CashKey, 0);
-        currentCash += 99999;
-        PlayerPrefs.SetInt(CashKey, currentCash);
-        PlayerPrefs.Save();
-
-        UpdateCashUI();
+        // Load the slider and text progress
+        goalsCompleted.value = PlayerPrefs.GetFloat("GoalsSliderValue", 0f);
+        goalsCompletedText.text = PlayerPrefs.GetInt("GoalsCompletedCount", 0).ToString();
     }
+
 
     private void Update()
     {
@@ -83,6 +90,8 @@ public class GoalsManager : MonoBehaviour
             SaveGoalProgress(TreatsGoalKey, treatsGiven);
             CheckGoalCompletion();
             UpdateUI();
+
+
         }
     }
 
@@ -149,39 +158,46 @@ public class GoalsManager : MonoBehaviour
     }
 
 
-    private void CheckGoalCompletion()
-    {
-        if (treatsGiven >= TreatsGoalLimit && PlayerPrefs.GetInt(TreatsGoalAchievedKey, 0) == 0)
-        {
+    private void CheckGoalCompletion() {
+        bool goalAchieved = false;
+
+        if (treatsGiven >= TreatsGoalLimit && PlayerPrefs.GetInt(TreatsGoalAchievedKey, 0) == 0) {
             treatsAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(TreatsGoalAchievedKey, 1);
+            goalAchieved = true;
         }
 
-        if (waterGiven >= WaterGoalLimit && PlayerPrefs.GetInt(WaterGoalAchievedKey, 0) == 0)
-        {
+        if (waterGiven >= WaterGoalLimit && PlayerPrefs.GetInt(WaterGoalAchievedKey, 0) == 0) {
             waterAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(WaterGoalAchievedKey, 1);
+            goalAchieved = true;
         }
 
-        if (jumpsPerformed >= JumpGoalLimit && PlayerPrefs.GetInt(JumpGoalAchievedKey, 0) == 0)
-        {
+        if (jumpsPerformed >= JumpGoalLimit && PlayerPrefs.GetInt(JumpGoalAchievedKey, 0) == 0) {
             jumpAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(JumpGoalAchievedKey, 1);
+            goalAchieved = true;
         }
 
-        if (playHours >= PlayTimeGoalLimit && PlayerPrefs.GetInt(PlayTimeGoalAchievedKey, 0) == 0)
-        {
+        if (playHours >= PlayTimeGoalLimit && PlayerPrefs.GetInt(PlayTimeGoalAchievedKey, 0) == 0) {
             playTimeAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(PlayTimeGoalAchievedKey, 1);
+            goalAchieved = true;
+        }
+
+        // Update the slider and text if a goal was achieved
+        if (goalAchieved) {
+            IncrementGoalsCompleted();
         }
 
         PlayerPrefs.Save();
     }
 
+
     public void ClaimReward(string goalKey)
     {
         int cashReward = 0;
-
+                        
         switch (goalKey)
         {
             case TreatsGoalAchievedKey:
@@ -242,4 +258,20 @@ public class GoalsManager : MonoBehaviour
         if (playTimeProgressText != null)
             playTimeProgressText.text = $"{playHours}";
     }
+
+    private void IncrementGoalsCompleted()
+{
+    // Increment the slider value
+    goalsCompleted.value += 0.20f;
+    PlayerPrefs.SetFloat("GoalsSliderValue", goalsCompleted.value);
+
+    // Increment the text value
+    int goalsCompletedCount = PlayerPrefs.GetInt("GoalsCompletedCount", 0);
+    goalsCompletedCount++;
+    PlayerPrefs.SetInt("GoalsCompletedCount", goalsCompletedCount);
+    goalsCompletedText.text = goalsCompletedCount.ToString();
+
+    PlayerPrefs.Save();
+}
+
 }

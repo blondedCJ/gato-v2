@@ -236,12 +236,13 @@ public class GoalsManager : MonoBehaviour
         }
     }
 
-    private void UpdateCashUI()
+    public void UpdateCashUI()
     {
-
-        cashBalanceText.text = "500";
-        //if (cashBalanceText != null)
-        //    cashBalanceText.text = $"{PlayerPrefs.GetInt(CashKey, 0)}";
+        if (cashBalanceText != null)
+        {
+            cashBalanceText.text = $"{PlayerPrefs.GetInt(CashKey, 0)}";
+        }
+            
     }
 
     private void UpdateUI()

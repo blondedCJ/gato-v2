@@ -103,6 +103,16 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Food
       objectReference: {fileID: 0}
+    - target: {fileID: 2401693495354752474, guid: 90fd110e8a1a36143beedbf57e085366,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2401693495354752474, guid: 90fd110e8a1a36143beedbf57e085366,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: bc0879baea32ae44ea3f359f19b5eeca, type: 2}
     - target: {fileID: 8696889289657346145, guid: 90fd110e8a1a36143beedbf57e085366,
         type: 3}
       propertyPath: m_Layer

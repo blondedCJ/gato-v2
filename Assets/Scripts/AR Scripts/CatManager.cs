@@ -40,6 +40,9 @@ public class CatManager : MonoBehaviour
             DisplayUserOwnedCats();
         }
         UnlockNewCat(0);
+        UnlockNewCat(1);
+        UnlockNewCat(2);
+        UnlockNewCat(3);
 
     }
 

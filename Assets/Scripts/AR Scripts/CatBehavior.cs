@@ -310,7 +310,6 @@ public class CatBehavior : MonoBehaviour
                 // Gradually reduce the alpha of the material's color
                 float alpha = Mathf.Lerp(initialColor.a, 0f, timeElapsed / fadeDuration);
                 renderer.material.color = new Color(initialColor.r, initialColor.g, initialColor.b, alpha);
-
                 timeElapsed += Time.deltaTime;
                 yield return null;
             }
@@ -322,8 +321,6 @@ public class CatBehavior : MonoBehaviour
         // Destroy the heart object after fading out
         Destroy(heart);
     }
-
-
 
     private IEnumerator EnableSelectionAfterDelay()
     {

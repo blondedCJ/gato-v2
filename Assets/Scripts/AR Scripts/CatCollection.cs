@@ -9,6 +9,8 @@ public class CatCollection : MonoBehaviour
     private int initialLives; // To store the initial number of lives
     public Spawner spawner;
     public GameObject gameOver;
+    public const string CashKey = "PlayerCash";
+    public GoalsManager goalsManager;
 
     void Awake()
     {
@@ -64,11 +66,29 @@ public class CatCollection : MonoBehaviour
         // Update the UI
         UpdateScoreText();
         Time.timeScale = 1;
+        gameOver.SetActive(false);
         Debug.Log("Game Reinitialized!");
+    }
+
+    public void onExitSaveCoin()
+    {
+        int currentCash = PlayerPrefs.GetInt(CashKey, 0);
+        currentCash += score;
+
+        PlayerPrefs.SetInt(CashKey, currentCash);
+        PlayerPrefs.Save();
+        goalsManager.UpdateCashUI();
     }
 
     public void GameOver()
     {
+        int currentCash = PlayerPrefs.GetInt(CashKey, 0);
+        currentCash += score;
+
+        PlayerPrefs.SetInt(CashKey, currentCash);
+        PlayerPrefs.Save();
+        goalsManager.UpdateCashUI();
+
         Debug.Log("Game Over! You ran out of lives.");
         Time.timeScale = 0;
         gameOver.SetActive(true);

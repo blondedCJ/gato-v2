@@ -55,7 +55,7 @@ public class ToggleButtonsVisibility : MonoBehaviour
 
         // Define the bottom-right position for AR
         //bottomRightPosition = new Vector3(Screen.width / 2 - 100f, -Screen.height / 2 + 100f, 0); // Adjust the 100f offsets as needed
-        bottomRightPosition = new Vector3(400.2f, -980.1f, 0);
+        bottomRightPosition = new Vector3(-87.80005f, -944, 0);
 
 
         // Define the bottom position for AR (adjust as needed)

@@ -13,10 +13,24 @@ public class Spawner : MonoBehaviour
     public float minSpawnDistance = 1.5f; // Minimum distance between spawned objects
 
     private List<GameObject> spawnedObjects = new List<GameObject>(); // Track spawned objects
+    private Coroutine spawnCoroutine; // Reference to the spawning coroutine
 
-    void Start()
+    void OnEnable()
     {
-        StartCoroutine(SpawnObjects());
+        // Restart the spawning coroutine when the spawner is enabled
+        spawnCoroutine = StartCoroutine(SpawnObjects());
+    }
+
+    void OnDisable()
+    {
+        // Stop the spawning coroutine when the spawner is disabled
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+        }
+
+        // Clear all spawned objects
+        ClearSpawnedObjects();
     }
 
     private IEnumerator SpawnObjects()
@@ -31,28 +45,18 @@ public class Spawner : MonoBehaviour
 
     private GameObject SpawnUniqueRandomObject(GameObject[] objectArray)
     {
-        // Try to spawn an object within a max retry limit
         const int maxRetries = 10;
         for (int i = 0; i < maxRetries; i++)
         {
-            // Determine random spawn position
             float randomX = Random.Range(-spawnRangeX, spawnRangeX);
             Vector3 spawnPosition = new Vector3(randomX, cloudPosition.position.y, cloudPosition.position.z);
 
-            // Check for overlap
             if (IsPositionValid(spawnPosition))
             {
-                // Spawn the object
                 GameObject obj = objectArray[Random.Range(0, objectArray.Length)];
                 GameObject spawnedObject = Instantiate(obj, spawnPosition, Quaternion.identity);
-
-                // Add falling behavior
                 spawnedObject.AddComponent<FallingObject>().fallSpeed = fallingSpeed;
-
-                // Track the spawned object
                 spawnedObjects.Add(spawnedObject);
-
-                // Return the spawned object
                 return spawnedObject;
             }
         }
@@ -67,7 +71,7 @@ public class Spawner : MonoBehaviour
         {
             if (obj != null && Vector3.Distance(position, obj.transform.position) < minSpawnDistance)
             {
-                return false; // Overlap detected
+                return false;
             }
         }
         return true;
@@ -75,7 +79,6 @@ public class Spawner : MonoBehaviour
 
     public void ClearSpawnedObjects()
     {
-        // Destroy all active spawned objects
         foreach (GameObject obj in spawnedObjects)
         {
             if (obj != null)
@@ -83,8 +86,6 @@ public class Spawner : MonoBehaviour
                 Destroy(obj);
             }
         }
-        Time.timeScale = 1f;
-        // Clear the list
         spawnedObjects.Clear();
     }
 }

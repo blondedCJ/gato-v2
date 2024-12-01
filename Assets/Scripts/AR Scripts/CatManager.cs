@@ -111,6 +111,14 @@ public class CatManager : MonoBehaviour
     {
         foreach (CatBehavior cat in selectedCats)
         {
+            // Check if the cat is eating, drinking, or moving
+            if (cat.isEating || cat.isDrinking || cat.GetComponent<CatMover>().isWalking)
+            {
+                Debug.Log("Trick is disabled for this cat while it is eating, drinking, or moving.");
+                continue; // Skip this cat and move to the next one
+            }
+
+            // Perform the trick if the cat is not eating, drinking, or moving
             if (trickName == "PlayDead")
             {
                 cat.TransitionToPlayDead();
@@ -123,6 +131,7 @@ public class CatManager : MonoBehaviour
             // Add more trick conditions as needed
         }
     }
+
 
     // Method to display all owned cats
     public void DisplayUserOwnedCats()

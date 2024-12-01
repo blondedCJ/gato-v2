@@ -2511,6 +2511,7 @@ GameObject:
   - component: {fileID: -2679166941327610209}
   - component: {fileID: 6544738739422991986}
   - component: {fileID: 2394324764146127053}
+  - component: {fileID: 4801462890769287636}
   m_Layer: 0
   m_Name: Cat Zebra
   m_TagString: Cat
@@ -2614,6 +2615,7 @@ MonoBehaviour:
   slider: {fileID: 6952508909022742587}
   timer: 10
   stopTimer: 0
+  catMover: {fileID: 4801462890769287636}
 --- !u!65 &-6843723087421064352
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2663,6 +2665,8 @@ MonoBehaviour:
   decreaseRateAffection: 1
   decreaseRateHunger: 1
   decreaseRateThirst: 1
+  isSick: 0
+  isDirty: 0
   loadingScreen: {fileID: 0}
   loadingSlider: {fileID: 0}
   isBeingPetted: 0
@@ -2744,6 +2748,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   catNameText: {fileID: 5724570456606117761}
+--- !u!114 &4801462890769287636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8186739265338542139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a79e1fb10905a4b94e58eff86b9945, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0.5
+  rotationSpeed: 5
+  animator: {fileID: 7864442694366056068}
+  catBehavior: {fileID: -6276802690165352830}
+  isWalking: 0
 --- !u!1 &8248811361692265121
 GameObject:
   m_ObjectHideFlags: 0
@@ -7008,6 +7029,11 @@ PrefabInstance:
     - target: {fileID: 6181794772553089581, guid: b2257e2c6c9557f4caac340b70e8ede8,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7814113340331562320, guid: b2257e2c6c9557f4caac340b70e8ede8,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

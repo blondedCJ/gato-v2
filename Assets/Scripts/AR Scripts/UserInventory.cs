@@ -5,6 +5,7 @@ public class UserInventory : MonoBehaviour
 {
     public List<int> userOwnedCats { get; private set; } = new List<int>();
     private static List<string> keys = new List<string>();
+    public LoadingScreenTest loadingScreenTest;
 
     // Load user-owned cats from PlayerPrefs
     public void LoadUserOwnedCats()
@@ -63,21 +64,50 @@ public class UserInventory : MonoBehaviour
     public void RemoveSicknessFromAllCats()
     {
         CatStatus[] allCats = FindObjectsOfType<CatStatus>();
+        bool anyCatSick = false;
 
         foreach (CatStatus cat in allCats)
         {
-            cat.RemoveSickStatus();
+            if (cat.isSick) // Assuming CatStatus has an IsSick() method
+            {
+                cat.RemoveSickStatus();
+                anyCatSick = true; // Set to true if any cat is sick
+            }
         }
 
+        // Only start the loading if at least one cat was sick
+        if (anyCatSick)
+        {
+            loadingScreenTest.StartSecondLoading();
+        }
+        else
+        {
+            Debug.Log("No cats are sick.");
+        }
     }
 
     public void RemoveDirtyFromAllCats()
     {
         CatStatus[] allCats = FindObjectsOfType<CatStatus>();
+        bool anyCatDirty = false;
 
         foreach (CatStatus cat in allCats)
         {
-            cat.RemoveDirtyStatus();
+            if (cat.isDirty) // Assuming CatStatus has an IsDirty() method
+            {
+                cat.RemoveDirtyStatus();
+                anyCatDirty = true; // Set to true if any cat is dirty
+            }
+        }
+
+        // Only start the loading if at least one cat was dirty
+        if (anyCatDirty)
+        {
+            loadingScreenTest.StartFirstLoading();
+        }
+        else
+        {
+            Debug.Log("No cats are dirty.");
         }
     }
 

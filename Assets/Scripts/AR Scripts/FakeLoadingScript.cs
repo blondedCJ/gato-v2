@@ -4,21 +4,20 @@ using UnityEngine.UI;
 
 public class FakeLoadingScreen : MonoBehaviour
 {
-    public GameObject loadingScreen; // Assign the loading screen GameObject in the Inspector
-    public Slider loadingSlider;     // Assign the Slider UI element in the Inspector
 
-    public void StartLoading(bool isForCleaning)
+    public void StartLoading(bool isForCleaning, GameObject loadingScreen, Slider loadingSlider)
     {
         if (loadingScreen == null || loadingSlider == null)
         {
-            Debug.LogError("Missing references. Ensure LoadingScreen, Slider, and CatStatus are assigned.");
+            Debug.LogError("Missing references. Ensure LoadingScreen and Slider are assigned.");
             return;
         }
+
         loadingScreen.SetActive(true);   // Enable the loading screen
-        StartCoroutine(LoadProcess(isForCleaning)); // Start the fake loading coroutine
+        StartCoroutine(LoadProcess(isForCleaning, loadingScreen, loadingSlider)); // Start the fake loading coroutine
     }
 
-    private IEnumerator LoadProcess(bool isForCleaning)
+    private IEnumerator LoadProcess(bool isForCleaning, GameObject loadingScreen, Slider loadingSlider)
     {
         float loadProgress = 0f;
 

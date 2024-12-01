@@ -24,8 +24,8 @@ public class CatStatus : MonoBehaviour
     public float decreaseRateThirst = 0.0046f;    // Decrease per second
 
     private string catID;
-    private bool isSick;
-    private bool isDirty;
+    public bool isSick;
+    public bool isDirty;
 
     private Vector3 initialPositionHunger;
     private Vector3 initialPositionAffection;
@@ -48,6 +48,7 @@ public class CatStatus : MonoBehaviour
         initialPositionAffection = affectionEmote.transform.localPosition;
         initialPositionThirst = thirstEmote.transform.localPosition;
         fakeLoadingScreen = GameObject.Find("Canvas").GetComponent<FakeLoadingScreen>();
+
         LoadCatStatus();
         StartCoroutine(UpdateStatus());
     }
@@ -92,7 +93,7 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastFed = DateTime.Now - lastFedTime;
 
         // If more than a day has passed since the cat was last fed, it gets sick
-        if (timeSinceLastFed.TotalDays >= 100 && !isSick)
+        if (timeSinceLastFed.TotalMilliseconds >= 100 && !isSick)
         {
             isSick = true;
             Debug.Log($"{catID} has gotten sick due to not being fed for a day.");
@@ -111,7 +112,7 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastPetted = DateTime.Now - lastPettedTime;
 
         // If more than a day has passed since the cat was last petted, it gets dirty
-        if (timeSinceLastPetted.TotalDays >= 100 && !isDirty)
+        if (timeSinceLastPetted.TotalMilliseconds >= 100 && !isDirty)
         {
             isDirty = true;
             Debug.Log($"{catID} has gotten dirty due to not being petted for a day.");
@@ -258,7 +259,6 @@ public class CatStatus : MonoBehaviour
         if (isSick)
         {
             isSick = false;
-            fakeLoadingScreen.StartLoading(true);
             SaveCatStatus();
             Debug.Log($"{catID}: Sick status removed.");
         }
@@ -273,7 +273,6 @@ public class CatStatus : MonoBehaviour
         if (isDirty)
         {
             isDirty = false;
-            fakeLoadingScreen.StartLoading(true);
             SaveCatStatus();
             Debug.Log($"{catID}: Dirty status removed.");
         }

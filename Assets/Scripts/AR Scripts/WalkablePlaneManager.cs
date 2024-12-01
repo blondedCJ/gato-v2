@@ -134,6 +134,15 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void SpawnTreatInFrontOfCat(GameObject selectedCat)
     {
+        // Check if the cat is moving, eating, or drinking
+        CatMover catMover = selectedCat.GetComponent<CatMover>();
+        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+
+        if (catMover != null && (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
+        {
+            Debug.Log("Cannot spawn treat while the cat is moving, eating, or drinking.");
+            return; // Stop the treat spawning if the cat is in any of these states
+        }
 
         // Find the UI element by tag
         GameObject coinBalanceObject = GameObject.FindWithTag("Balance");
@@ -154,21 +163,20 @@ public class WalkablePlaneManager : MonoBehaviour
             GameObject spawnedTreat = Instantiate(treatPrefab, spawnPosition, Quaternion.identity);
             catTreats[selectedCat] = spawnedTreat;
 
-            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
             CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
             if (catBehavior != null)
             {
                 activeEatingCats.Add(selectedCat); // Mark as eating
                 catBehavior.TransitionToEating(spawnedTreat, 5f);
-                
+
                 catStatus.TreatCat();
                 goalsManager.IncrementTreatsGoal();
             }
 
             StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 5f, catTreats));
 
-            //   ty
+            // Update the player's balance in PlayerPrefs
             int currentCash = PlayerPrefs.GetInt(CashKey, 0);
             currentCash -= treatcost;
             PlayerPrefs.SetInt(CashKey, currentCash);
@@ -176,8 +184,19 @@ public class WalkablePlaneManager : MonoBehaviour
         }
     }
 
+
     private void SpawnFeedInFrontOfCat(GameObject selectedCat)
     {
+        // Check if the cat is moving, eating, or drinking
+        CatMover catMover = selectedCat.GetComponent<CatMover>();
+        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+
+        if (catMover != null && (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
+        {
+            Debug.Log("Cannot spawn feed while the cat is moving, eating, or drinking.");
+            return; // Stop feed spawning if the cat is in any of these states
+        }
+
         // Find the UI element by tag
         GameObject coinBalanceObject = GameObject.FindWithTag("Balance");
         coinBalanceText = coinBalanceObject.GetComponent<TMP_Text>();
@@ -197,7 +216,6 @@ public class WalkablePlaneManager : MonoBehaviour
             GameObject spawnedFeed = Instantiate(feedPrefab, spawnPosition, Quaternion.identity);
             catFeeds[selectedCat] = spawnedFeed;
 
-            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
             CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
             if (catBehavior != null)
@@ -214,7 +232,6 @@ public class WalkablePlaneManager : MonoBehaviour
             currentCash -= feedingcost;
             PlayerPrefs.SetInt(CashKey, currentCash);
             PlayerPrefs.Save();
-
         }
         else
         {
@@ -225,6 +242,16 @@ public class WalkablePlaneManager : MonoBehaviour
 
     private void SpawnDrinkInFrontOfCat(GameObject selectedCat)
     {
+        // Check if the cat is moving, eating, or drinking
+        CatMover catMover = selectedCat.GetComponent<CatMover>();
+        CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
+
+        if (catMover != null && (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
+        {
+            Debug.Log("Cannot spawn drink while the cat is moving, eating, or drinking.");
+            return; // Stop drink spawning if the cat is in any of these states
+        }
+
         // Find the UI element by tag
         GameObject coinBalanceObject = GameObject.FindWithTag("Balance");
         coinBalanceText = coinBalanceObject.GetComponent<TMP_Text>();
@@ -245,7 +272,6 @@ public class WalkablePlaneManager : MonoBehaviour
             GameObject spawnedDrink = Instantiate(drinkPrefab, spawnPosition, Quaternion.identity);
             catDrinks[selectedCat] = spawnedDrink;
 
-            CatBehavior catBehavior = selectedCat.GetComponent<CatBehavior>();
             CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
 
             if (catBehavior != null)

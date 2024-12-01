@@ -2410,6 +2410,7 @@ GameObject:
   - component: {fileID: -2679166941327610209}
   - component: {fileID: 4648725634713488911}
   - component: {fileID: 1249350390854507096}
+  - component: {fileID: 6440878215665545849}
   m_Layer: 0
   m_Name: Cat Tuxedo
   m_TagString: Cat
@@ -2513,6 +2514,7 @@ MonoBehaviour:
   slider: {fileID: 3632834956265603718}
   timer: 10
   stopTimer: 0
+  catMover: {fileID: 6440878215665545849}
 --- !u!65 &-6843723087421064352
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2562,6 +2564,8 @@ MonoBehaviour:
   decreaseRateAffection: 1
   decreaseRateHunger: 1
   decreaseRateThirst: 1
+  isSick: 0
+  isDirty: 0
   loadingScreen: {fileID: 0}
   loadingSlider: {fileID: 0}
   isBeingPetted: 0
@@ -2643,6 +2647,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   catNameText: {fileID: 233705946029604534}
+--- !u!114 &6440878215665545849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8186739265338542139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a79e1fb10905a4b94e58eff86b9945, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 0.5
+  rotationSpeed: 5
+  animator: {fileID: 7864442694366056068}
+  catBehavior: {fileID: -6276802690165352830}
+  isWalking: 0
 --- !u!1 &8248811361692265121
 GameObject:
   m_ObjectHideFlags: 0

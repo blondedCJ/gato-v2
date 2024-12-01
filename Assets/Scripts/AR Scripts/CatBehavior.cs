@@ -8,8 +8,8 @@ public class CatBehavior : MonoBehaviour
     private Animator catAnimator;
     private Collider catCollider;
     private bool isBeingPetted = false;
-    private bool isEating = false; // Set this when the cat starts eating
-    private bool isDrinking = false; // Set this when the cat starts drinking
+    public bool isEating = false; // Set this when the cat starts eating
+    public bool isDrinking = false; // Set this when the cat starts drinking
     private bool isSelected = false;
     private bool canBeSelected = false; // By default, the cat can't be selected
     private float selectionDelay = 1f;  // Delay period after spawning
@@ -37,6 +37,8 @@ public class CatBehavior : MonoBehaviour
     public Slider slider;
     public float timer;
     public bool stopTimer = false;
+
+    public CatMover catMover;
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -83,7 +85,7 @@ public class CatBehavior : MonoBehaviour
         catRenderer = GetComponentInChildren<SkinnedMeshRenderer>(); // Ensure it looks for the SkinnedMeshRenderer in children
         defaultMaterial = catRenderer.material; // Store the default material
         slider.gameObject.SetActive(false);
-        slider.enabled = false; 
+        slider.enabled = false;
         TransitionToIdle();
         StartCoroutine(EnableSelectionAfterDelay());
 
@@ -252,7 +254,7 @@ public class CatBehavior : MonoBehaviour
             }
             else
             {
-                
+
             }
 
             // Destroy the heart after some time
@@ -334,37 +336,37 @@ public class CatBehavior : MonoBehaviour
 
     // Method to handle touch input for mobile devices
     private void HandleTouchInput()
-{
-    if (Touchscreen.current != null)
     {
-        var touch = Touchscreen.current.primaryTouch;
+        if (Touchscreen.current != null)
+        {
+            var touch = Touchscreen.current.primaryTouch;
 
-        if (touch.press.wasPressedThisFrame)
-        {
-            // Register the initial touch position
-            initialTouchPosition = touch.position.ReadValue();
-        }
-        else if (touch.press.isPressed)
-        {
-            // Check if a drag has occurred
-            Vector2 currentPosition = touch.position.ReadValue();
-            if (Vector2.Distance(currentPosition, initialTouchPosition) > 30f) // Threshold for dragging
+            if (touch.press.wasPressedThisFrame)
             {
-                isDragging = true;
-                CheckPettingStart(currentPosition); // Petting starts with drag
+                // Register the initial touch position
+                initialTouchPosition = touch.position.ReadValue();
             }
-        }
-        else if (touch.press.wasReleasedThisFrame)
-        {
-            // End petting when the touch is released
-            if (isDragging)
+            else if (touch.press.isPressed)
             {
-                EndPetting();
-                isDragging = false;
+                // Check if a drag has occurred
+                Vector2 currentPosition = touch.position.ReadValue();
+                if (Vector2.Distance(currentPosition, initialTouchPosition) > 30f) // Threshold for dragging
+                {
+                    isDragging = true;
+                    CheckPettingStart(currentPosition); // Petting starts with drag
+                }
+            }
+            else if (touch.press.wasReleasedThisFrame)
+            {
+                // End petting when the touch is released
+                if (isDragging)
+                {
+                    EndPetting();
+                    isDragging = false;
+                }
             }
         }
     }
-}
 
     // For mouse input (editor testing)
     private void HandleMouseInput()
@@ -406,21 +408,27 @@ public class CatBehavior : MonoBehaviour
     // Check if the input position hits the cat's collider
     private void CheckPettingStart(Vector2 screenPosition)
     {
-        // Prevent petting if the cat is eating or drinking
-        if (isEating || isDrinking)
-        {
-            Debug.Log("Petting is disabled while the cat is eating or drinking.");
-            EndPetting(); // Ensure ongoing petting is stopped
-            return;
-        }
-
+        // Cast a ray from the screen position to check if it hits a cat's collider
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             CatStatus catStatus = hit.collider.GetComponent<CatStatus>();
+            CatMover catMover = hit.collider.GetComponent<CatMover>(); // Reference to the CatMover component
+            CatBehavior catBehavior = hit.collider.GetComponent<CatBehavior>(); // Reference to the CatBehavior component
+
+            // Check if the ray hit a valid cat object and if it's not already being petted
             if (catStatus != null && !isBeingPetted)
             {
+                // Disable petting if the specific cat is eating, drinking, or walking
+                if (catMover != null && catBehavior != null &&
+                    (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
+                {
+                    Debug.Log("Petting is disabled for this cat while it is eating, drinking, or walking.");
+                    EndPetting(); // Ensure ongoing petting is stopped
+                    return;
+                }
+
                 currentlyPettedCat = catStatus; // Store reference to the specific cat being petted
                 currentCatAnimator = hit.collider.GetComponent<Animator>(); // Get the animator of the cat being petted
                 StartPetting();
@@ -428,7 +436,6 @@ public class CatBehavior : MonoBehaviour
             }
         }
     }
-
 
     // Start the petting animation and give affection gradually
     private void StartPetting()
@@ -625,7 +632,7 @@ public class CatBehavior : MonoBehaviour
         canPerformJump = true;
     }
 
-    private void TransitionToIdle()
+    public void TransitionToIdle()
     {
         // Select a random idle state
         string randomIdleState = idleStates[Random.Range(0, idleStates.Length)];

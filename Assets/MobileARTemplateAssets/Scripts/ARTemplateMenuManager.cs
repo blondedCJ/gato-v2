@@ -18,6 +18,9 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 public class ARTemplateMenuManager : MonoBehaviour
 {
     [SerializeField]
+    public Button VisualizePlane;
+
+    [SerializeField]
     [Tooltip("Button that opens the create menu.")]
     Button m_CreateButton;
 
@@ -294,7 +297,7 @@ public class ARTemplateMenuManager : MonoBehaviour
         else
         {
             m_IsPointerOverUI = false;
-            m_CreateButton.gameObject.SetActive(true);
+            //m_CreateButton.gameObject.SetActive(true);
             m_DeleteButton.gameObject.SetActive(m_InteractionGroup?.focusInteractable != null);
         }
 
@@ -373,6 +376,18 @@ public class ARTemplateMenuManager : MonoBehaviour
             m_DebugPlaneSlider.value = 1;
             ChangePlaneVisibility(true);
         }
+    }
+
+    public void ShowHideDebugPlaneButton()
+    {
+        if (m_DebugPlaneSlider.value != 1)
+        {
+            m_DebugPlaneSlider.value = 1;
+        } else
+        {
+            m_DebugPlaneSlider.value = 0;
+        }
+        
     }
 
     /// <summary>

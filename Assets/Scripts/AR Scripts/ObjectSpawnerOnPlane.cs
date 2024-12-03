@@ -193,4 +193,23 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
             }
         }
     }
+
+    public void ClearSpawnedCats()
+    {
+        // Find all spawned cats in the scene
+        GameObject[] spawnedCats = GameObject.FindGameObjectsWithTag("Cat");
+
+        foreach (GameObject cat in spawnedCats)
+        {
+            Destroy(cat); // Destroy each cat
+        }
+
+        // Reset the spawning variables
+        currentCatIndex = 0;
+        allCatsSpawned = false;
+
+        Debug.Log("All spawned cats have been cleared, and spawning is reset.");
+    }
+
+
 }

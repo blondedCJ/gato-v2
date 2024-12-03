@@ -40,6 +40,12 @@ public class CatBehavior : MonoBehaviour
 
     public CatMover catMover;
 
+    private Coroutine cashIncrementCoroutine;
+    private const int CashIncrementAmount = 1; // Amount of cash to add each interval
+    private const float CashIncrementInterval = 3f; // Interval in seconds
+
+    private GoalsManager goalsManager;
+
     // Animation state names
     private readonly string[] idleStates = {
         "Skeleton_Idle_1_Skeleton", "Skeleton_Idle_2_Skeleton", "Skeleton_Idle_3_Skeleton",
@@ -80,6 +86,17 @@ public class CatBehavior : MonoBehaviour
 
     void Start()
     {
+
+        goalsManager = FindObjectOfType<GoalsManager>();
+        if (goalsManager == null)
+        {
+            Debug.LogError("GoalsManager is not found in the scene!");
+        }
+        else
+        {
+            Debug.Log("GoalsManager found!");
+        }
+
         catAnimator = GetComponent<Animator>();
         catCollider = GetComponent<Collider>();
         catRenderer = GetComponentInChildren<SkinnedMeshRenderer>(); // Ensure it looks for the SkinnedMeshRenderer in children
@@ -106,18 +123,27 @@ public class CatBehavior : MonoBehaviour
         switch (currentState)
         {
             case CatState.Idle:
-                if (AnimationFinished(GetCurrentIdleState()))
+                // Ensure the cat is not walking before transitioning
+                if (!catMover.isWalking)
                 {
-                    // Randomly choose to sit or sleep after idle
-                    if (Random.value > 0.5f)
-                        TransitionToSitStart();
-                    else
-                        TransitionToSleepStart();
+                    if (AnimationFinished(GetCurrentIdleState()))
+                    {
+                        // Randomly choose to sit or sleep after idle
+                        if (Random.value > 0.5f)
+                            TransitionToSitStart();
+                        else
+                            TransitionToSleepStart();
+                    }
                 }
                 break;
 
             case CatState.SitStart:
-                if (AnimationFinished(SitStartState))
+                // Don't transition if walking
+                if (catMover.isWalking)
+                {
+                    return;
+                }
+                else if (AnimationFinished(SitStartState))
                 {
                     TransitionToSitLoop();
                 }
@@ -136,6 +162,11 @@ public class CatBehavior : MonoBehaviour
                 break;
 
             case CatState.SleepStart:
+                // Don't transition if walking
+                if (catMover.isWalking)
+                {
+                    return;
+                }
                 if (AnimationFinished(currentSleepStartState))
                 {
                     TransitionToSleepLoop();
@@ -154,8 +185,10 @@ public class CatBehavior : MonoBehaviour
                 }
                 break;
         }
+
         HandlePettingInput();
     }
+
 
     private void HandlePettingInput()
     {
@@ -234,7 +267,7 @@ public class CatBehavior : MonoBehaviour
             GameObject heart = Instantiate(selectedHeart, spawnPoint.position, Quaternion.identity);
 
             // Set a random scale
-            float randomScale = Random.Range(0.05f, 0.15f); // Adjust the min and max sizes as needed
+            float randomScale = Random.Range(0.05f, 0.12f); // Adjust the min and max sizes as needed
             heart.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
 
             // Set a random rotation
@@ -264,7 +297,6 @@ public class CatBehavior : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
         }
     }
-
 
     private IEnumerator MoveHeartUp(GameObject heart)
     {
@@ -437,18 +469,19 @@ public class CatBehavior : MonoBehaviour
         }
     }
 
-    // Start the petting animation and give affection gradually
     private void StartPetting()
     {
         if (!isBeingPetted && currentlyPettedCat != null && currentCatAnimator != null)
         {
             isBeingPetted = true;
-            // Use the specific cat's animator
             currentCatAnimator.speed = 1;
             currentCatAnimator.CrossFade("Skeleton_Caress_idle_Skeleton", 0.2f); // Play the petting animation
 
             // Start giving affection gradually
             currentlyPettedCat.StartPettingAffection();
+
+            // Start cash increment coroutine
+            cashIncrementCoroutine = StartCoroutine(IncrementCashGradually());
         }
     }
 
@@ -458,6 +491,7 @@ public class CatBehavior : MonoBehaviour
         if (isBeingPetted && currentCatAnimator != null)
         {
             isBeingPetted = false;
+
             // Only transition to idle if not eating or drinking
             if (!isEating && !isDrinking)
             {
@@ -477,9 +511,33 @@ public class CatBehavior : MonoBehaviour
             // Stop affection increase
             currentlyPettedCat.StopPettingAffection();
 
+            // Stop cash increment coroutine
+            if (cashIncrementCoroutine != null)
+            {
+                StopCoroutine(cashIncrementCoroutine);
+                cashIncrementCoroutine = null;
+            }
+
             // Clear references when petting ends
             currentlyPettedCat = null;
             currentCatAnimator = null;
+        }
+    }
+
+    private IEnumerator IncrementCashGradually()
+    {
+        while (isBeingPetted)
+        {
+            // Increment cash
+            int currentCash = PlayerPrefs.GetInt(GoalsManager.CashKey, 0);
+            currentCash += CashIncrementAmount;
+            PlayerPrefs.SetInt(GoalsManager.CashKey, currentCash);
+            PlayerPrefs.Save();
+
+            // Update cash UI
+            goalsManager.UpdateCashUI();
+
+            yield return new WaitForSeconds(CashIncrementInterval);
         }
     }
 
@@ -510,7 +568,7 @@ public class CatBehavior : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        Destroy(drinkItem);
+
         slider.gameObject.SetActive(false);
         slider.enabled = false;
         isFinished = true;
@@ -519,57 +577,51 @@ public class CatBehavior : MonoBehaviour
     }
 
 
-    public void TransitionToEating(GameObject foodItem, float duration)
+    public void TransitionToEating(GameObject foodItem, float baseDuration)
     {
-        if (foodItem.ToString() == "CatTreat Variant(Clone) (UnityEngine.GameObject)") {
-            timer = 5f;
-        } else
-        {
-            timer = 10f;
-        }
+        timer = (foodItem.ToString() == "CatTreat Variant(Clone) (UnityEngine.GameObject)") ? 5f : baseDuration;
 
-        Debug.Log(foodItem.ToString());
+        Debug.Log($"Starting eating: {foodItem}, Duration: {timer}s");
 
-        //set value slider
+        // Set and activate slider
         slider.gameObject.SetActive(true);
         slider.enabled = true;
         slider.maxValue = timer;
         slider.value = timer;
         startTimer();
 
-
+        // State and animation
         isEating = true;
-        currentState = CatState.Eating; // Set the state to Eating
-        catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f); // Trigger the eating animation
+        currentState = CatState.Eating;
+        catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f);
 
-        // Optionally, destroy the food item after the specified duration
-        StartCoroutine(EatingCoroutine(foodItem, duration));
+        // Start eating logic
+        StartCoroutine(EatingCoroutine(foodItem, timer));
     }
 
     private IEnumerator EatingCoroutine(GameObject foodItem, float duration)
     {
         float elapsedTime = 0f;
-        Debug.Log(duration);
 
-        // Continue the loop until the total duration is reached
+        // Eating duration loop
         while (elapsedTime < duration)
         {
-            elapsedTime += Time.deltaTime; // Accumulate time only if not paused
-            yield return null; // Wait for the next frame
+            elapsedTime += Time.deltaTime;
+            slider.value = Mathf.Max(timer - elapsedTime, 0f); // Update slider
+            yield return null;
         }
 
+        Debug.Log("Eating completed");
+
+        // Cleanup
         slider.gameObject.SetActive(false);
         slider.enabled = false;
 
-        // Eating completed, destroy the food item
-        Destroy(foodItem);
-
-        isFinished = true;
-
-    // Transition the cat back to idle after eating
-    TransitionToIdle();
-        isEating = false; // Reset eating flag
+        isEating = false; // Reset eating flag after idle transition
+        // Transition back to idle
+        TransitionToIdle();
     }
+
 
     private IEnumerator WaitForEatingEnd()
     {
@@ -635,6 +687,17 @@ public class CatBehavior : MonoBehaviour
     public void TransitionToIdle()
     {
         // Select a random idle state
+        if (catMover.isWalking) {
+            Debug.Log("bawal pa gumalaw hehe");
+            return;
+        }
+
+        if(isEating)
+        {
+            Debug.Log("BAWAL PA SYA MAG IDLE NAKAEN PA E");
+            return;
+        }
+
         string randomIdleState = idleStates[Random.Range(0, idleStates.Length)];
         catAnimator.CrossFade(randomIdleState, 0.2f);
         currentState = CatState.Idle;

@@ -8,7 +8,6 @@ public class CustomNavigation : MonoBehaviour
     public Camera arCamera;
     private GameObject selectedCat;
 
-
     private void Start()
     {
         if (arCamera == null)
@@ -26,7 +25,6 @@ public class CustomNavigation : MonoBehaviour
         // Check for Mouse input
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Debug.Log("Mouse click detected.");
             HandleSelection();
             return;
         }
@@ -46,7 +44,6 @@ public class CustomNavigation : MonoBehaviour
         }
     }
 
-
     private void HandleSelection()
     {
         // Perform a raycast from the touch or click position
@@ -57,16 +54,26 @@ public class CustomNavigation : MonoBehaviour
         {
             if (hit.collider.CompareTag("Cat"))
             {
-                // Select the cat
-                selectedCat = hit.collider.gameObject;
-                Debug.Log($"Selected cat: {selectedCat.name}");
+                GameObject clickedCat = hit.collider.gameObject;
+
+                if (clickedCat == selectedCat)
+                {
+                    // Deselect the cat if it's already selected
+                    selectedCat = null;
+                    Debug.Log($"Deselected cat: {clickedCat.name}");
+                }
+                else
+                {
+                    // Select the new cat
+                    selectedCat = clickedCat;
+                    Debug.Log($"Selected cat: {selectedCat.name}");
+                }
             }
             else if (hit.collider.CompareTag("ARPlane") && selectedCat != null)
             {
                 // Move the selected cat to the hit position
                 Vector3 targetPosition = hit.point;
                 selectedCat.GetComponent<CatMover>().MoveTo(targetPosition);
-                Debug.Log("ANDITO NAKO");
             }
         }
     }

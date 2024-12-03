@@ -8,7 +8,8 @@ public class CatMover : MonoBehaviour
     public float rotationSpeed = 5f; // Speed at which the cat rotates to face the target
     public Animator animator; // Reference to the Animator component
     public CatBehavior catBehavior; // Reference to the CatBehavior script (or other scripts controlling interactions)
-  
+    public float yThreshold = 0.1f; // Allowable Y-axis difference for movement
+
     public bool isWalking = false;
 
     public void MoveTo(Vector3 targetPosition)
@@ -16,16 +17,23 @@ public class CatMover : MonoBehaviour
         // Check if the user is interacting with the UI
         if (EventSystem.current.IsPointerOverGameObject())
         {
-            // If UI is being interacted with, do not allow movement
+            Debug.Log("Movement blocked: UI interaction detected.");
             return;
         }
 
-        if (catBehavior.isEating || catBehavior.isDrinking) {
-            Debug.Log("Cant move while drinking or eating!");
+        if (catBehavior.isEating || catBehavior.isDrinking)
+        {
+            Debug.Log("Cannot move while drinking or eating!");
             return;
-            
         }
-        
+
+        // Validate the target position based on Y-axis
+        if (Mathf.Abs(targetPosition.y - transform.position.y) > yThreshold)
+        {
+            Debug.Log("Movement blocked: Target position is at a different height.");
+            return;
+        }
+
         if (!isWalking)
         {
             // Start the movement coroutine
@@ -38,6 +46,7 @@ public class CatMover : MonoBehaviour
         // Set walking state and animation
         isWalking = true;
         animator.CrossFade("Skeleton_Walk_F_IP_Skeleton", 0.2f); // Transition to walking animation
+
         // Rotate to face the target while moving
         while (Vector3.Distance(transform.position, target) > 0.1f)
         {

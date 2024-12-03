@@ -377,4 +377,81 @@ public class WalkablePlaneManager : MonoBehaviour
             Debug.Log("Added cat to list: " + cat.name);
         }
     }
+
+    public void ClearSpawnedCats()
+    {
+        // Clear associated resources like treats, feed, and drinks
+        foreach (var cat in cats)
+        {
+            if (catTreats.ContainsKey(cat))
+            {
+                Destroy(catTreats[cat]);
+                catTreats.Remove(cat);
+            }
+
+            if (catFeeds.ContainsKey(cat))
+            {
+                Destroy(catFeeds[cat]);
+                catFeeds.Remove(cat);
+            }
+
+            if (catDrinks.ContainsKey(cat))
+            {
+                Destroy(catDrinks[cat]);
+                catDrinks.Remove(cat);
+            }
+
+            // Clear active eating/drinking status
+            activeEatingCats.Remove(cat);
+
+            // Destroy the cat itself
+            Destroy(cat);
+        }
+
+        // Clear the list of cats
+        cats.Clear();
+
+        Debug.Log("All spawned cats and their associated objects have been cleared.");
+    }
+
+
+    public void ClearSpawnedObjects()
+    {
+        // Clear treats
+        foreach (var kvp in catTreats)
+        {
+            if (kvp.Value != null)
+            {
+                Destroy(kvp.Value);
+            }
+        }
+        catTreats.Clear();
+
+        // Clear feeds
+        foreach (var kvp in catFeeds)
+        {
+            if (kvp.Value != null)
+            {
+                Destroy(kvp.Value);
+            }
+        }
+        catFeeds.Clear();
+
+        // Clear drinks
+        foreach (var kvp in catDrinks)
+        {
+            if (kvp.Value != null)
+            {
+                Destroy(kvp.Value);
+            }
+        }
+        catDrinks.Clear();
+
+        // Clear activeEatingCats set
+        activeEatingCats.Clear();
+
+        Debug.Log("All spawned objects (treats, feeds, drinks) have been cleared.");
+    }
+
+
 }

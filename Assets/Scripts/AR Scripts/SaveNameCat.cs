@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
 
 public class SaveNameCat : MonoBehaviour
 {
@@ -11,10 +12,39 @@ public class SaveNameCat : MonoBehaviour
 
     public void Proceed()
     {
-        string inputText = catName.text;
+        string inputText = catName.text.Trim(); // Trim leading and trailing spaces
+
+        // Validate the input: Check for empty input
+        if (string.IsNullOrEmpty(inputText))
+        {
+            Debug.LogWarning("Cat name cannot be empty!");
+            return;
+        }
+
+        // Check for length constraint
+        if (inputText.Length > 10)
+        {
+            Debug.LogWarning("Cat name must not exceed 10 characters!");
+            return;
+        }
+
+        // Ensure no special characters or numbers and only one space between words
+        if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[A-Za-z]+(?: [A-Za-z]+)*$"))
+        {
+            Debug.LogWarning("Cat name must only contain letters and single spaces between words.");
+            return;
+        }
 
         // Get the existing names from PlayerPrefs
         string existingNames = PlayerPrefs.GetString("userOwnedCatNames", "");
+        string[] existingNameArray = existingNames.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+        // Check if the name already exists
+        if (Array.Exists(existingNameArray, name => string.Equals(name, inputText, StringComparison.OrdinalIgnoreCase)))
+        {
+            Debug.LogWarning("Cat name already exists!");
+            return;
+        }
 
         // Update the list of names, adding the new name
         string updatedNames = string.IsNullOrEmpty(existingNames) ? inputText : $"{existingNames},{inputText}";
@@ -24,7 +54,7 @@ public class SaveNameCat : MonoBehaviour
         PlayerPrefs.Save();
 
         // Log that the cat name has been saved
-        Debug.Log("Cat name saved!");
+        Debug.Log($"Cat name '{inputText}' saved!");
 
         // Print all the existing cat names
         PrintAllCatNames();
@@ -35,6 +65,7 @@ public class SaveNameCat : MonoBehaviour
         // Load the next scene
         SceneManager.LoadScene(3);
     }
+
 
     private void PrintAllCatNames()
     {

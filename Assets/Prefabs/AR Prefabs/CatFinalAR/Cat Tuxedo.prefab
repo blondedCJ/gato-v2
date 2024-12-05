@@ -2665,6 +2665,7 @@ MonoBehaviour:
   rotationSpeed: 5
   animator: {fileID: 7864442694366056068}
   catBehavior: {fileID: -6276802690165352830}
+  yThreshold: 0.1
   isWalking: 0
 --- !u!1 &8248811361692265121
 GameObject:
@@ -2850,14 +2851,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8895538535273364412}
-  m_LocalRotation: {x: -0.74146503, y: 0.10185845, z: 0.11419925, w: -0.6533092}
+  m_LocalRotation: {x: 0.70400316, y: 0.013683857, z: 0.0011706651, w: 0.710064}
   m_LocalPosition: {x: 0, y: 0, z: 0.0025999981}
   m_LocalScale: {x: 0.000010000003, y: 0.0012500011, z: 0.0012500009}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8637757661179671138}
   m_Father: {fileID: 8384278620793484828}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 88.7, y: 68.311, z: 67.297}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.0000692606, y: 0.00004991889}

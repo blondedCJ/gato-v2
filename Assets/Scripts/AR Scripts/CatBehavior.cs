@@ -44,7 +44,12 @@ public class CatBehavior : MonoBehaviour
     private const int CashIncrementAmount = 1; // Amount of cash to add each interval
     private const float CashIncrementInterval = 3f; // Interval in seconds
 
-    private GoalsManager goalsManager;
+
+    //GoalsManager goalsManager;
+    [SerializeField] private GoalsManager goalsManager;
+    [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
+    [SerializeField] private GoalsManagerTier3 goalsManagerTier3;
+    private const string GoalsCounterKey = "GoalsCounter";
 
     // Animation state names
     private readonly string[] idleStates = {
@@ -87,14 +92,28 @@ public class CatBehavior : MonoBehaviour
     void Start()
     {
 
-        goalsManager = FindObjectOfType<GoalsManager>();
-        if (goalsManager == null)
-        {
-            Debug.LogError("GoalsManager is not found in the scene!");
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManager == null) {
+            goalsManager = FindObjectOfType<GoalsManager>();
+            if (goalsManager == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
         }
-        else
-        {
-            Debug.Log("GoalsManager found!");
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier2 == null) {
+            goalsManagerTier2 = FindObjectOfType<GoalsManagerTier2>();
+            if (goalsManagerTier2 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier3 == null) {
+            goalsManagerTier3 = FindObjectOfType<GoalsManagerTier3>();
+            if (goalsManagerTier3 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
         }
 
         catAnimator = GetComponent<Animator>();
@@ -535,7 +554,20 @@ public class CatBehavior : MonoBehaviour
             PlayerPrefs.Save();
 
             // Update cash UI
-            goalsManager.UpdateCashUI();
+            //goalsManager.UpdateCashUI();
+
+            // Goals manager
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+                goalsManager.UpdateCashUI();
+            }
+
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+                goalsManagerTier2.UpdateCashUI();
+            }
+
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+                goalsManagerTier3.UpdateCashUI();
+            }
 
             yield return new WaitForSeconds(CashIncrementInterval);
         }
@@ -651,6 +683,19 @@ public class CatBehavior : MonoBehaviour
         catAnimator.CrossFade("Skeleton_Die_R_Skeleton", 0.1f);
         StartCoroutine(WaitForTrickEnd("Skeleton_Die_R_Skeleton"));
 
+        // Goals manager
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+            goalsManager.IncrementPerformTrickGoal();  // Tier 1
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+            goalsManagerTier2.IncrementPerformTrickGoal(); //Tier2
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+            goalsManagerTier3.IncrementPerformTrickGoal(); //Tier3
+        }
+
         // Start cooldown coroutine
         StartCoroutine(PlayDeadCooldown());
     }
@@ -665,6 +710,20 @@ public class CatBehavior : MonoBehaviour
 
         // Start the coroutine to handle the jump movement
         StartCoroutine(JumpCoroutine(jumpHeight, jumpDuration));
+
+        // Goals manager
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+            goalsManager.IncrementPerformTrickGoal();  // Tier 1
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+            goalsManagerTier2.IncrementPerformTrickGoal(); //Tier2
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+            goalsManagerTier3.IncrementPerformTrickGoal(); //Tier3
+        }
+
 
         // Start cooldown coroutine
         StartCoroutine(JumpCooldown());

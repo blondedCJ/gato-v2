@@ -11,7 +11,6 @@ public class CatManager : MonoBehaviour
     private UserInventory userInventory;
     private Outline outline; // Reference to the outline component
 
-    GoalsManager goalsManager;
     private void Awake()
     {
         if (outline != null)
@@ -26,13 +25,6 @@ public class CatManager : MonoBehaviour
         userInventory = FindObjectOfType<UserInventory>();
         // Ensure the user-owned cats are loaded when the game starts
 
-        // Get a reference to the GoalsManager
-        goalsManager = FindObjectOfType<GoalsManager>();
-
-        if (goalsManager == null)
-        {
-            Debug.LogWarning("GoalsManager not found in the scene.");
-        }
 
         if (userInventory != null)
         {
@@ -122,11 +114,11 @@ public class CatManager : MonoBehaviour
             if (trickName == "PlayDead")
             {
                 cat.TransitionToPlayDead();
+              
             }
             else if (trickName == "Jump")
             {
                 cat.TransitionToJump();
-                goalsManager.IncrementJumpGoal();
             }
             // Add more trick conditions as needed
         }

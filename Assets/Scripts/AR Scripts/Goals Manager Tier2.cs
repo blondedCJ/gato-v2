@@ -2,22 +2,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-
-public class GoalsManager : MonoBehaviour
+public class GoalsManagerTier2 : MonoBehaviour
 {
-    public static GoalsManager Instance { get; private set; }
+
+    public static GoalsManagerTier2 Instance { get; private set; }
 
     public const string CashKey = "PlayerCash";
 
     // Define PlayerPrefs keys for goal progress and achievements
-    private const string TreatsGoalKey = "TreatsGoalProgress";
-    public const string TreatsGoalAchievedKey = "TreatsGoalAchieved";
+    private const string TreatsGoalKey = "TreatsGoalProgress2";
+    public const string TreatsGoalAchievedKey = "TreatsGoalAchieved2";
 
     // Cash rewards for each goal
-    private const int TreatsGoalCashReward = 20;
+    private const int TreatsGoalCashReward = 30;
 
     // Goal limits
-    private const int TreatsGoalLimit = 5;
+    private const int TreatsGoalLimit = 10;
 
     // Goal limits for banner
     private const int BannerGoalLimit = 5;
@@ -35,20 +35,9 @@ public class GoalsManager : MonoBehaviour
     public Slider goalsCompleted; // The slider representing goal completion
     public TMP_Text goalsCompletedText; // The text showing the number of completed goals
 
-  
+
 
     private void Start() {
-        // Check if the GoalsCounterKey is already set
-        if (!PlayerPrefs.HasKey(GoalsCounterKey)) {
-            // If the key doesn't exist, set the value to 1
-            PlayerPrefs.SetInt(GoalsCounterKey, 1);
-            PlayerPrefs.Save(); // Ensure the changes are saved
-            Debug.Log("GoalsCounterKey set to 1");
-        } else {
-            // If the key already exists, do nothing or perform some other logic
-            Debug.Log("GoalsCounterKey already exists, value: " + PlayerPrefs.GetInt(GoalsCounterKey));
-        }
-
 
         checkPanel1();
         LoadGoalsProgress();
@@ -57,8 +46,8 @@ public class GoalsManager : MonoBehaviour
         UpdateCashUI(); // Update cash display on startup
 
         // Load the slider and text progress
-        goalsCompleted.value = PlayerPrefs.GetFloat("GoalsSliderValue", 0f);
-        goalsCompletedText.text = PlayerPrefs.GetInt("GoalsCompletedCount", 0).ToString();
+        goalsCompleted.value = PlayerPrefs.GetFloat("GoalsSliderValue2", 0f);
+        goalsCompletedText.text = PlayerPrefs.GetInt("GoalsCompletedCount2", 0).ToString();
     }
 
 
@@ -73,13 +62,13 @@ public class GoalsManager : MonoBehaviour
 
 
     // Mini Game
-    private const string MiniGameGoalKey = "MiniGameGoalProgress";
-    public const string MiniGameAchievedKey = "MiniGameGoalAchieved";
-    private const int MiniGameGoalCashReward = 100;
+    private const string MiniGameGoalKey = "MiniGameGoalProgress2";
+    public const string MiniGameAchievedKey = "MiniGameGoalAchieved2";
+    private const int MiniGameGoalCashReward = 150;
     public TMP_Text MiniGameProgressText;
     public Image MiniGameAchievementImage;
     int miniGamePlayed;
-    int miniGamePlayedLimit = 10;
+    int miniGamePlayedLimit = 20;
     public void IncrementPlayMiniGameGoal() {
         if (miniGamePlayed < miniGamePlayedLimit) {
             miniGamePlayed++;
@@ -90,13 +79,13 @@ public class GoalsManager : MonoBehaviour
     }
 
     // Perform trick
-    private const string TrickGoalKey = "TrickGoalProgress";
-    public const string TrickAchievedKey = "TrickGoalAchieved";
-    private const int TrickGoalCashReward = 100;
+    private const string TrickGoalKey = "TrickGoalProgress2";
+    public const string TrickAchievedKey = "TrickGoalAchieved2";
+    private const int TrickGoalCashReward = 150;
     public TMP_Text TrickProgressText;
     public Image TrickAchievementImage;
     int TrickGiven;
-    int TrickLimit = 5;
+    int TrickLimit = 15;
     public void IncrementPerformTrickGoal() {
         if (TrickGiven < TrickLimit) {
             TrickGiven++;
@@ -108,15 +97,15 @@ public class GoalsManager : MonoBehaviour
     }
 
     // Bathing
-    private const string BathGoalKey = "BathGoalProgress";
-    public const string BathAchievedKey = "BathGoalAchieved";
-    private const int BathGoalCashReward = 50;
+    private const string BathGoalKey = "BathGoalProgress2";
+    public const string BathAchievedKey = "BathGoalAchieved2";
+    private const int BathGoalCashReward = 65;
     public TMP_Text BathProgressText;
     public Image BathAchievementImage;
     int BathGiven;
-    int BathLimit = 2;
+    int BathLimit = 8;
     public void IncrementBathGoal() {
-        
+
         if (BathGiven < BathLimit) {
             BathGiven++;
             SaveGoalProgress(BathGoalKey, BathGiven);
@@ -277,14 +266,14 @@ public class GoalsManager : MonoBehaviour
     private void IncrementGoalsCompleted() {
         // Increment the slider value
         goalsCompleted.value += 0.20f;
-        PlayerPrefs.SetFloat("GoalsSliderValue", goalsCompleted.value);
+        PlayerPrefs.SetFloat("GoalsSliderValue2", goalsCompleted.value);
 
         // Increment the text value
-        goalsCompletedCount = PlayerPrefs.GetInt("GoalsCompletedCount", 0);
+        goalsCompletedCount = PlayerPrefs.GetInt("GoalsCompletedCount2", 0);
         goalsCompletedCount++;
 
 
-        PlayerPrefs.SetInt("GoalsCompletedCount", goalsCompletedCount);
+        PlayerPrefs.SetInt("GoalsCompletedCount2", goalsCompletedCount);
         goalsCompletedText.text = goalsCompletedCount.ToString();
 
         PlayerPrefs.Save();
@@ -293,7 +282,7 @@ public class GoalsManager : MonoBehaviour
 
 
     public GameObject panel1;
-    private const string Panel1StateKey = "Panel1State"; // Key to store panel state
+    private const string Panel1StateKey = "Panel1State2"; // Key to store panel state
     private const string GoalsCounterKey = "GoalsCounter"; // for condition to different scripts
 
 
@@ -304,8 +293,9 @@ public class GoalsManager : MonoBehaviour
             panel1.SetActive(false);
 
             //save counter 2
-            PlayerPrefs.SetInt(GoalsCounterKey, 2);
+            PlayerPrefs.SetInt(GoalsCounterKey, 3);
             PlayerPrefs.Save();
+            Debug.Log("Goals Counter Key Value >>>>>>>>>>>>>>>>>>>>>>>>>>>" + PlayerPrefs.GetInt(GoalsCounterKey, 0));
 
             // Persist the state of panel1 as "inactive" (0)
             PlayerPrefs.SetInt(Panel1StateKey, 0); // 0 means inactive
@@ -313,7 +303,7 @@ public class GoalsManager : MonoBehaviour
         } else {
             Debug.Log("Not 5.");
         }
-        
+
     }
     private void checkPanel1() {
         // Retrieve the state of panel1 from PlayerPrefs (default: 1, active)
@@ -322,5 +312,4 @@ public class GoalsManager : MonoBehaviour
         // Set panel1's active state based on the retrieved value
         panel1.SetActive(panel1State == 1); // Active if the state is 1, otherwise inactive
     }
-
 }

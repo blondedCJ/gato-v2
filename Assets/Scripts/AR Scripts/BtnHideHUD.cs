@@ -21,7 +21,10 @@ public class ToggleButtonsVisibility : MonoBehaviour
     public GameObject button15;
     public GameObject button16;
     public GameObject button17;
-    public GameObject button18;
+    public GameObject button18; // Tier 3
+    public GameObject button19; // Tier 1
+    public GameObject button20; // Tier 2
+    public GameObject button21;
 
 
     // Reference to the toggle button
@@ -84,7 +87,21 @@ public class ToggleButtonsVisibility : MonoBehaviour
         button15.gameObject.SetActive(areButtonsVisible);
         button16.gameObject.SetActive(areButtonsVisible); 
         button17.gameObject.SetActive(areButtonsVisible);
-        button18.gameObject.SetActive(areButtonsVisible);
+        button21.gameObject.SetActive(areButtonsVisible);
+
+        if (PlayerPrefs.GetInt("GoalsCounter", 0) == 1) {
+            button19.gameObject.SetActive(areButtonsVisible);
+            button20.gameObject.SetActive(areButtonsVisible);
+            button18.gameObject.SetActive(areButtonsVisible);
+        }
+        if (PlayerPrefs.GetInt("GoalsCounter", 0) == 2) {
+            button20.gameObject.SetActive(areButtonsVisible);
+            button18.gameObject.SetActive(areButtonsVisible);
+        }
+        if (PlayerPrefs.GetInt("GoalsCounter", 0) == 3) {
+            button18.gameObject.SetActive(areButtonsVisible);
+        }
+
         // Move the toggle button to the bottom or back to its original position
         toggleButtonRect.anchoredPosition = areButtonsVisible ? originalPosition : bottomRightPosition;
     }       

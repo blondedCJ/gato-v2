@@ -40,8 +40,39 @@ public class CatStatus : MonoBehaviour
 
     private float emoteOffset = 0.001f; // The offset to use for separating emotes
 
+    //GoalsManager goalsManager;
+    [SerializeField] private GoalsManager goalsManager;
+    [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
+    [SerializeField] private GoalsManagerTier3 goalsManagerTier3;
+    private const string GoalsCounterKey = "GoalsCounter";
+
     void Start()
     {
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManager == null) {
+            goalsManager = FindObjectOfType<GoalsManager>();
+            if (goalsManager == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier2 == null) {
+            goalsManagerTier2 = FindObjectOfType<GoalsManagerTier2>();
+            if (goalsManagerTier2 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier3 == null) {
+            goalsManagerTier3 = FindObjectOfType<GoalsManagerTier3>();
+            if (goalsManagerTier3 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+
         // Initialize other components
         catID = gameObject.name;
         initialPositionHunger = hungerEmote.transform.localPosition;
@@ -115,6 +146,7 @@ public class CatStatus : MonoBehaviour
         if (timeSinceLastPetted.TotalMilliseconds >= 100 && !isDirty)
         {
             isDirty = true;
+            
             Debug.Log($"{catID} has gotten dirty due to not being petted for a day.");
         }
     }
@@ -270,11 +302,26 @@ public class CatStatus : MonoBehaviour
 
     public void RemoveDirtyStatus()
     {
-        if (isDirty)
-        {
+        if (isDirty) {
             isDirty = false;
             SaveCatStatus();
             Debug.Log($"{catID}: Dirty status removed.");
+
+            // Goals manager
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+                goalsManager.IncrementBathGoal();  // Tier 1
+            }
+
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+                goalsManagerTier2.IncrementBathGoal(); //Tier2
+            }
+
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+
+                goalsManagerTier3.IncrementBathGoal(); //Tier3
+            }
+
+
         }
         else
         {

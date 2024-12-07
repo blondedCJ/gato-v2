@@ -10,12 +10,42 @@ public class CatCollection : MonoBehaviour
     public Spawner spawner;
     public GameObject gameOver;
     public const string CashKey = "PlayerCash";
-    public GoalsManager goalsManager;
+    //GoalsManager goalsManager;
+    //GoalsManager goalsManager;
+    [SerializeField] private GoalsManager goalsManager;
+    [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
+    [SerializeField] private GoalsManagerTier3 goalsManagerTier3;
+    private const string GoalsCounterKey = "GoalsCounter";
 
     void Awake()
     {
         // Store the initial number of lives for reinitialization
         initialLives = lives;
+
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManager == null) {
+            goalsManager = FindObjectOfType<GoalsManager>();
+            if (goalsManager == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier2 == null) {
+            goalsManagerTier2 = FindObjectOfType<GoalsManagerTier2>();
+            if (goalsManagerTier2 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier3 == null) {
+            goalsManagerTier3 = FindObjectOfType<GoalsManagerTier3>();
+            if (goalsManagerTier3 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
     }
 
     void OnEnable()
@@ -77,7 +107,22 @@ public class CatCollection : MonoBehaviour
 
         PlayerPrefs.SetInt(CashKey, currentCash);
         PlayerPrefs.Save();
-        goalsManager.UpdateCashUI();
+
+        // Goals manager
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+            goalsManager.IncrementPlayMiniGameGoal();  // Tier 1
+            goalsManager.UpdateCashUI();
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+            goalsManagerTier2.IncrementPlayMiniGameGoal(); //Tier2
+            goalsManagerTier2.UpdateCashUI();
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+            goalsManagerTier3.IncrementPlayMiniGameGoal(); //Tier3
+            goalsManagerTier3.UpdateCashUI();
+        }
     }
 
     public void GameOver()
@@ -87,11 +132,29 @@ public class CatCollection : MonoBehaviour
 
         PlayerPrefs.SetInt(CashKey, currentCash);
         PlayerPrefs.Save();
-        goalsManager.UpdateCashUI();
+        //goalsManager.UpdateCashUI();
 
         Debug.Log("Game Over! You ran out of lives.");
+
+        // Goals manager
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+            goalsManager.IncrementPlayMiniGameGoal();  // Tier 1
+            goalsManager.UpdateCashUI();
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+            goalsManagerTier2.IncrementPlayMiniGameGoal(); //Tier2
+            goalsManagerTier2.UpdateCashUI();
+        }
+
+        if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+            goalsManagerTier3.IncrementPlayMiniGameGoal(); //Tier3
+            goalsManagerTier3.UpdateCashUI();
+        }
+
         Time.timeScale = 0;
         gameOver.SetActive(true);
         // Add game-over logic here (restart, show menu, etc.)
+        
     }
 }

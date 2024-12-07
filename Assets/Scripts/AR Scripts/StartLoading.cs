@@ -15,6 +15,7 @@ public class LoadingScreenTest : MonoBehaviour
         fakeLoadingScreen = GetComponent<FakeLoadingScreen>();
     }
 
+    
     public void StartFirstLoading()
     {
         fakeLoadingScreen.StartLoading(false, firstLoadingScreen, firstLoadingSlider);

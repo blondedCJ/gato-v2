@@ -27,7 +27,11 @@ public class WalkablePlaneManager : MonoBehaviour
     private TMP_Text coinBalanceText;
     public const string CashKey = "PlayerCash";
 
-    GoalsManager goalsManager;
+    //GoalsManager goalsManager;
+    [SerializeField] private GoalsManager goalsManager;
+    [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
+    [SerializeField] private GoalsManagerTier3 goalsManagerTier3;
+    private const string GoalsCounterKey = "GoalsCounter";
 
     private void Awake()
     {
@@ -45,10 +49,32 @@ public class WalkablePlaneManager : MonoBehaviour
         // Get a reference to the GoalsManager
         goalsManager = FindObjectOfType<GoalsManager>();
 
-        if (goalsManager == null)
-        {
-            Debug.LogWarning("GoalsManager not found in the scene.");
+
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManager == null) {
+            goalsManager = FindObjectOfType<GoalsManager>();
+            if (goalsManager == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
         }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier2 == null) {
+            goalsManagerTier2 = FindObjectOfType<GoalsManagerTier2>();
+            if (goalsManagerTier2 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
+        // Dynamically find GoalsManager if not assigned via Inspector
+        if (goalsManagerTier3 == null) {
+            goalsManagerTier3 = FindObjectOfType<GoalsManagerTier3>();
+            if (goalsManagerTier3 == null) {
+                Debug.LogError("GoalsManager is not assigned or found!");
+            }
+        }
+
     }
 
     void Update()
@@ -171,7 +197,22 @@ public class WalkablePlaneManager : MonoBehaviour
                 catBehavior.TransitionToEating(spawnedTreat, 5f);
 
                 catStatus.TreatCat();
-                goalsManager.IncrementTreatsGoal();
+
+                //Debug.Log("GOals counter ky value >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + PlayerPrefs.GetInt(GoalsCounterKey, 0));
+
+                // Goals manager
+                if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+                    goalsManager.IncrementTreatsGoal();  // Tier 1
+                } 
+                
+                if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+                    goalsManagerTier2.IncrementTreatsGoal(); //Tier2
+                }
+
+                if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+
+                    goalsManagerTier3.IncrementTreatsGoal(); //Tier3
+                }
             }
 
             StartCoroutine(DisableFeedAfterTime(spawnedTreat, selectedCat, 5f, catTreats));
@@ -279,7 +320,6 @@ public class WalkablePlaneManager : MonoBehaviour
                 activeEatingCats.Add(selectedCat);
                 catBehavior.TransitionToDrinking(spawnedDrink, 10f);
                 catStatus.GiveWater();
-                goalsManager.IncrementWaterGoal();
             }
 
             StartCoroutine(DisableFeedAfterTime(spawnedDrink, selectedCat, 10f, catDrinks));

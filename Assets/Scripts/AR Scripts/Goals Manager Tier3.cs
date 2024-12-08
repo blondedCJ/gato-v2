@@ -43,6 +43,17 @@ public class GoalsManagerTier3 : MonoBehaviour
         //PlayerPrefs.SetInt(CashKey, 1000);
         //PlayerPrefs.Save();
 
+        // Check if the GoalsCounterKey is already set
+        if (!PlayerPrefs.HasKey(CashKey)) {
+            // If the key doesn't exist
+            PlayerPrefs.SetInt(CashKey, 500);
+            PlayerPrefs.Save();
+            Debug.Log("Default cash balance 500");
+        } else {
+            // If the key already exists, do nothing or perform some other logic
+            Debug.Log("GoalsCounterKey already exists, value: " + PlayerPrefs.GetInt(CashKey));
+        }
+
 
         LoadGoalsProgress();
         LoadAchievementsStatus();

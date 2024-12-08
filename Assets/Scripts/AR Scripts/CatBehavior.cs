@@ -89,6 +89,19 @@ public class CatBehavior : MonoBehaviour
     private string currentSleepStartState;
     private Vector2 initialTouchPosition;
 
+    private AudioSource audioSource;
+
+    [SerializeField] private AudioClip purringSFX; // Purring sound effect
+    [SerializeField] private AudioClip eatingSFX; // Purring sound effect
+    [SerializeField] private AudioClip drinkingSFX; // Purring sound effect
+    [SerializeField] private AudioClip[] meowingSFX; // Array for meowing sounds
+
+    private void Awake()
+    {
+        // Get the AudioSource component
+        audioSource = GetComponent<AudioSource>();
+    }
+
     void Start()
     {
 
@@ -122,6 +135,7 @@ public class CatBehavior : MonoBehaviour
         defaultMaterial = catRenderer.material; // Store the default material
         slider.gameObject.SetActive(false);
         slider.enabled = false;
+
         TransitionToIdle();
         StartCoroutine(EnableSelectionAfterDelay());
 
@@ -218,6 +232,46 @@ public class CatBehavior : MonoBehaviour
 #endif
     }
 
+    public void PlayPurring()
+    {
+        if (audioSource != null && purringSFX != null)
+        {
+            audioSource.clip = purringSFX;
+            audioSource.Play();
+        }
+    }
+
+    /// <summary>
+    /// Play a random meowing sound effect.
+    /// </summary>
+    public void PlayMeow()
+    {
+        if (audioSource != null && meowingSFX.Length > 0)
+        {
+            AudioClip randomMeow = meowingSFX[Random.Range(0, meowingSFX.Length)];
+            audioSource.clip = randomMeow;
+            audioSource.Play();
+        }
+    }
+
+    public void PlayEating()
+    {
+        if (audioSource != null && eatingSFX != null)
+        {
+            audioSource.clip = eatingSFX;
+            audioSource.Play();
+        }
+    }
+
+    public void PlayDrinking()
+    {
+        if (audioSource != null && drinkingSFX != null)
+        {
+            audioSource.clip = drinkingSFX;
+            audioSource.Play();
+        }
+    }
+
     // Start continuous heart spawning while petting
     private void StartHeartSpawning()
     {
@@ -246,6 +300,7 @@ public class CatBehavior : MonoBehaviour
     {
         while (isBeingPetted) // Continue spawning hearts as long as petting is active
         {
+            PlayPurring();
             SpawnHearts(); // Spawn a heart
             yield return new WaitForSeconds(0.5f); // Wait before spawning the next heart (adjust time as needed)
         }
@@ -581,7 +636,7 @@ public class CatBehavior : MonoBehaviour
         slider.maxValue = timer;
         slider.value = timer;
         startTimer();
-
+        PlayDrinking();
         isDrinking = true;
         currentState = CatState.Eating; // You can change this to a new enum state for drinking if you want
         catAnimator.CrossFade("Skeleton_Drinking_Skeleton", 0.2f); // Replace with the actual drinking animation name
@@ -626,7 +681,7 @@ public class CatBehavior : MonoBehaviour
         isEating = true;
         currentState = CatState.Eating;
         catAnimator.CrossFade("Skeleton_Eating_Skeleton", 0.2f);
-
+        PlayEating();
         // Start eating logic
         StartCoroutine(EatingCoroutine(foodItem, timer));
     }
@@ -650,8 +705,11 @@ public class CatBehavior : MonoBehaviour
         slider.enabled = false;
 
         isEating = false; // Reset eating flag after idle transition
-        // Transition back to idle
-        TransitionToIdle();
+
+        if (!isEating) {
+            TransitionToIdle();
+        }
+
     }
 
 
@@ -750,13 +808,7 @@ public class CatBehavior : MonoBehaviour
             Debug.Log("bawal pa gumalaw hehe");
             return;
         }
-
-        if(isEating)
-        {
-            Debug.Log("BAWAL PA SYA MAG IDLE NAKAEN PA E");
-            return;
-        }
-
+        PlayMeow();
         string randomIdleState = idleStates[Random.Range(0, idleStates.Length)];
         catAnimator.CrossFade(randomIdleState, 0.2f);
         currentState = CatState.Idle;

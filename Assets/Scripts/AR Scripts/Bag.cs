@@ -13,7 +13,7 @@ public class Bag : MonoBehaviour
     [SerializeField]
     private Animator bagAnimator;
 
-    private bool isBagOpen = false;
+    public bool isBagOpen = false;
     private Vector3 originalScale;
     private Vector3 targetScale;
 

@@ -35,7 +35,8 @@ public class GoalsManagerTier2 : MonoBehaviour
     public Slider goalsCompleted; // The slider representing goal completion
     public TMP_Text goalsCompletedText; // The text showing the number of completed goals
 
-
+    public GameObject NameYourCat;
+    public GameObject PickACat;
 
     private void Start() {
 
@@ -291,6 +292,9 @@ public class GoalsManagerTier2 : MonoBehaviour
             Debug.Log("5.");
             // Set panel1 to inactive
             panel1.SetActive(false);
+
+            NameYourCat.SetActive(true);
+            PickACat.SetActive(true);
 
             //save counter 2
             PlayerPrefs.SetInt(GoalsCounterKey, 3);

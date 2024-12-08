@@ -31,11 +31,6 @@ public class CatManager : MonoBehaviour
             userInventory.LoadUserOwnedCats();
             DisplayUserOwnedCats();
         }
-        UnlockNewCat(0);
-        UnlockNewCat(1);
-        UnlockNewCat(2);
-        UnlockNewCat(3);
-
     }
 
     void Update()

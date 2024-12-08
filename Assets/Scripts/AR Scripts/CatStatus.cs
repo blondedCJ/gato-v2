@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CatStatus : MonoBehaviour
@@ -40,11 +41,23 @@ public class CatStatus : MonoBehaviour
 
     private float emoteOffset = 0.001f; // The offset to use for separating emotes
 
+    private Camera mainCamera;
+    private CatUIManager uiManager;
+
+    Bag bag;
+
     //GoalsManager goalsManager;
     [SerializeField] private GoalsManager goalsManager;
     [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
     [SerializeField] private GoalsManagerTier3 goalsManagerTier3;
     private const string GoalsCounterKey = "GoalsCounter";
+
+    private void Awake()
+    {
+        // Find the main camera and CatUIManager dynamically
+        mainCamera = Camera.main;
+        uiManager = FindObjectOfType<CatUIManager>();
+    }
 
     void Start()
     {
@@ -72,6 +85,7 @@ public class CatStatus : MonoBehaviour
             }
         }
 
+        bag = FindObjectOfType<Bag>();
 
         // Initialize other components
         catID = gameObject.name;
@@ -84,6 +98,36 @@ public class CatStatus : MonoBehaviour
         StartCoroutine(UpdateStatus());
     }
 
+    private void Update()
+    {
+        // Check for input each frame
+        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+        {
+            HandleTouch(Touchscreen.current.primaryTouch.position.ReadValue());
+        }
+        else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            HandleTouch(Mouse.current.position.ReadValue());
+        }
+    }
+
+    private void HandleTouch(Vector2 screenPosition)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(screenPosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            if (bag.isBagOpen)
+            {
+                return;
+            }
+
+            // Check if the hit object is this GameObject
+            if (hit.collider.gameObject == gameObject && uiManager != null)
+            {
+                uiManager.SetSelectedCat(this);
+            }
+        }
+    }
 
     private IEnumerator UpdateStatus()
     {

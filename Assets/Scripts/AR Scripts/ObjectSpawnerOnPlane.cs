@@ -17,7 +17,7 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
     private int currentCatIndex = 0;
     private bool allCatsSpawned = false; // Flag to prevent further spawning
     WalkablePlaneManager walkablePlaneManager;
-
+    CatNameDisplay catNameDisplay;
     // Added to avoid cats spawning too close to each other
     [SerializeField] private float spawnRadius = 0.01f; // Minimum distance between spawned cats
 
@@ -36,6 +36,8 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
 
     private void Start()
     {
+        catNameDisplay = FindAnyObjectByType<CatNameDisplay>();
+
         if (catPrefabs != null && catPrefabs.Length > 0)
         {
             Debug.Log("Cat Prefabs: " + catPrefabs.Length + " prefabs available");
@@ -115,43 +117,58 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
 
     private void SpawnUserOwnedCatAtPosition(Vector3 position)
     {
-        if (userOwnedCats.Count > 0 && currentCatIndex >= 0)
+        if (userInventory != null)
         {
-            Debug.Log("User Owned Cats: " + string.Join(", ", userOwnedCats));
+            // Reload the user-owned cats at runtime
+            userInventory.LoadUserOwnedCats();
+            userOwnedCats = userInventory.userOwnedCats;
+        }
 
-            int selectedCatIndex = userOwnedCats[currentCatIndex];
-            Debug.Log("Spawning Cat with Index: " + selectedCatIndex);
+        if (userOwnedCats.Count > 0)
+        {
+            // Reset the allCatsSpawned flag if the list has been updated
+            allCatsSpawned = currentCatIndex >= userOwnedCats.Count;
 
-            if (selectedCatIndex >= 0 && selectedCatIndex < catPrefabs.Length)
+            if (!allCatsSpawned && currentCatIndex < userOwnedCats.Count)
             {
-                // Check if the position is clear of other cats
-                if (!IsPositionOccupied(position))
-                {
-                    GameObject spawnedCat = Instantiate(catPrefabs[selectedCatIndex], position, Quaternion.identity);
-                    Vector3 directionToCamera = arCamera.transform.position - spawnedCat.transform.position;
-                    directionToCamera.y = 0;
-                    spawnedCat.transform.rotation = Quaternion.LookRotation(directionToCamera);
-                    walkablePlaneManager.AddCatToList(spawnedCat);
+                int selectedCatIndex = userOwnedCats[currentCatIndex];
+                Debug.Log($"Spawning Cat with Index: {selectedCatIndex}");
 
-                    currentCatIndex++;
-                    if (currentCatIndex >= userOwnedCats.Count)
+                if (selectedCatIndex >= 0 && selectedCatIndex < catPrefabs.Length)
+                {
+                    if (!IsPositionOccupied(position))
                     {
-                        Debug.Log("All cats spawned. No more cats to spawn.");
-                        allCatsSpawned = true; // Set the flag to true, no more cats to spawn
+                        GameObject spawnedCat = Instantiate(catPrefabs[selectedCatIndex], position, Quaternion.identity);
+                        Vector3 directionToCamera = arCamera.transform.position - spawnedCat.transform.position;
+                        directionToCamera.y = 0;
+                        spawnedCat.transform.rotation = Quaternion.LookRotation(directionToCamera);
+
+                        walkablePlaneManager.AddCatToList(spawnedCat);
+
+                        currentCatIndex++;
+                        if (currentCatIndex >= userOwnedCats.Count)
+                        {
+                            Debug.Log("All cats spawned. No more cats to spawn.");
+                            allCatsSpawned = true;
+                        }
+                        else
+                        {
+                            Debug.Log($"Next Cat Index: {currentCatIndex}");
+                        }
                     }
                     else
                     {
-                        Debug.Log("Next Cat Index: " + currentCatIndex);
+                        Debug.Log("Cannot spawn cat. Position is occupied.");
                     }
                 }
                 else
                 {
-                    Debug.Log("Cannot spawn cat. Position is occupied.");
+                    Debug.LogError($"Invalid selectedCatIndex: {selectedCatIndex}");
                 }
             }
             else
             {
-                Debug.LogError("Invalid selectedCatIndex: " + selectedCatIndex);
+                Debug.Log("All user-owned cats have been spawned.");
             }
         }
         else
@@ -159,6 +176,8 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
             Debug.Log("User has no cats or all cats already spawned.");
         }
     }
+
+
 
     // Method to check if a position is too close to any existing cat
     private bool IsPositionOccupied(Vector3 position)
@@ -196,7 +215,6 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
 
     public void ClearSpawnedCats()
     {
-        // Find all spawned cats in the scene
         GameObject[] spawnedCats = GameObject.FindGameObjectsWithTag("Cat");
 
         foreach (GameObject cat in spawnedCats)
@@ -204,12 +222,13 @@ public class ObjectSpawnerOnPlane : MonoBehaviour
             Destroy(cat); // Destroy each cat
         }
 
-        // Reset the spawning variables
+        CatNameDisplay.ResetCatCounter();
         currentCatIndex = 0;
         allCatsSpawned = false;
 
         Debug.Log("All spawned cats have been cleared, and spawning is reset.");
     }
+
 
 
 }

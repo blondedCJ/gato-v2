@@ -20,6 +20,11 @@ public class ARTemplateMenuManager : MonoBehaviour
     [SerializeField]
     public Button VisualizePlane;
 
+    public Button targetButton;   // Reference to the Button component
+    public Sprite newSprite;      // The sprite you want to set
+
+    private Sprite defaultSprite; // Store the original/default sprite
+
     [SerializeField]
     [Tooltip("Button that opens the create menu.")]
     Button m_CreateButton;
@@ -256,9 +261,38 @@ public class ARTemplateMenuManager : MonoBehaviour
         m_DebugMenu.gameObject.SetActive(true);
         m_InitializingDebugMenu = true;
 
+        if (targetButton != null)
+        {
+            defaultSprite = targetButton.GetComponent<Image>().sprite;
+        }
+
         InitializeDebugMenuOffsets();
         HideMenu();
         m_PlaneManager.planePrefab = m_DebugPlane;
+    }
+
+    public void ChangeSprite()
+    {
+        if (targetButton != null && newSprite != null)
+        {
+            Image buttonImage = targetButton.GetComponent<Image>();
+            if (buttonImage != null)
+            {
+                buttonImage.sprite = newSprite; // Change to the new sprite
+            }
+        }
+    }
+
+    public void ResetToDefault()
+    {
+        if (targetButton != null && defaultSprite != null)
+        {
+            Image buttonImage = targetButton.GetComponent<Image>();
+            if (buttonImage != null)
+            {
+                buttonImage.sprite = defaultSprite; // Change back to the default sprite
+            }
+        }
     }
 
     /// <summary>
@@ -369,10 +403,12 @@ public class ARTemplateMenuManager : MonoBehaviour
         if (m_DebugPlaneSlider.value == 1)
         {
             m_DebugPlaneSlider.value = 0;
+            ChangeSprite();
             ChangePlaneVisibility(false);
         }
         else
         {
+            ResetToDefault();
             m_DebugPlaneSlider.value = 1;
             ChangePlaneVisibility(true);
         }

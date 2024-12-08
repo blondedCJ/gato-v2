@@ -6,7 +6,7 @@ public class CustomNavigation : MonoBehaviour
 {
     public ARPlaneManager arPlaneManager;
     public Camera arCamera;
-    private GameObject selectedCat;
+    public GameObject selectedCat;
 
     private void Start()
     {

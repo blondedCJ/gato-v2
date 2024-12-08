@@ -99,7 +99,6 @@ public class RotateObject : MonoBehaviour
             // Unlock the corresponding cat based on the random index
             SaveUserOwnedCats(randomIndex);
             BringPanelToFront(NameYourCat);
-            Debug.Log("I CANT CHANGEEEEE");
         }
         else
         {

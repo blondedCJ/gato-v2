@@ -6,6 +6,7 @@ public class CatCollection : MonoBehaviour
     public int lives = 3; // Number of cat's lives
     private int score = 0; // Player's score
     public TMP_Text scoreText; // Reference to the TextMeshPro UI Text component
+    public TMP_Text scoreText1; // Reference to the TextMeshPro UI Text component
     private int initialLives; // To store the initial number of lives
     public Spawner spawner;
     public GameObject gameOver;
@@ -84,6 +85,11 @@ public class CatCollection : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = $"{score}";
+        }
+
+        if (scoreText1 != null)
+        {
+            scoreText1.text = $"{score}";
         }
     }
 

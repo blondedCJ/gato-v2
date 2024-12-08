@@ -35,7 +35,8 @@ public class GoalsManagerTier3 : MonoBehaviour
     public Slider goalsCompleted; // The slider representing goal completion
     public TMP_Text goalsCompletedText; // The text showing the number of completed goals
 
-
+    public GameObject NameYourCat;
+    public GameObject PickACat;
 
     private void Start() {
         //PlayerPrefs.DeleteAll(); // Clears all saved PlayerPrefs data
@@ -297,7 +298,9 @@ public class GoalsManagerTier3 : MonoBehaviour
 
 
     public void btnGiftClick() {
-        Debug.Log("CONGRATS UNLOCK 4 CATS");
+
+        NameYourCat.SetActive(true);
+        PickACat.SetActive(true);
 
     }
 }

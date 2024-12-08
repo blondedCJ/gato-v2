@@ -35,7 +35,8 @@ public class GoalsManager : MonoBehaviour
     public Slider goalsCompleted; // The slider representing goal completion
     public TMP_Text goalsCompletedText; // The text showing the number of completed goals
 
-  
+    public GameObject NameYourCat;
+    public GameObject PickACat;
 
     private void Start() {
         // Check if the GoalsCounterKey is already set
@@ -302,6 +303,9 @@ public class GoalsManager : MonoBehaviour
             Debug.Log("5.");
             // Set panel1 to inactive
             panel1.SetActive(false);
+
+            NameYourCat.SetActive(true);
+            PickACat.SetActive(true);
 
             //save counter 2
             PlayerPrefs.SetInt(GoalsCounterKey, 2);

@@ -2512,6 +2512,7 @@ GameObject:
   - component: {fileID: 6544738739422991986}
   - component: {fileID: 2394324764146127053}
   - component: {fileID: 4801462890769287636}
+  - component: {fileID: 5130984341515063557}
   m_Layer: 0
   m_Name: Cat Zebra
   m_TagString: Cat
@@ -2618,6 +2619,18 @@ MonoBehaviour:
   timer: 10
   stopTimer: 0
   catMover: {fileID: 4801462890769287636}
+  goalsManager: {fileID: 0}
+  goalsManagerTier2: {fileID: 0}
+  goalsManagerTier3: {fileID: 0}
+  purringSFX: {fileID: 8300000, guid: 6eaf47f74f3d15242b591d4b9b92d0e7, type: 3}
+  eatingSFX: {fileID: 8300000, guid: 7df2e575fe5357b4ebd9ee7d88756a30, type: 3}
+  drinkingSFX: {fileID: 8300000, guid: 4c50de7dd21922249bfaea51c3461d62, type: 3}
+  meowingSFX:
+  - {fileID: 8300000, guid: 3e6a608aa6f8c714c833451c19f3efad, type: 3}
+  - {fileID: 8300000, guid: 7008928750351364fbd8deb3caf98c2e, type: 3}
+  - {fileID: 8300000, guid: 174931c57e2c6784b979eef2619c9c1f, type: 3}
+  - {fileID: 8300000, guid: 99b24e5ae6a8f754b823e1b3eabd1e6d, type: 3}
+  - {fileID: 8300000, guid: d65c0fd97040a084fb5a22b6989198b7, type: 3}
 --- !u!65 &-6843723087421064352
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2672,6 +2685,9 @@ MonoBehaviour:
   loadingScreen: {fileID: 0}
   loadingSlider: {fileID: 0}
   isBeingPetted: 0
+  goalsManager: {fileID: 0}
+  goalsManagerTier2: {fileID: 0}
+  goalsManagerTier3: {fileID: 0}
 --- !u!114 &6544738739422991986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2768,6 +2784,102 @@ MonoBehaviour:
   catBehavior: {fileID: -6276802690165352830}
   yThreshold: 0.1
   isWalking: 0
+--- !u!82 &5130984341515063557
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8186739265338542139}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 0.2
+  MaxDistance: 0.8
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8248811361692265121
 GameObject:
   m_ObjectHideFlags: 0

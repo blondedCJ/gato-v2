@@ -25,12 +25,9 @@ public class CatUIManager : MonoBehaviour
 
     public void SetSelectedCat(CatStatus selectedCat)
     {
-        // Deselect if the same cat is clicked again
+        // If the same cat is already selected, do nothing
         if (selectedCatStatus == selectedCat)
-        {
-            DeselectCat();
             return;
-        }
 
         selectedCatStatus = selectedCat;
 
@@ -40,7 +37,6 @@ public class CatUIManager : MonoBehaviour
             CatNameDisplay catNameDisplay = selectedCat.GetComponent<CatNameDisplay>();
             if (catNameDisplay != null)
             {
-                // Update the UI with the selected cat's name
                 selectedCatNameText.text = catNameDisplay.CatName;
                 Debug.Log($"Selected Cat: {catNameDisplay.CatName}");
             }
@@ -60,6 +56,7 @@ public class CatUIManager : MonoBehaviour
             UpdateUI();
         }
     }
+
 
     public void DeselectCat()
     {

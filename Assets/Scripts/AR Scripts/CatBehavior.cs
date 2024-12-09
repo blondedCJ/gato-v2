@@ -237,8 +237,32 @@ public class CatBehavior : MonoBehaviour
         if (audioSource != null && purringSFX != null)
         {
             audioSource.clip = purringSFX;
+            audioSource.loop = true; // Enable looping
             audioSource.Play();
         }
+    }
+
+    public void EndPurring(float fadeDuration = 1.0f)
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            StartCoroutine(FadeOutPurring(fadeDuration));
+        }
+    }
+
+    private IEnumerator FadeOutPurring(float duration)
+    {
+        float startVolume = audioSource.volume;
+
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= startVolume * Time.deltaTime / duration;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        audioSource.volume = startVolume; // Reset volume for future use
+        audioSource.loop = false;
     }
 
     /// <summary>
@@ -300,7 +324,6 @@ public class CatBehavior : MonoBehaviour
     {
         while (isBeingPetted) // Continue spawning hearts as long as petting is active
         {
-            PlayPurring();
             SpawnHearts(); // Spawn a heart
             yield return new WaitForSeconds(0.5f); // Wait before spawning the next heart (adjust time as needed)
         }
@@ -538,6 +561,7 @@ public class CatBehavior : MonoBehaviour
                 currentlyPettedCat = catStatus; // Store reference to the specific cat being petted
                 currentCatAnimator = hit.collider.GetComponent<Animator>(); // Get the animator of the cat being petted
                 StartPetting();
+                PlayPurring();
                 StartHeartSpawning(); // Start continuous heart spawning when petting starts
             }
         }
@@ -569,6 +593,7 @@ public class CatBehavior : MonoBehaviour
             // Only transition to idle if not eating or drinking
             if (!isEating && !isDrinking)
             {
+                EndPurring();
                 TransitionToIdle(); // Transition back to idle
             }
             else if (isEating)

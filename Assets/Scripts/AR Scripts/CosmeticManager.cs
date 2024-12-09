@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -24,6 +26,9 @@ public class CosmeticManager : MonoBehaviour
     }
 
     public List<CosmeticButtonMapping> cosmeticButtonMappings; // List for Inspector
+                                                               
+    public List<Sprite> cosmeticSpriteList; // List of sprites in the same order as the enum
+
 
     private Dictionary<Cosmetic, Button> cosmeticButtons = new Dictionary<Cosmetic, Button>();
     private HashSet<Cosmetic> ownedCosmetics = new HashSet<Cosmetic>();
@@ -31,39 +36,74 @@ public class CosmeticManager : MonoBehaviour
 
     private const string OwnedCosmeticsKey = "userOwnedCosmetics";
 
-    private void Start()
+    private void Start() 
     {
+        // Check if the GoalsCounterKey is already set
+        if (!PlayerPrefs.HasKey(OwnedCosmeticsKey)) {
+            // If the key doesn't exist
+            UnlockCosmetic(Cosmetic.JesterHat);
+            UnlockCosmetic(Cosmetic.MaidHeadband);
+            UnlockCosmetic(Cosmetic.Bandana);
+            UnlockCosmetic(Cosmetic.BonnetHat);
+            UnlockCosmetic(Cosmetic.CaptainHat);
+            UnlockCosmetic(Cosmetic.CatCap);
+            UnlockCosmetic(Cosmetic.ClocheHat);
+            UnlockCosmetic(Cosmetic.DeerHeadband);
+            UnlockCosmetic(Cosmetic.FedoraHat);
+            UnlockCosmetic(Cosmetic.FlowerHeadband);
+            UnlockCosmetic(Cosmetic.LeatherHat);
+            PlayerPrefs.Save();
+            Debug.Log("Give user 6 default cosmetics");
+        } else {
+            // If the key already exists, do nothing or perform some other logic
+            Debug.Log("Do nothing.");
+        }
+
+        // Populate the dictionary with cosmetics and their corresponding sprites
+        cosmeticSprites = new Dictionary<Cosmetic, Sprite>();
+        int index = 0;
+        foreach (Cosmetic cosmetic in (Cosmetic[])System.Enum.GetValues(typeof(Cosmetic))) {
+            if (index < cosmeticSpriteList.Count) {
+                cosmeticSprites[cosmetic] = cosmeticSpriteList[index];
+                index++;
+            }
+        }
+
+        // Hide the pop-up panel at the start
+        cosmeticPopupPanel.SetActive(false);
+
+
         // Populate the dictionary with mapped values from the list
         foreach (var mapping in cosmeticButtonMappings)
         {
             cosmeticButtons[mapping.cosmetic] = mapping.button;
         }
-        UnlockCosmetic(Cosmetic.JesterHat);
-        UnlockCosmetic(Cosmetic.MaidHeadband);
-        UnlockCosmetic(Cosmetic.Bandana);
-        UnlockCosmetic(Cosmetic.BonnetHat);
-        UnlockCosmetic(Cosmetic.CaptainHat);
-        UnlockCosmetic(Cosmetic.CatCap);
-        UnlockCosmetic(Cosmetic.ClocheHat);
-        UnlockCosmetic(Cosmetic.DeerHeadband);
-        UnlockCosmetic(Cosmetic.FedoraHat);
-        UnlockCosmetic(Cosmetic.FlowerHeadband);
-        UnlockCosmetic(Cosmetic.LeatherHat);
-        UnlockCosmetic(Cosmetic.OutdoorHat);
-        UnlockCosmetic(Cosmetic.StrawHat);
-        UnlockCosmetic(Cosmetic.BambooHat);
-        UnlockCosmetic(Cosmetic.BandanaHat);
-        UnlockCosmetic(Cosmetic.ElegantHat);
-        UnlockCosmetic(Cosmetic.FlowerCrown);
-        UnlockCosmetic(Cosmetic.LatexBeretHat);
-        UnlockCosmetic(Cosmetic.PirateHat);
-        UnlockCosmetic(Cosmetic.Prop002_BeanieHat);
-        UnlockCosmetic(Cosmetic.Prop003_Cap);
-        UnlockCosmetic(Cosmetic.VisorCap);
-        UnlockCosmetic(Cosmetic.WarriorHelmet);
-        UnlockCosmetic(Cosmetic.Cube001_0);
-        UnlockCosmetic(Cosmetic.Cube003_3);
-        UnlockCosmetic(Cosmetic.StarShades);
+        //UnlockCosmetic(Cosmetic.JesterHat);
+        //UnlockCosmetic(Cosmetic.MaidHeadband);
+        //UnlockCosmetic(Cosmetic.Bandana);
+        //UnlockCosmetic(Cosmetic.BonnetHat);
+        //UnlockCosmetic(Cosmetic.CaptainHat);
+        //UnlockCosmetic(Cosmetic.CatCap);
+        //UnlockCosmetic(Cosmetic.ClocheHat);
+        //UnlockCosmetic(Cosmetic.DeerHeadband);
+        //UnlockCosmetic(Cosmetic.FedoraHat);
+        //UnlockCosmetic(Cosmetic.FlowerHeadband);
+        //UnlockCosmetic(Cosmetic.LeatherHat);
+        //UnlockCosmetic(Cosmetic.OutdoorHat);
+        //UnlockCosmetic(Cosmetic.StrawHat);
+        //UnlockCosmetic(Cosmetic.BambooHat);
+        //UnlockCosmetic(Cosmetic.BandanaHat);
+        //UnlockCosmetic(Cosmetic.ElegantHat);
+        //UnlockCosmetic(Cosmetic.FlowerCrown);
+        //UnlockCosmetic(Cosmetic.LatexBeretHat);
+        //UnlockCosmetic(Cosmetic.PirateHat);
+        //UnlockCosmetic(Cosmetic.Prop002_BeanieHat);
+        //UnlockCosmetic(Cosmetic.Prop003_Cap);
+        //UnlockCosmetic(Cosmetic.VisorCap);
+        //UnlockCosmetic(Cosmetic.WarriorHelmet);
+        //UnlockCosmetic(Cosmetic.Cube001_0);
+        //UnlockCosmetic(Cosmetic.Cube003_3);
+        //UnlockCosmetic(Cosmetic.StarShades);
         LoadOwnedCosmetics();
         UpdateCosmeticButtons();
 
@@ -170,7 +210,7 @@ public class CosmeticManager : MonoBehaviour
             ownedCosmetics.Add(cosmetic);
             SaveOwnedCosmetics();
             UpdateCosmeticButtons();
-            Debug.Log(cosmetic + " unlocked!");
+            Debug.Log(cosmetic + " unlocked!"); // assign this to pop up message name of the item
         }
         else
         {
@@ -227,4 +267,59 @@ public class CosmeticManager : MonoBehaviour
             selectedCosmetic = null;
             Debug.Log("Cleared selected cosmetic as scroll view is hidden.");
     }
+
+
+    public void ClaimRandomCosmetic() {
+        // Get a list of all available cosmetics that are not yet owned
+        List<Cosmetic> availableCosmetics = new List<Cosmetic>();
+
+        foreach (Cosmetic cosmetic in Enum.GetValues(typeof(Cosmetic))) {
+            if (!ownedCosmetics.Contains(cosmetic)) {
+                availableCosmetics.Add(cosmetic);
+            }
+        }
+
+        // Check if there are any cosmetics left to unlock
+        if (availableCosmetics.Count > 0) {
+            // Pick a random cosmetic from the available ones
+            Cosmetic randomCosmetic = availableCosmetics[UnityEngine.Random.Range(0, availableCosmetics.Count)];
+            UnlockCosmetic(randomCosmetic);
+
+            // show pop up msg
+            ShowPopup(randomCosmetic);
+
+        } else {
+            Debug.Log("All cosmetics are already unlocked!");
+        }
+    }
+
+    // Pop-up UI references
+    public GameObject cosmeticPopupPanel;
+    public Image cosmeticImage;
+    public TMP_Text cosmeticNameText;
+    // Dictionary to map cosmetics to their sprites
+    public Dictionary<Cosmetic, Sprite> cosmeticSprites;
+
+    public void ShowPopup(Cosmetic cosmetic) {
+        // Set the cosmetic image and name
+        if (cosmeticSprites.ContainsKey(cosmetic)) {
+            cosmeticImage.sprite = cosmeticSprites[cosmetic];
+        }
+
+        cosmeticNameText.text = cosmetic.ToString();
+
+        // Show the pop-up panel
+        cosmeticPopupPanel.SetActive(true);
+
+        // Hide the pop-up after x seconds
+        StartCoroutine(HidePopupAfterDelay(5f));
+    }
+     private IEnumerator HidePopupAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        cosmeticPopupPanel.SetActive(false);
+    }
+
+
+
 }

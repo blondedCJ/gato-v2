@@ -38,7 +38,19 @@ public class GoalsManager : MonoBehaviour
     public GameObject NameYourCat;
     public GameObject PickACat;
 
+    // Unlock Cosmetics
+    [SerializeField] private CosmeticManager cosmeticManager;
+
     private void Start() {
+
+        // Dynamically find Cosmetics manager if not assigned via Inspector
+        if (cosmeticManager == null) {
+            cosmeticManager = FindObjectOfType<CosmeticManager>();
+            if (cosmeticManager == null) {
+                Debug.LogError("Cosmetics manager is not assigned or found!");
+            }
+        }
+
         // Check if the GoalsCounterKey is already set
         if (!PlayerPrefs.HasKey(GoalsCounterKey)) {
             // If the key doesn't exist, set the value to 1
@@ -127,7 +139,22 @@ public class GoalsManager : MonoBehaviour
 
     }
 
-    public void IncrementUnlockAccessories() {
+
+    // Clinic
+    private const string ClinicGoalKey = "ClinicGoalProgress";
+    public const string ClinicAchievedKey = "ClinicGoalAchieved";
+    private const int ClinicGoalCashReward = 40;
+    public TMP_Text ClinicProgressText;
+    public Image ClinicAchievementImage;
+    int ClinicGiven;
+    int ClinicLimit = 5;
+    public void IncrementClinicGoal() {
+        if (ClinicGiven < ClinicLimit) {
+            ClinicGiven++;
+            SaveGoalProgress(ClinicGoalKey, ClinicGiven);
+            CheckGoalCompletion();
+            UpdateUI();
+        }
 
     }
 
@@ -141,6 +168,7 @@ public class GoalsManager : MonoBehaviour
         miniGamePlayed = PlayerPrefs.GetInt(MiniGameGoalKey, 0);
         TrickGiven = PlayerPrefs.GetInt(TrickGoalKey, 0);
         BathGiven = PlayerPrefs.GetInt(BathGoalKey, 0);
+        ClinicGiven = PlayerPrefs.GetInt(ClinicGoalKey, 0);
     }
 
     private void LoadAchievementsStatus() {
@@ -167,6 +195,12 @@ public class GoalsManager : MonoBehaviour
             || PlayerPrefs.GetInt(BathAchievedKey, 0) == 2)
             && achievedSprite != null)
             BathAchievementImage.sprite = achievedSprite;
+
+        //clinic
+        if ((PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1
+            || PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 2)
+            && achievedSprite != null)
+            ClinicAchievementImage.sprite = achievedSprite;
     }
 
 
@@ -201,6 +235,15 @@ public class GoalsManager : MonoBehaviour
             goalAchieved = true;
         }
 
+        // clinic 
+        if (ClinicGiven >= ClinicLimit && PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 0) {
+            ClinicAchievementImage.sprite = achievedSprite;
+            PlayerPrefs.SetInt(ClinicAchievedKey, 1);
+            goalAchieved = true;
+        }
+
+
+
         // Update the slider and text if a goal was achieved
         if (goalAchieved) {
             IncrementGoalsCompleted();
@@ -213,25 +256,46 @@ public class GoalsManager : MonoBehaviour
     public void ClaimReward(string goalKey) {
         int cashReward = 0;
 
+        // Check if the reward has already been claimed (state 2 means claimed)
+        if (PlayerPrefs.GetInt(goalKey, 0) == 2) {
+            Debug.Log("Reward for " + goalKey + " has already been claimed.");
+            return; // Exit early if already claimed
+        }
+
         switch (goalKey) {
             case TreatsGoalAchievedKey:
                 if (PlayerPrefs.GetInt(TreatsGoalAchievedKey, 0) == 1)
                     cashReward = TreatsGoalCashReward;
+                    //Unlock one item
+                cosmeticManager.ClaimRandomCosmetic();
                 break;
 
             case MiniGameAchievedKey:
                 if (PlayerPrefs.GetInt(MiniGameAchievedKey, 0) == 1)
                     cashReward = MiniGameGoalCashReward;
+                //Unlock one item
+                cosmeticManager.ClaimRandomCosmetic();
                 break;
 
             case TrickAchievedKey:
                 if (PlayerPrefs.GetInt(TrickAchievedKey, 0) == 1)
                     cashReward = TrickGoalCashReward;
+                //Unlock one item
+                cosmeticManager.ClaimRandomCosmetic();
                 break;
 
             case BathAchievedKey:
                 if (PlayerPrefs.GetInt(BathAchievedKey, 0) == 1)
                     cashReward = BathGoalCashReward;
+                //Unlock one item
+                cosmeticManager.ClaimRandomCosmetic();
+                break;
+
+            case ClinicAchievedKey:
+                if (PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1)
+                    cashReward = ClinicGoalCashReward;
+                //Unlock one item
+                cosmeticManager.ClaimRandomCosmetic();
                 break;
 
         }
@@ -270,6 +334,9 @@ public class GoalsManager : MonoBehaviour
         if (BathProgressText != null)
             BathProgressText.text = $"{BathGiven}";
 
+        if (ClinicProgressText != null)
+            ClinicProgressText.text = $"{ClinicGiven}";
+
     }
 
 
@@ -299,7 +366,7 @@ public class GoalsManager : MonoBehaviour
 
 
     public void btnGiftClick() {
-        if (true) { // PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5
+        if (PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5) { // PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5
             Debug.Log("5.");
             // Set panel1 to inactive
             panel1.SetActive(false);

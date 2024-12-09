@@ -337,6 +337,21 @@ public class CatStatus : MonoBehaviour
             isSick = false;
             SaveCatStatus();
             Debug.Log($"{catID}: Sick status removed.");
+
+
+            // Goals manager
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
+                goalsManager.IncrementClinicGoal();  // Tier 1
+            }
+
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
+                goalsManagerTier2.IncrementClinicGoal(); //Tier2
+            }
+
+            if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
+
+                goalsManagerTier3.IncrementClinicGoal(); //Tier3
+            }
         }
         else
         {

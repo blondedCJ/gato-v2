@@ -116,17 +116,14 @@ public class CatCollection : MonoBehaviour
 
         // Goals manager
         if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 1) {
-            goalsManager.IncrementPlayMiniGameGoal();  // Tier 1
             goalsManager.UpdateCashUI();
         }
 
         if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 2) {
-            goalsManagerTier2.IncrementPlayMiniGameGoal(); //Tier2
             goalsManagerTier2.UpdateCashUI();
         }
 
         if (PlayerPrefs.GetInt(GoalsCounterKey, 0) == 3) {
-            goalsManagerTier3.IncrementPlayMiniGameGoal(); //Tier3
             goalsManagerTier3.UpdateCashUI();
         }
     }

@@ -38,7 +38,19 @@ public class GoalsManagerTier2 : MonoBehaviour
     public GameObject NameYourCat;
     public GameObject PickACat;
 
+    // Unlock Cosmetics
+    [SerializeField] private CosmeticManager cosmeticManager;
+
     private void Start() {
+
+
+        // Dynamically find Cosmetics manager if not assigned via Inspector
+        if (cosmeticManager == null) {
+            cosmeticManager = FindObjectOfType<CosmeticManager>();
+            if (cosmeticManager == null) {
+                Debug.LogError("Cosmetics manager is not assigned or found!");
+            }
+        }
 
         checkPanel1();
         LoadGoalsProgress();
@@ -116,7 +128,22 @@ public class GoalsManagerTier2 : MonoBehaviour
 
     }
 
-    public void IncrementUnlockAccessories() {
+
+    // Clinic
+    private const string ClinicGoalKey = "ClinicGoalProgres2";
+    public const string ClinicAchievedKey = "ClinicGoalAchieved2";
+    private const int ClinicGoalCashReward = 65;
+    public TMP_Text ClinicProgressText;
+    public Image ClinicAchievementImage;
+    int ClinicGiven;
+    int ClinicLimit = 10;
+    public void IncrementClinicGoal() {
+        if (ClinicGiven < ClinicLimit) {
+            ClinicGiven++;
+            SaveGoalProgress(ClinicGoalKey, ClinicGiven);
+            CheckGoalCompletion();
+            UpdateUI();
+        }
 
     }
 
@@ -130,6 +157,7 @@ public class GoalsManagerTier2 : MonoBehaviour
         miniGamePlayed = PlayerPrefs.GetInt(MiniGameGoalKey, 0);
         TrickGiven = PlayerPrefs.GetInt(TrickGoalKey, 0);
         BathGiven = PlayerPrefs.GetInt(BathGoalKey, 0);
+        ClinicGiven = PlayerPrefs.GetInt(ClinicGoalKey, 0);
     }
 
     private void LoadAchievementsStatus() {
@@ -156,6 +184,12 @@ public class GoalsManagerTier2 : MonoBehaviour
             || PlayerPrefs.GetInt(BathAchievedKey, 0) == 2)
             && achievedSprite != null)
             BathAchievementImage.sprite = achievedSprite;
+
+        //clinic
+        if ((PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1
+            || PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 2)
+            && achievedSprite != null)
+            ClinicAchievementImage.sprite = achievedSprite;
     }
 
 
@@ -190,6 +224,15 @@ public class GoalsManagerTier2 : MonoBehaviour
             goalAchieved = true;
         }
 
+        // clinic 
+        if (ClinicGiven >= ClinicLimit && PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 0) {
+            ClinicAchievementImage.sprite = achievedSprite;
+            PlayerPrefs.SetInt(ClinicAchievedKey, 1);
+            goalAchieved = true;
+        }
+
+
+
         // Update the slider and text if a goal was achieved
         if (goalAchieved) {
             IncrementGoalsCompleted();
@@ -201,6 +244,13 @@ public class GoalsManagerTier2 : MonoBehaviour
 
     public void ClaimReward(string goalKey) {
         int cashReward = 0;
+
+
+        // Check if the reward has already been claimed (state 2 means claimed)
+        if (PlayerPrefs.GetInt(goalKey, 0) == 2) {
+            Debug.Log("Reward for " + goalKey + " has already been claimed.");
+            return; // Exit early if already claimed
+        }
 
         switch (goalKey) {
             case TreatsGoalAchievedKey:
@@ -221,6 +271,13 @@ public class GoalsManagerTier2 : MonoBehaviour
             case BathAchievedKey:
                 if (PlayerPrefs.GetInt(BathAchievedKey, 0) == 1)
                     cashReward = BathGoalCashReward;
+                break;
+
+            case ClinicAchievedKey:
+                if (PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1)
+                    cashReward = ClinicGoalCashReward;
+                //Unlock one item
+                cosmeticManager.ClaimRandomCosmetic();
                 break;
 
         }
@@ -259,6 +316,9 @@ public class GoalsManagerTier2 : MonoBehaviour
         if (BathProgressText != null)
             BathProgressText.text = $"{BathGiven}";
 
+        if (ClinicProgressText != null)
+            ClinicProgressText.text = $"{ClinicGiven}";
+
     }
 
 
@@ -288,7 +348,7 @@ public class GoalsManagerTier2 : MonoBehaviour
 
 
     public void btnGiftClick() {
-        if (true) { // PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5
+        if (PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5) { // PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5
             Debug.Log("5.");
             // Set panel1 to inactive
             panel1.SetActive(false);

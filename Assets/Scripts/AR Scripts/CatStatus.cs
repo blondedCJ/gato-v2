@@ -20,9 +20,9 @@ public class CatStatus : MonoBehaviour
     public float affectionLevel = 0f;
     public float thirstLevel = 0f;
 
-    public float decreaseRateAffection = 0.0023f; // Decrease per second
-    public float decreaseRateHunger = 0.0023f;    // Decrease per second
-    public float decreaseRateThirst = 0.0046f;    // Decrease per second
+    public float decreaseRateAffection = 10f;//0.0023f; // Decrease per second
+    public float decreaseRateHunger = 10f;//0.0023f;    // Decrease per second
+    public float decreaseRateThirst = 10f;//0.0046f;    // Decrease per second
 
     private string catID;
     public bool isSick;
@@ -168,17 +168,23 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastFed = DateTime.Now - lastFedTime;
 
         // If more than a day has passed since the cat was last fed, it gets sick
-        if (timeSinceLastFed.TotalMilliseconds >= 100 && !isSick)
+        if (timeSinceLastFed.TotalSeconds >= 30 && !isSick)
         {
             isSick = true;
+
+            // Reset the time to zero (set last fed time to now)
+            PlayerPrefs.SetString(catID + "_LastFed", DateTime.Now.ToString());
+            PlayerPrefs.Save();
+            Debug.Log("Last fed time has been reset to now.");
+
+
             Debug.Log($"{catID} has gotten sick due to not being fed for a day.");
+            Debug.Log("medical medic VALUE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + timeSinceLastFed.TotalSeconds);
         }
     }
 
-    private void CheckForDirtiness()
-    {
-        if (!PlayerPrefs.HasKey(catID + "_LastPetted"))
-        {
+    private void CheckForDirtiness() {
+        if (!PlayerPrefs.HasKey(catID + "_LastPetted")) {
             PlayerPrefs.SetString(catID + "_LastPetted", DateTime.Now.ToString());
             return;
         }
@@ -187,11 +193,18 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastPetted = DateTime.Now - lastPettedTime;
 
         // If more than a day has passed since the cat was last petted, it gets dirty
-        if (timeSinceLastPetted.TotalMilliseconds >= 100 && !isDirty)
+        if (timeSinceLastPetted.TotalSeconds >= 30 && !isDirty) //timeSinceLastPetted.TotalSeconds 
         {
             isDirty = true;
-            
+
+            // Reset the time to zero (set last petted time to now)
+            PlayerPrefs.SetString(catID + "_LastPetted", DateTime.Now.ToString());
+            PlayerPrefs.Save();
+            Debug.Log("Last petted time has been reset to now.");
+
+
             Debug.Log($"{catID} has gotten dirty due to not being petted for a day.");
+            Debug.Log("cleaning VALUE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + timeSinceLastPetted.TotalSeconds);
         }
     }
 

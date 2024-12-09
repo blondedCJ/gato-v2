@@ -20,7 +20,17 @@ public class ToggleButtonsVisibility : MonoBehaviour
     public GameObject button14;
     public GameObject button15;
     public GameObject button16;
-    public GameObject button17;
+    public GameObject button17; 
+    
+
+    public GameObject button21;
+    public GameObject button22;
+    public GameObject button23;
+    public GameObject button24;    
+    
+    public GameObject button28;
+                                 
+                                 
 
 
     public GameObject button18; // Tier 3
@@ -88,7 +98,20 @@ public class ToggleButtonsVisibility : MonoBehaviour
         button14.gameObject.SetActive(areButtonsVisible);
         button15.gameObject.SetActive(areButtonsVisible);
         button16.gameObject.SetActive(areButtonsVisible); 
-        button17.gameObject.SetActive(areButtonsVisible);
+        button17.gameObject.SetActive(areButtonsVisible);        
+        
+        button21.gameObject.SetActive(areButtonsVisible); 
+        button22.gameObject.SetActive(areButtonsVisible);  
+        button23.gameObject.SetActive(areButtonsVisible);
+        
+        button24.gameObject.SetActive(areButtonsVisible);
+        button28.gameObject.SetActive(areButtonsVisible);
+
+        button19.gameObject.SetActive(areButtonsVisible);
+        button20.gameObject.SetActive(areButtonsVisible);
+        button18.gameObject.SetActive(areButtonsVisible);
+
+
 
         if (PlayerPrefs.GetInt("GoalsCounter", 0) == 1) {
             button19.gameObject.SetActive(areButtonsVisible);

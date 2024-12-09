@@ -49,9 +49,9 @@ public class CosmeticManager : MonoBehaviour
             UnlockCosmetic(Cosmetic.CatCap);
             UnlockCosmetic(Cosmetic.ClocheHat);
             UnlockCosmetic(Cosmetic.DeerHeadband);
-            UnlockCosmetic(Cosmetic.FedoraHat);
-            UnlockCosmetic(Cosmetic.FlowerHeadband);
-            UnlockCosmetic(Cosmetic.LeatherHat);
+            UnlockCosmetic(Cosmetic.Cube001_0);
+            UnlockCosmetic(Cosmetic.Cube003_3);
+            UnlockCosmetic(Cosmetic.StarShades);
             PlayerPrefs.Save();
             Debug.Log("Give user 6 default cosmetics");
         } else {

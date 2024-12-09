@@ -254,30 +254,48 @@ public class GoalsManagerTier2 : MonoBehaviour
 
         switch (goalKey) {
             case TreatsGoalAchievedKey:
-                if (PlayerPrefs.GetInt(TreatsGoalAchievedKey, 0) == 1)
+                if (PlayerPrefs.GetInt(TreatsGoalAchievedKey, 0) == 1) {
                     cashReward = TreatsGoalCashReward;
+                    //Unlock one item
+                    cosmeticManager.ClaimRandomCosmetic();
+
+                }
                 break;
 
             case MiniGameAchievedKey:
-                if (PlayerPrefs.GetInt(MiniGameAchievedKey, 0) == 1)
+                if (PlayerPrefs.GetInt(MiniGameAchievedKey, 0) == 1) {
                     cashReward = MiniGameGoalCashReward;
+                    //Unlock one item
+                    cosmeticManager.ClaimRandomCosmetic();
+
+                }
                 break;
 
             case TrickAchievedKey:
-                if (PlayerPrefs.GetInt(TrickAchievedKey, 0) == 1)
+                if (PlayerPrefs.GetInt(TrickAchievedKey, 0) == 1) {
                     cashReward = TrickGoalCashReward;
+                    //Unlock one item
+                    cosmeticManager.ClaimRandomCosmetic();
+
+                }
                 break;
 
             case BathAchievedKey:
-                if (PlayerPrefs.GetInt(BathAchievedKey, 0) == 1)
+                if (PlayerPrefs.GetInt(BathAchievedKey, 0) == 1) {
                     cashReward = BathGoalCashReward;
+                    //Unlock one item
+                    cosmeticManager.ClaimRandomCosmetic();
+
+                }
                 break;
 
             case ClinicAchievedKey:
-                if (PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1)
+                if (PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1) {
                     cashReward = ClinicGoalCashReward;
-                //Unlock one item
-                cosmeticManager.ClaimRandomCosmetic();
+                    //Unlock one item
+                    cosmeticManager.ClaimRandomCosmetic();
+
+                }
                 break;
 
         }

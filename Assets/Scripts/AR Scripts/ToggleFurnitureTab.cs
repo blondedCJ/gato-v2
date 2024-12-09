@@ -9,14 +9,14 @@ public class ToggleFurnitureTab : MonoBehaviour
 
     public void showHideFurnitureTab()
     {
-        if (furniture.activeSelf)
-        {
-            Debug.Log("Furniture is off");
-            furniture.SetActive(false);
-        } else
-        {
-            Debug.Log("Furniture is on");
-            furniture.SetActive(true);
-        }
+        //if (furniture.activeSelf)
+        //{
+        //    Debug.Log("Furniture is off");
+        //    furniture.SetActive(false);
+        //} else
+        //{
+        //    Debug.Log("Furniture is on");
+        //    furniture.SetActive(true);
+        //}
     }
 }

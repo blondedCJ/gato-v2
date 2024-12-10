@@ -51,12 +51,21 @@ public class FurnitureManager : MonoBehaviour
         if (FurnitureTab.activeSelf)
         {
 #if UNITY_EDITOR
-            HandleMouseInput();
+        HandleMouseInput();
 #else
             HandleTouchInput();
 #endif
         }
+        else
+        {
+            // Clear selection if the FurnitureTab is not active
+            if (selectedFurnitureObject != null)
+            {
+                ClearSelection();
+            }
+        }
     }
+
 
     private void HandleMouseInput()
     {
@@ -140,7 +149,6 @@ public class FurnitureManager : MonoBehaviour
         }
     }
 
-
     private void DragSelectedFurniture(Vector2 screenPosition)
     {
         List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -168,8 +176,6 @@ public class FurnitureManager : MonoBehaviour
             Debug.LogWarning("Failed to detect AR plane while dragging.");
         }
     }
-
-
 
     public void SelectFurnitureType(Furniture furniture)
     {
@@ -201,4 +207,15 @@ public class FurnitureManager : MonoBehaviour
         return null;
     }
 
+    // New function to remove all spawned furniture
+    public void RemoveAllFurniture()
+    {
+        foreach (var furniture in spawnedFurniture.Values)
+        {
+            Destroy(furniture); // Destroy each GameObject
+        }
+
+        spawnedFurniture.Clear(); // Clear the dictionary
+        Debug.Log("All furniture has been removed.");
+    }
 }

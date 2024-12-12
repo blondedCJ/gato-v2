@@ -141,11 +141,15 @@ public class CosmeticManager : MonoBehaviour
         {
             selectedCosmetic = null;
             Debug.Log($"{cosmetic} deselected.");
+            ResetButtonHighlights();
         }
         else
         {
             selectedCosmetic = cosmetic;
             Debug.Log($"{cosmetic} selected.");
+            // Show popup for the selected cosmetic
+            HighlightSelectedButton(cosmetic);
+
         }
     }
 
@@ -319,6 +323,30 @@ public class CosmeticManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         cosmeticPopupPanel.SetActive(false);
     }
+
+
+    // Highlight color for selected button
+    public Color selectedColor = Color.yellow;
+    // Default button color
+    private Color defaultColor = Color.white;
+
+    private void HighlightSelectedButton(Cosmetic selected) {
+        foreach (var kvp in cosmeticButtons) {
+            if (kvp.Key == selected) {
+                kvp.Value.image.color = selectedColor;
+            } else {
+                kvp.Value.image.color = defaultColor;
+            }
+        }
+    }
+
+    // Function to reset all button highlights (for deselection)
+    private void ResetButtonHighlights() {
+        foreach (var kvp in cosmeticButtons) {
+            kvp.Value.image.color = defaultColor;
+        }
+    }
+
 
 
 

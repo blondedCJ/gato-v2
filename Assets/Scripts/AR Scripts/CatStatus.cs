@@ -20,9 +20,9 @@ public class CatStatus : MonoBehaviour
     public float affectionLevel = 0f;
     public float thirstLevel = 0f;
 
-    public float decreaseRateAffection = 10f;//0.0023f; // Decrease per second
-    public float decreaseRateHunger = 10f;//0.0023f;    // Decrease per second
-    public float decreaseRateThirst = 10f;//0.0046f;    // Decrease per second
+    public float decreaseRateAffection = 0.0023f;//0.0023f; // Decrease per second
+    public float decreaseRateHunger = 0.0023f;//0.0023f;    // Decrease per second
+    public float decreaseRateThirst = 0.0046f;//0.0046f;    // Decrease per second
 
     private string catID;
     public bool isSick;
@@ -59,8 +59,11 @@ public class CatStatus : MonoBehaviour
         uiManager = FindObjectOfType<CatUIManager>();
     }
 
+
+
     void Start()
     {
+
         // Dynamically find GoalsManager if not assigned via Inspector
         if (goalsManager == null) {
             goalsManager = FindObjectOfType<GoalsManager>();
@@ -193,7 +196,7 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastPetted = DateTime.Now - lastPettedTime;
 
         // If more than a day has passed since the cat was last petted, it gets dirty
-        if (timeSinceLastPetted.TotalSeconds >= 30 && !isDirty) //timeSinceLastPetted.TotalSeconds 
+        if (timeSinceLastPetted.TotalSeconds >= 60 && !isDirty) //timeSinceLastPetted.TotalSeconds 
         {
             isDirty = true;
 
@@ -205,6 +208,8 @@ public class CatStatus : MonoBehaviour
 
             Debug.Log($"{catID} has gotten dirty due to not being petted for a day.");
             Debug.Log("cleaning VALUE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + timeSinceLastPetted.TotalSeconds);
+
+
         }
     }
 
@@ -401,5 +406,10 @@ public class CatStatus : MonoBehaviour
         }
     }
 
-    
 }
+
+
+
+
+    
+

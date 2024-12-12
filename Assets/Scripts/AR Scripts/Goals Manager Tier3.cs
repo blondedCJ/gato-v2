@@ -215,6 +215,10 @@ public class GoalsManagerTier3 : MonoBehaviour
             treatsAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(TreatsGoalAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         //minigame
@@ -222,6 +226,10 @@ public class GoalsManagerTier3 : MonoBehaviour
             MiniGameAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(MiniGameAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         // perform tricks
@@ -229,6 +237,10 @@ public class GoalsManagerTier3 : MonoBehaviour
             TrickAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(TrickAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         // bathing 
@@ -236,6 +248,10 @@ public class GoalsManagerTier3 : MonoBehaviour
             BathAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(BathAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         // clinic 
@@ -243,6 +259,10 @@ public class GoalsManagerTier3 : MonoBehaviour
             ClinicAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(ClinicAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         // Update the slider and text if a goal was achieved

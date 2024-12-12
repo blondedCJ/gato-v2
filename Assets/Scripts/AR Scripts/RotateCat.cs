@@ -14,7 +14,6 @@ public class RotateCat : MonoBehaviour
     {
         originalScale = transform.localScale;
         targetScale = originalScale + scaleIncrease;
-
         // Start a little larger
         transform.localScale = targetScale;
     }

@@ -10,6 +10,14 @@ public class CatMovement : MonoBehaviour
     private bool isTurning = false; // Check if the cat is turning
     private bool isMoving = false; // Check if the cat should move
     private string currentAnimation = ""; // To track the current animation
+    private Coroutine turnCoroutine;
+
+    // Timestamp to track the latest input
+    private float latestLeftInputTime = 0f;
+    private float latestRightInputTime = 0f;
+
+    private enum MovementDirection { None, Left, Right }
+    private MovementDirection currentDirection = MovementDirection.None;
 
     void Start()
     {
@@ -18,6 +26,9 @@ public class CatMovement : MonoBehaviour
 
     void Update()
     {
+        // Determine the latest input direction
+        MovementDirection priorityDirection = DetermineLatestInputDirection();
+
         // Only move the cat if it's supposed to move
         if (isMoving && !isTurning)
         {
@@ -30,69 +41,42 @@ public class CatMovement : MonoBehaviour
         }
     }
 
-    // Called when Move Left button is pressed
-    public void OnMoveLeftPress()
+    private MovementDirection DetermineLatestInputDirection()
     {
-        if (!isTurning)
-        {
-            Debug.Log($"Current Angle: {transform.eulerAngles.y}, Checking for Left (-90)");
-            if (IsFacingDirection(-90)) // Already facing left
-            {
-                Debug.Log("Already facing left, start moving.");
-                isMoving = true; // Start running left
-            }
-            else
-            {
-                isMoving = false; // Stop moving during turn
-                StartCoroutine(Turn(-180, "Skeleton_Turn180_L_IP_Skeleton"));
-            }
-        }
-    }
+        // If times are equal, prefer the last pressed direction
+        if (latestLeftInputTime > latestRightInputTime)
+            return MovementDirection.Left;
+        else if (latestRightInputTime > latestLeftInputTime)
+            return MovementDirection.Right;
 
-    // Called when Move Right button is pressed
-    public void OnMoveRightPress()
-    {
-        if (!isTurning)
-        {
-            Debug.Log($"Current Angle: {transform.eulerAngles.y}, Checking for Right (90)");
-            if (IsFacingDirection(90)) // Already facing right
-            {
-                Debug.Log("Already facing right, start moving.");
-                isMoving = true; // Start running right
-            }
-            else
-            {
-                isMoving = false; // Stop moving during turn
-                StartCoroutine(Turn(180, "Skeleton_Turn180_R_IP_Skeleton"));
-            }
-        }
+        return MovementDirection.None;
     }
 
     private IEnumerator Turn(float angle, string turnAnimationName)
     {
-        if (isTurning) yield break; // Prevent concurrent turns
+        // Stop any ongoing turn
+        if (turnCoroutine != null)
+        {
+            StopCoroutine(turnCoroutine);
+            turnCoroutine = null;
+        }
 
         isTurning = true;
 
-        // Transition to the turn animation
+        // Play turn animation
         PlayAnimation(turnAnimationName);
 
-        // Calculate the target rotation
-        float currentY = transform.eulerAngles.y; // Current Y rotation in degrees (0 to 360)
-        float targetY = currentY + angle; // Desired rotation
-
-        // Normalize the target rotation to the range [0, 360)
+        float currentY = transform.eulerAngles.y;
+        float targetY = currentY + angle;
         targetY = (targetY + 360) % 360;
 
-        // Ensure the shortest path for rotation
         float deltaAngle = Mathf.DeltaAngle(currentY, targetY);
 
-        // Smoothly rotate towards the target
         while (Mathf.Abs(deltaAngle) > 0.1f)
         {
             float rotationStep = Mathf.Sign(deltaAngle) * turnSpeed * Time.deltaTime;
             if (Mathf.Abs(rotationStep) > Mathf.Abs(deltaAngle))
-                rotationStep = deltaAngle; // Prevent overshooting
+                rotationStep = deltaAngle;
 
             transform.Rotate(Vector3.up, rotationStep);
             deltaAngle -= rotationStep;
@@ -100,10 +84,86 @@ public class CatMovement : MonoBehaviour
             yield return null;
         }
 
-        // Snap to the exact target rotation
         transform.rotation = Quaternion.Euler(0, targetY, 0);
 
         isTurning = false;
+        turnCoroutine = null;
+    }
+
+    // Called when Move Left button is pressed
+    public void OnMoveLeftPress()
+    {
+        // Update the latest input timestamp
+        latestLeftInputTime = Time.time;
+        currentDirection = MovementDirection.Left;
+
+        if (!isTurning)
+        {
+            if (IsFacingDirection(-90))
+            {
+                isMoving = true;
+            }
+            else
+            {
+                isMoving = false;
+                if (turnCoroutine != null) StopCoroutine(turnCoroutine); // Stop current turn
+                turnCoroutine = StartCoroutine(Turn(-180, "Skeleton_Turn180_L_IP_Skeleton"));
+            }
+        }
+    }
+
+    // Called when Move Right button is pressed
+    public void OnMoveRightPress()
+    {
+        // Update the latest input timestamp
+        latestRightInputTime = Time.time;
+        currentDirection = MovementDirection.Right;
+
+        if (!isTurning)
+        {
+            if (IsFacingDirection(90))
+            {
+                isMoving = true;
+            }
+            else
+            {
+                isMoving = false;
+                if (turnCoroutine != null) StopCoroutine(turnCoroutine); // Stop current turn
+                turnCoroutine = StartCoroutine(Turn(180, "Skeleton_Turn180_R_IP_Skeleton"));
+            }
+        }
+    }
+
+    // Called when Move Left button is released
+    public void OnMoveLeftRelease()
+    {
+        if (currentDirection == MovementDirection.Left)
+        {
+            currentDirection = MovementDirection.None;
+            isMoving = false;
+
+            // Check if right button is still pressed
+            if (latestRightInputTime > latestLeftInputTime)
+            {
+                OnMoveRightPress();
+            }
+        }
+    }
+
+    // Called when Move Right button is released
+    public void OnMoveRightRelease()
+    {
+        if (currentDirection == MovementDirection.Right)
+        {
+            currentDirection = MovementDirection.None;
+            isMoving = false;
+
+            // Check if left button is still pressed
+            if (latestLeftInputTime > latestRightInputTime)
+            {
+                OnMoveLeftPress();
+            }
+        }
     }
 
     public void OnStartMoving()

@@ -10,6 +10,7 @@ public class SaveNameCat : MonoBehaviour
 {
     public TMP_InputField catName;
 
+
     public void Proceed()
     {
         string inputText = catName.text.Trim(); // Trim leading and trailing spaces

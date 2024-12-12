@@ -9,6 +9,15 @@ public class AudioManager : MonoBehaviour
 
     [Header("Button Click SFX")]
     [SerializeField] private AudioClip click; // Button click sound clip
+    [Header("Coin Collect SFX")]
+    [SerializeField] private AudioClip coin; // Button click sound clip
+    [Header("Dangerous Collect SFX")]
+    [SerializeField] private AudioClip danger; // Button click sound clip
+    [Header("Achievement Unlocked SFX")]
+    [SerializeField] private AudioClip achievementUnlocked; // Button click sound clip
+    [Header("Cat Unlock SFX")]
+    [SerializeField] private AudioClip catUnlocked; // Button click sound clip
+
 
     // Singleton instance
     public static AudioManager Instance;
@@ -39,7 +48,7 @@ public class AudioManager : MonoBehaviour
         sfx.onValueChanged.AddListener(OnSFXVolumeChanged);
 
         // Load the saved settings for the sliders
-        music.value = PlayerPrefs.GetFloat("musicVolume", 1f);
+        music.value = PlayerPrefs.GetFloat("musicVolume", 0.1f);
         sfx.value = PlayerPrefs.GetFloat("sfxVolume", 1f);
 
         // Set the initial volume for the audio sources
@@ -55,6 +64,40 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(click); // Play the button click sound
         }
     }
+
+    public void PlayCoinCollectSFX()
+    {
+        if (sfxSource != null && click != null)
+        {
+            sfxSource.PlayOneShot(coin); // Play the button click sound
+        }
+    }
+
+    public void PlayDangerousCollectSFX()
+    {
+        if (sfxSource != null && click != null)
+        {
+            sfxSource.PlayOneShot(danger); // Play the button click sound
+        }
+    }
+
+    public void PlayAchievementUnlocked()
+    {
+        if (sfxSource != null && click != null)
+        {
+            sfxSource.PlayOneShot(achievementUnlocked); // Play the button click sound
+        }
+    }
+
+    public void PlayCatUnlocked()
+    {
+        if (sfxSource != null && click != null)
+        {
+            sfxSource.PlayOneShot(catUnlocked); // Play the button click sound
+        }
+    }
+    
+
 
     private void OnMusicVolumeChanged(float value)
     {
@@ -85,7 +128,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            musicSource.volume = 1f;  // Default music volume
+            musicSource.volume = 0.1f;  // Default music volume
         }
 
         if (PlayerPrefs.HasKey("sfxVolume"))

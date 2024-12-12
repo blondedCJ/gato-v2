@@ -850,6 +850,10 @@ MonoBehaviour:
   musicSource: {fileID: 879304779}
   sfxSource: {fileID: 879304778}
   click: {fileID: 8300000, guid: 74c9e09c276763343b31278c42fa02ec, type: 3}
+  coin: {fileID: 8300000, guid: 01c636a243f309e42bd737ec26281641, type: 3}
+  danger: {fileID: 8300000, guid: 317eee096c4f6bd45bf59f1094c221e7, type: 3}
+  achievementUnlocked: {fileID: 8300000, guid: 29c037d63b4a1f64dbbc9cfb9a9a4c7d, type: 3}
+  catUnlocked: {fileID: 8300000, guid: ae08a3a381a142d46a26bc475c296822, type: 3}
 --- !u!4 &879304777
 Transform:
   m_ObjectHideFlags: 0

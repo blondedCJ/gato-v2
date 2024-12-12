@@ -117,6 +117,12 @@ public class RotateObject : MonoBehaviour
     public void BringPanelToFront(GameObject panelToBring)
     {
         panelToBring.transform.SetAsLastSibling(); // Bring to front
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCatUnlocked(); // Play the click sound
+        }
+
     }
 
 }

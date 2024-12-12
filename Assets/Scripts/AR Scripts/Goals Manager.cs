@@ -212,6 +212,10 @@ public class GoalsManager : MonoBehaviour
             treatsAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(TreatsGoalAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         //minigame
@@ -219,6 +223,10 @@ public class GoalsManager : MonoBehaviour
             MiniGameAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(MiniGameAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         // perform tricks
@@ -226,6 +234,10 @@ public class GoalsManager : MonoBehaviour
             TrickAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(TrickAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
         // bathing 
@@ -240,6 +252,10 @@ public class GoalsManager : MonoBehaviour
             ClinicAchievementImage.sprite = achievedSprite;
             PlayerPrefs.SetInt(ClinicAchievedKey, 1);
             goalAchieved = true;
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayAchievementUnlocked(); // Play the click sound
+            }
         }
 
 

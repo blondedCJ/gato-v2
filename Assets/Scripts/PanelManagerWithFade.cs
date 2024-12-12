@@ -7,7 +7,7 @@ public class PanelManagerWithFade : MonoBehaviour
     public float fadeDuration = 0.5f; // Duration of the fade transition
     public CanvasGroup darkOverlay; // Reference to the dark overlay CanvasGroup
     private bool isPanelActive = false;
-
+    FurnitureManager furnitureManager;
     void Start()
     {
         // Ensure the panel starts hidden and non-interactable
@@ -15,6 +15,8 @@ public class PanelManagerWithFade : MonoBehaviour
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
         isPanelActive = false;
+
+        furnitureManager = FindObjectOfType<FurnitureManager>();
 
         // Ensure the dark overlay starts fully transparent
         if (darkOverlay != null)
@@ -59,6 +61,7 @@ public class PanelManagerWithFade : MonoBehaviour
         if (isPanelActive) // Only trigger if the panel is active
         {
             StopAllCoroutines(); // Ensure no coroutines are overlapping
+            furnitureManager.ClearSelection();
             StartCoroutine(FadeOut());
         }
     }

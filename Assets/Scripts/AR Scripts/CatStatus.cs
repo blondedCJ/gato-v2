@@ -171,11 +171,9 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastFed = DateTime.Now - lastFedTime;
 
         // If more than a day has passed since the cat was last fed, it gets sick
-<<<<<<< Updated upstream
         if (timeSinceLastFed.TotalSeconds >= 30 && !isSick)
-=======
+
         if (timeSinceLastFed.TotalSeconds >= 10 && !isSick)
->>>>>>> Stashed changes
         {
             isSick = true;
 
@@ -200,11 +198,11 @@ public class CatStatus : MonoBehaviour
         TimeSpan timeSinceLastPetted = DateTime.Now - lastPettedTime;
 
         // If more than a day has passed since the cat was last petted, it gets dirty
-<<<<<<< Updated upstream
+
         if (timeSinceLastPetted.TotalSeconds >= 60 && !isDirty) //timeSinceLastPetted.TotalSeconds 
-=======
+
         if (timeSinceLastPetted.TotalSeconds >= 10 && !isDirty)
->>>>>>> Stashed changes
+
         {
             isDirty = true;
 

@@ -38,6 +38,17 @@ public class GoalsManagerTier3 : MonoBehaviour
     public GameObject NameYourCat;
     public GameObject PickACat;
 
+
+    public Image treatsDescriptionImage;
+    public Image miniGameDescriptionImage;
+    public Image tricksDescriptionImage;
+    public Image clinicDescriptionImage;
+    public Image bathDescriptionImage;
+    public Sprite achievedHighlight;
+
+
+    public GameObject redNotification; // Assign this in the Unity Inspector
+
     // Unlock Cosmetics
     [SerializeField] private CosmeticManager cosmeticManager;
 
@@ -67,7 +78,8 @@ public class GoalsManagerTier3 : MonoBehaviour
             Debug.Log("GoalsCounterKey already exists, value: " + PlayerPrefs.GetInt(CashKey));
         }
 
-
+        UpdateRedNotification();  // Initialize the red notification state
+        LoadHighlightState();  // Load and apply the highlight state
         LoadGoalsProgress();
         LoadAchievementsStatus();
         UpdateUI();
@@ -268,6 +280,7 @@ public class GoalsManagerTier3 : MonoBehaviour
         // Update the slider and text if a goal was achieved
         if (goalAchieved) {
             IncrementGoalsCompleted();
+            UpdateRedNotification();  // Update the red notification status
         }
 
         PlayerPrefs.Save();
@@ -290,7 +303,9 @@ public class GoalsManagerTier3 : MonoBehaviour
                     cashReward = TreatsGoalCashReward;
                     //Unlock one item
                     cosmeticManager.ClaimRandomCosmetic();
-
+                    // Highlight and save the state
+                    treatsDescriptionImage.sprite = achievedHighlight;
+                    PlayerPrefs.SetInt("TreatsGoalHighlighted3", 1);  // Save highlight state (1 for highlighted)
                 }
                 break;
 
@@ -299,7 +314,9 @@ public class GoalsManagerTier3 : MonoBehaviour
                     cashReward = MiniGameGoalCashReward;
                     //Unlock one item
                     cosmeticManager.ClaimRandomCosmetic();
-
+                    // Highlight and save the state
+                    miniGameDescriptionImage.sprite = achievedHighlight;
+                    PlayerPrefs.SetInt("MiniGameGoalHighlighted3", 1);  // Save highlight state (1 for highlighted)
                 }
                 break;
 
@@ -308,7 +325,9 @@ public class GoalsManagerTier3 : MonoBehaviour
                     cashReward = TrickGoalCashReward;
                     //Unlock one item
                     cosmeticManager.ClaimRandomCosmetic();
-
+                    // Highlight and save the state
+                    tricksDescriptionImage.sprite = achievedHighlight;
+                    PlayerPrefs.SetInt("TricksGoalHighlighted3", 1);  // Save highlight state (1 for highlighted)
                 }
                 break;
 
@@ -317,7 +336,9 @@ public class GoalsManagerTier3 : MonoBehaviour
                     cashReward = BathGoalCashReward;
                     //Unlock one item
                     cosmeticManager.ClaimRandomCosmetic();
-
+                    // Highlight and save the state
+                    bathDescriptionImage.sprite = achievedHighlight;
+                    PlayerPrefs.SetInt("BathGoalHighlighted3", 1);  // Save highlight state (1 for highlighted)
                 }
                 break;
 
@@ -326,7 +347,9 @@ public class GoalsManagerTier3 : MonoBehaviour
                     cashReward = ClinicGoalCashReward;
                     //Unlock one item
                     cosmeticManager.ClaimRandomCosmetic();
-
+                    // Highlight and save the state
+                    treatsDescriptionImage.sprite = achievedHighlight;
+                    PlayerPrefs.SetInt("TreatsGoalHighlighted2", 1);  // Save highlight state (1 for highlighted)
                 }
                 break;
 
@@ -343,6 +366,8 @@ public class GoalsManagerTier3 : MonoBehaviour
             // Reset the achievement to prevent claiming again
             PlayerPrefs.SetInt(goalKey, 2);  // Using '2' to indicate "claimed" state
             PlayerPrefs.Save();
+
+            UpdateRedNotification();  // Check and update the red notification after claiming a reward
         }
     }
 
@@ -393,9 +418,58 @@ public class GoalsManagerTier3 : MonoBehaviour
 
 
     public void btnGiftClick() {
+        if (PlayerPrefs.GetInt("GoalsCompletedCount3", 0) == 5) { // PlayerPrefs.GetInt("GoalsCompletedCount", 0) == 5
+            Debug.Log("5.");
+            NameYourCat.SetActive(true);
+            PickACat.SetActive(true);
 
-        NameYourCat.SetActive(true);
-        PickACat.SetActive(true);
+            redNotification.SetActive(false);
 
+        } else {
+            Debug.Log("Not 5.");
+        }
+
+
+    }
+
+
+    private void LoadHighlightState() {
+        // Load the saved highlight state for each goal and apply the highlight if needed
+        if (PlayerPrefs.GetInt("TreatsGoalHighlighted3", 0) == 1) {
+            treatsDescriptionImage.sprite = achievedHighlight;
+        }
+
+        if (PlayerPrefs.GetInt("MiniGameGoalHighlighted3", 0) == 1) {
+            miniGameDescriptionImage.sprite = achievedHighlight;
+        }
+
+        if (PlayerPrefs.GetInt("TrickGoalHighlighted3", 0) == 1) {
+            tricksDescriptionImage.sprite = achievedHighlight;
+        }
+
+        if (PlayerPrefs.GetInt("BathGoalHighlighted3", 0) == 1) {
+            bathDescriptionImage.sprite = achievedHighlight;
+        }
+
+        if (PlayerPrefs.GetInt("ClinicGoalHighlighted3", 0) == 1) {
+            clinicDescriptionImage.sprite = achievedHighlight;
+        }
+    }
+
+
+    private void UpdateRedNotification() {
+        int claimableRewards = 0;
+
+        // Check each goal's achievement state (1 = achieved but not claimed)
+        if (PlayerPrefs.GetInt(TreatsGoalAchievedKey, 0) == 1) claimableRewards++;
+        if (PlayerPrefs.GetInt(MiniGameAchievedKey, 0) == 1) claimableRewards++;
+        if (PlayerPrefs.GetInt(TrickAchievedKey, 0) == 1) claimableRewards++;
+        if (PlayerPrefs.GetInt(BathAchievedKey, 0) == 1) claimableRewards++;
+        if (PlayerPrefs.GetInt(ClinicAchievedKey, 0) == 1) claimableRewards++;
+
+        // Set the red notification active if there are unclaimed rewards
+        if (redNotification != null) {
+            redNotification.SetActive(claimableRewards > 0);
+        }
     }
 }

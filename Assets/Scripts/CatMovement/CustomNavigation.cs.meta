@@ -3,7 +3,11 @@ guid: 942f0f5c0e828ac47b4b30739428930f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - arPlaneManager: {instanceID: 0}
+  - arCamera: {instanceID: 0}
+  - selectedCat: {instanceID: 0}
+  - outlineMaterial: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

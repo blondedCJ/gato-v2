@@ -91,12 +91,29 @@ public class CatManager : MonoBehaviour
     {
         if (selectedCat != null)
         {
+            // Check if the cat is currently eating, drinking, or moving
             if (selectedCat.isEating || selectedCat.isDrinking || selectedCat.GetComponent<CatMover>().isWalking)
             {
                 Debug.Log("Trick is disabled for this cat while it is eating, drinking, or moving.");
                 return;
             }
 
+            // Get the CatStatus component
+            CatStatus catStatus = selectedCat.GetComponent<CatStatus>();
+            if (catStatus == null)
+            {
+                Debug.LogError("CatStatus component is missing on the selected cat.");
+                return;
+            }
+
+            // Check affection level
+            if (catStatus.affectionLevel < 30)
+            {
+                Debug.Log("This cat's affection level is too low to perform a trick.");
+                return;
+            }
+
+            // Perform the trick
             if (trickName == "PlayDead")
             {
                 selectedCat.TransitionToPlayDead();
@@ -107,6 +124,8 @@ public class CatManager : MonoBehaviour
             }
         }
     }
+
+
 
     public void DisplayUserOwnedCats()
     {

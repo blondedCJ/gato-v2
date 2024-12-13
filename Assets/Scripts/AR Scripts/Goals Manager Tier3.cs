@@ -49,6 +49,8 @@ public class GoalsManagerTier3 : MonoBehaviour
 
     public GameObject redNotification; // Assign this in the Unity Inspector
 
+    public GameObject bookTutorialAtTheStart;
+
     // Unlock Cosmetics
     [SerializeField] private CosmeticManager cosmeticManager;
 
@@ -73,6 +75,12 @@ public class GoalsManagerTier3 : MonoBehaviour
             PlayerPrefs.SetInt(CashKey, 500);
             PlayerPrefs.Save();
             Debug.Log("Default cash balance 500");
+            //display tutorial at the start    set active nlng
+            bookTutorialAtTheStart.SetActive(true);    
+
+
+
+
         } else {
             // If the key already exists, do nothing or perform some other logic
             Debug.Log("GoalsCounterKey already exists, value: " + PlayerPrefs.GetInt(CashKey));

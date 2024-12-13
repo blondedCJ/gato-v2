@@ -26,7 +26,10 @@ public class CatStatus : MonoBehaviour
 
     private string catID;
     public bool isSick;
+
     public bool isDirty;
+    public bool IsDirty { get; set; } = false; 
+    public bool IsSick { get; set; } = false; // Example default value
 
     private Vector3 initialPositionHunger;
     private Vector3 initialPositionAffection;
@@ -51,6 +54,8 @@ public class CatStatus : MonoBehaviour
     [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
     [SerializeField] private GoalsManagerTier3 goalsManagerTier3;
     private const string GoalsCounterKey = "GoalsCounter";
+
+   
 
     private void Awake()
     {
@@ -176,6 +181,7 @@ public class CatStatus : MonoBehaviour
         if (timeSinceLastFed.TotalSeconds >= 10 && !isSick)
         {
             isSick = true;
+            IsSick = true;
 
             // Reset the time to zero (set last fed time to now)
             PlayerPrefs.SetString(catID + "_LastFed", DateTime.Now.ToString());
@@ -185,7 +191,8 @@ public class CatStatus : MonoBehaviour
 
             Debug.Log($"{catID} has gotten sick due to not being fed for a day.");
             Debug.Log("medical medic VALUE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + timeSinceLastFed.TotalSeconds);
-        }
+
+            }
     }
 
     private void CheckForDirtiness() {
@@ -205,6 +212,7 @@ public class CatStatus : MonoBehaviour
 
         {
             isDirty = true;
+            IsDirty = true;
 
             // Reset the time to zero (set last petted time to now)
             PlayerPrefs.SetString(catID + "_LastPetted", DateTime.Now.ToString());
@@ -359,6 +367,7 @@ public class CatStatus : MonoBehaviour
         if (isSick)
         {
             isSick = false;
+            IsSick = false; 
             SaveCatStatus();
             Debug.Log($"{catID}: Sick status removed.");
 
@@ -387,6 +396,7 @@ public class CatStatus : MonoBehaviour
     {
         if (isDirty) {
             isDirty = false;
+            IsDirty = false;
             SaveCatStatus();
             Debug.Log($"{catID}: Dirty status removed.");
 

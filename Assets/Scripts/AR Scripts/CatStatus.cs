@@ -49,6 +49,9 @@ public class CatStatus : MonoBehaviour
 
     Bag bag;
 
+    //Notification
+    public const string NotifHungerLevelKey = "NotifHungerLevelKey";
+
     //GoalsManager goalsManager;
     [SerializeField] private GoalsManager goalsManager;
     [SerializeField] private GoalsManagerTier2 goalsManagerTier2;
@@ -422,10 +425,15 @@ public class CatStatus : MonoBehaviour
         }
     }
 
+    public string GetCatID() {
+        return catID; // catID is assumed to be the name or identifier for the cat
+    }
+
+
 }
 
 
 
 
-    
+
 

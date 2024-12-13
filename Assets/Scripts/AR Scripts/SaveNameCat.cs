@@ -8,31 +8,43 @@ using System;
 
 public class SaveNameCat : MonoBehaviour
 {
-    public TMP_InputField catName;
+    public TMP_InputField catName; // Input field for cat name
+    public TMP_Text errorText;     // TextMeshPro text for displaying error messages
 
+    private void Start()
+    {
+        // Ensure the error text is cleared initially
+        ClearError();
+
+        // Add a listener to validate input continuously as it changes
+        catName.onValueChanged.AddListener(ValidateInput);
+    }
 
     public void Proceed()
     {
         string inputText = catName.text.Trim(); // Trim leading and trailing spaces
 
+        // Clear previous error messages
+        ClearError();
+
         // Validate the input: Check for empty input
         if (string.IsNullOrEmpty(inputText))
         {
-            Debug.LogWarning("Cat name cannot be empty!");
+            ShowError("Cat name cannot be empty!");
             return;
         }
 
         // Check for length constraint
         if (inputText.Length > 10)
         {
-            Debug.LogWarning("Cat name must not exceed 10 characters!");
+            ShowError("Cat name must not exceed 10 characters!");
             return;
         }
 
         // Ensure no special characters or numbers and only one space between words
         if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[A-Za-z]+(?: [A-Za-z]+)*$"))
         {
-            Debug.LogWarning("Cat name must only contain letters and single spaces between words.");
+            ShowError("Cat name must only contain letters and single spaces.");
             return;
         }
 
@@ -43,7 +55,7 @@ public class SaveNameCat : MonoBehaviour
         // Check if the name already exists
         if (Array.Exists(existingNameArray, name => string.Equals(name, inputText, StringComparison.OrdinalIgnoreCase)))
         {
-            Debug.LogWarning("Cat name already exists!");
+            ShowError("Cat name already exists!");
             return;
         }
 
@@ -67,6 +79,34 @@ public class SaveNameCat : MonoBehaviour
         SceneManager.LoadScene(3);
     }
 
+    private void ValidateInput(string inputText)
+    {
+        inputText = inputText.Trim(); // Trim leading and trailing spaces
+
+        // Check for empty input
+        if (string.IsNullOrEmpty(inputText))
+        {
+            ShowError("Cat name cannot be empty!");
+            return;
+        }
+
+        // Check for length constraint
+        if (inputText.Length > 10)
+        {
+            ShowError("Cat name must not exceed 10 characters!");
+            return;
+        }
+
+        // Ensure no special characters or numbers and only one space between words
+        if (!System.Text.RegularExpressions.Regex.IsMatch(inputText, @"^[A-Za-z]+(?: [A-Za-z]+)*$"))
+        {
+            ShowError("Cat name must only contain letters and single spaces.");
+            return;
+        }
+
+        // Clear the error if all validations pass
+        ClearError();
+    }
 
     private void PrintAllCatNames()
     {
@@ -92,7 +132,6 @@ public class SaveNameCat : MonoBehaviour
         }
     }
 
-
     public void CatGiftComplete()
     {
         // Save that the tutorial has been completed
@@ -102,5 +141,21 @@ public class SaveNameCat : MonoBehaviour
         // Load the next scene or perform any other action
     }
 
-}
+    private void ShowError(string message)
+    {
+        if (errorText != null)
+        {
+            errorText.text = message;
+            errorText.gameObject.SetActive(true); // Make sure the text is visible
+        }
+    }
 
+    private void ClearError()
+    {
+        if (errorText != null)
+        {
+            errorText.text = string.Empty;
+            errorText.gameObject.SetActive(false); // Hide the text when cleared
+        }
+    }
+}

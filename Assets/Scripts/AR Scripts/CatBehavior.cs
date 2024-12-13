@@ -96,6 +96,8 @@ public class CatBehavior : MonoBehaviour
     [SerializeField] private AudioClip drinkingSFX; // Purring sound effect
     [SerializeField] private AudioClip[] meowingSFX; // Array for meowing sounds
 
+    [SerializeField] private GameObject star; // Reference to the star GameObject
+
     private void Awake()
     {
         // Get the AudioSource component
@@ -750,11 +752,13 @@ public class CatBehavior : MonoBehaviour
     public void Select()
     {
         isSelected = true;
+        star.SetActive(true); // Enable the star when the cat is selected
     }
 
     public void Deselect()
     {
         isSelected = false;
+        star.SetActive(false); // Enable the star when the cat is selected
     }
 
     public void TransitionToPlayDead()

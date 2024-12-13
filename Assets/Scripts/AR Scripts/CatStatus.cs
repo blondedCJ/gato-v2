@@ -20,9 +20,9 @@ public class CatStatus : MonoBehaviour
     public float affectionLevel = 0f;
     public float thirstLevel = 0f;
 
-    public float decreaseRateAffection = 0.0023f;//0.0023f; // Decrease per second
-    public float decreaseRateHunger = 0.0023f;//0.0023f;    // Decrease per second
-    public float decreaseRateThirst = 0.0046f;//0.0046f;    // Decrease per second
+    public float decreaseRateAffection = 1f;//0.0023f; // Decrease per second
+    public float decreaseRateHunger = 1f;//0.0023f;    // Decrease per second
+    public float decreaseRateThirst = 1f;//0.0046f;    // Decrease per second
 
     private string catID;
     public bool isSick;
@@ -331,7 +331,7 @@ public class CatStatus : MonoBehaviour
         while (isBeingPetted)
         {
             PlayerPrefs.SetString(catID + "_LastPetted", DateTime.Now.ToString());
-            affectionLevel += 50f; // Increase affection gradually
+            affectionLevel += 5f; // Increase affection gradually
             SaveCatStatus(); // Save the status after each increase
             yield return new WaitForSeconds(0.5f); // Wait for 0.5 seconds before increasing again
         }

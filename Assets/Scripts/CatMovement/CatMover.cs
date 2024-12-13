@@ -12,6 +12,21 @@ public class CatMover : MonoBehaviour
 
     public bool isWalking = false;
 
+    public bool CanBeSelected { get; private set; } = false;
+
+
+    private void OnEnable()
+    {
+        // Start the delay before the cat can be selected
+        StartCoroutine(EnableSelectionAfterDelay(1.0f)); // 1 second delay
+    }
+
+    private IEnumerator EnableSelectionAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        CanBeSelected = true;
+    }
+
     public void MoveTo(Vector3 targetPosition)
     {
         // Check if the user is interacting with the UI

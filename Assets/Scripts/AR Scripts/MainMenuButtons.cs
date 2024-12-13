@@ -39,4 +39,14 @@ public class MainMenuButtons : MonoBehaviour
 #endif
     }
 
+    public void PauseGame()
+    {
+        Time.timeScale = 0f; // Reset to normal time
+    }
+
+    public void UnpauseGame()
+    {
+        Time.timeScale = 1f; // Reset to normal time
+    }
+
 }

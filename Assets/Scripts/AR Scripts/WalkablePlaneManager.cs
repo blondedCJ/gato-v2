@@ -167,6 +167,7 @@ public class WalkablePlaneManager : MonoBehaviour
         if (catMover != null && (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
         {
             Debug.Log("Cannot spawn treat while the cat is moving, eating, or drinking.");
+            UIMessageManager.Instance.ShowMessage("Cannot spawn treat while the cat is moving, eating, or drinking.");
             return; // Stop the treat spawning if the cat is in any of these states
         }
 
@@ -222,6 +223,14 @@ public class WalkablePlaneManager : MonoBehaviour
             currentCash -= treatcost;
             PlayerPrefs.SetInt(CashKey, currentCash);
             PlayerPrefs.Save();
+        } else
+        {
+            Debug.Log("Not enough balance to feed!");
+            UIMessageManager.Instance.ShowMessage("Not enough balance to feed!");
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayInsufficientFundsSFX(); // Play the click sound
+            }
         }
     }
 
@@ -235,6 +244,7 @@ public class WalkablePlaneManager : MonoBehaviour
         if (catMover != null && (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
         {
             Debug.Log("Cannot spawn feed while the cat is moving, eating, or drinking.");
+            UIMessageManager.Instance.ShowMessage("Cannot spawn feed while the cat is moving, eating, or drinking.");
             return; // Stop feed spawning if the cat is in any of these states
         }
 
@@ -277,6 +287,11 @@ public class WalkablePlaneManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough balance to feed!");
+            UIMessageManager.Instance.ShowMessage("Not enough balance to feed!");
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayInsufficientFundsSFX(); // Play the click sound
+            }
         }
     }
 
@@ -290,6 +305,7 @@ public class WalkablePlaneManager : MonoBehaviour
         if (catMover != null && (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
         {
             Debug.Log("Cannot spawn drink while the cat is moving, eating, or drinking.");
+            UIMessageManager.Instance.ShowMessage("Cannot spawn drink while the cat is moving, eating, or drinking.");
             return; // Stop drink spawning if the cat is in any of these states
         }
 
@@ -333,6 +349,11 @@ public class WalkablePlaneManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough balance to transition to drinking!");
+            UIMessageManager.Instance.ShowMessage("Not enough balance for drinks!");
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayInsufficientFundsSFX(); // Play the click sound
+            }
         }
     }
 

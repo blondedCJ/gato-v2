@@ -17,6 +17,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip achievementUnlocked; // Button click sound clip
     [Header("Cat Unlock SFX")]
     [SerializeField] private AudioClip catUnlocked; // Button click sound clip
+    [Header("Insufficient Funds")]
+    [SerializeField] private AudioClip enkk; // Button click sound clip
 
 
     // Singleton instance
@@ -62,6 +64,14 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null && click != null)
         {
             sfxSource.PlayOneShot(click); // Play the button click sound
+        }
+    }
+
+    public void PlayInsufficientFundsSFX()
+    {
+        if (sfxSource != null && enkk != null)
+        {
+            sfxSource.PlayOneShot(enkk); // Play the button click sound
         }
     }
 

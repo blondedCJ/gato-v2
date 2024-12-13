@@ -2578,9 +2578,9 @@ MonoBehaviour:
   hungerLevel: 0
   affectionLevel: 0
   thirstLevel: 0
-  decreaseRateAffection: 0.0023
-  decreaseRateHunger: 0.0023
-  decreaseRateThirst: 0.0046
+  decreaseRateAffection: 0.3333
+  decreaseRateHunger: 0.4433
+  decreaseRateThirst: 0.5533
   isSick: 0
   isDirty: 0
   loadingScreen: {fileID: 0}

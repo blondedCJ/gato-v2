@@ -639,6 +639,7 @@ MonoBehaviour:
   danger: {fileID: 8300000, guid: 317eee096c4f6bd45bf59f1094c221e7, type: 3}
   achievementUnlocked: {fileID: 8300000, guid: 29c037d63b4a1f64dbbc9cfb9a9a4c7d, type: 3}
   catUnlocked: {fileID: 8300000, guid: ae08a3a381a142d46a26bc475c296822, type: 3}
+  enkk: {fileID: 8300000, guid: b9baac305889f6c448ad06543b0f1e11, type: 3}
 --- !u!4 &879304777
 Transform:
   m_ObjectHideFlags: 0

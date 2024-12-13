@@ -556,6 +556,7 @@ public class CatBehavior : MonoBehaviour
                     (catMover.isWalking || catBehavior.isEating || catBehavior.isDrinking))
                 {
                     Debug.Log("Petting is disabled for this cat while it is eating, drinking, or walking.");
+                    UIMessageManager.Instance.ShowMessage("Petting is disabled for this cat while it is eating, drinking, or walking.");
                     EndPetting(); // Ensure ongoing petting is stopped
                     return;
                 }

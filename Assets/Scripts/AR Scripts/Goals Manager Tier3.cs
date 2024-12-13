@@ -72,9 +72,9 @@ public class GoalsManagerTier3 : MonoBehaviour
         // Check if the GoalsCounterKey is already set
         if (!PlayerPrefs.HasKey(CashKey)) {
             // If the key doesn't exist
-            PlayerPrefs.SetInt(CashKey, 500);
+            PlayerPrefs.SetInt(CashKey, 200);
             PlayerPrefs.Save();
-            Debug.Log("Default cash balance 500");
+            Debug.Log("Default cash balance 200");
             //display tutorial at the start    set active nlng
             bookTutorialAtTheStart.SetActive(true);    
 

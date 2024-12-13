@@ -39,6 +39,7 @@ public class CatMover : MonoBehaviour
         if (catBehavior.isEating || catBehavior.isDrinking)
         {
             Debug.Log("Cannot move while drinking or eating!");
+            UIMessageManager.Instance.ShowMessage("Cannot move while drinking or eating!");
             return;
         }
 

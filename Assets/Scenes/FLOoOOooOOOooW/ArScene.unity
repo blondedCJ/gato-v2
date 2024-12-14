@@ -80701,7 +80701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _targetFrameRate: 20
   _optimalOcclusionDistanceMode: 0
-  _preferSmoothEdges: 1
+  _preferSmoothEdges: 0
   _principalOccludee: {fileID: 0}
   _isOcclusionStabilizationEnabled: 0
   _isOcclusionSuppressionEnabled: 0
@@ -80709,7 +80709,7 @@ MonoBehaviour:
   _useCustomMaterial: 0
   _customMaterial: {fileID: 0}
   _bypassOcclusionManagerUpdates: 0
-  _overrideOcclusionManagerSettings: 1
+  _overrideOcclusionManagerSettings: 0
   _semanticSegmentationManager: {fileID: 0}
   _meshManager: {fileID: 0}
 --- !u!1 &1918762688

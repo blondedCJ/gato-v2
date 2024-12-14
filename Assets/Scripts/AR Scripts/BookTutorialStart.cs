@@ -12,7 +12,9 @@ public class BookTutorialStart : MonoBehaviour
     private int counter = 0;               // Counter to track button clicks
 
     public GameObject closeButton;         // The close button to be activated after 19 clicks
-    public GameObject previousButton;  
+    public GameObject previousButton;
+
+    private bool isCooldown = false;       // Flag to prevent button spamming
 
     // This will be called at the start to initialize the first image
     private void Start() {
@@ -25,48 +27,61 @@ public class BookTutorialStart : MonoBehaviour
             closeButton.SetActive(false);
         }
 
-        // Set the close button inactive at the start
+        // Set the previous button inactive at the start
         if (previousButton != null) {
             previousButton.SetActive(false);
         }
     }
 
-    // Method to display the next image
+    // Method to display the next image with a delay
     public void ShowNextImage() {
-        currentImageIndex++;
+        if (!isCooldown) {
+            StartCoroutine(HandleCooldown());
+            currentImageIndex++;
 
-        // Loop back to the first image if we go past the last image
-        if (currentImageIndex >= images.Length) {
-            currentImageIndex = 0;
+            // Loop back to the first image if we go past the last image
+            if (currentImageIndex >= images.Length) {
+                currentImageIndex = 0;
+            }
+
+            // Increment the counter but cap it at 19
+            if (counter < 19) {
+                counter++;
+            }
+
+            CheckCloseButton(); // Check if the close button should be activated
+
+            StartCoroutine(FadeInImage()); // Start the fade-in effect
         }
-
-        // Increment the counter but cap it at 19
-        if (counter < 19) {
-            counter++;
-        }
-
-        CheckCloseButton(); // Check if the close button should be activated
-
-        StartCoroutine(FadeInImage()); // Start the fade-in effect
     }
 
-    // Method to display the previous image
+    // Method to display the previous image with a delay
     public void ShowPreviousImage() {
-        currentImageIndex--;
+        if (!isCooldown) {
+            StartCoroutine(HandleCooldown());
+            currentImageIndex--;
 
-        // Loop back to the last image if we go before the first image
-        if (currentImageIndex < 0) {
-            currentImageIndex = images.Length - 1;
+            // Loop back to the last image if we go before the first image
+            if (currentImageIndex < 0) {
+                currentImageIndex = images.Length - 1;
+            }
+
+            // Decrement the counter but don't go below 0 and don't decrement if counter is at 19
+            if (counter > 0 && counter < 19) {
+                counter--;
+            }
+
+            CheckCloseButton(); // Check if the close button should be activated
+
+            StartCoroutine(FadeInImage()); // Start the fade-in effect
         }
+    }
 
-        // Decrement the counter but don't go below 0 and don't decrement if counter is at 19
-        if (counter > 0 && counter < 19) {
-            counter--;
-        }
-
-        CheckCloseButton(); // Check if the close button should be activated
-
-        StartCoroutine(FadeInImage()); // Start the fade-in effect
+    // Coroutine to handle the cooldown delay
+    private IEnumerator HandleCooldown() {
+        isCooldown = true;
+        yield return new WaitForSeconds(1f); // 1-second delay
+        isCooldown = false;
     }
 
     // Coroutine for fading in the new image

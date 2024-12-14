@@ -79,10 +79,7 @@ public class NotificationManager : MonoBehaviour
         if (focus) {
             // If the app is focused, cancel all pending notifications
             AndroidNotificationCenter.CancelAllNotifications();
-            sendNotification();
-
-
-            
+            //sendNotification();
         } else {
             // If the app loses focus, send a random notification based on the cat's status
             androidNotification.SendNotification("Come back", "This is 60 seconds", PlayerPrefs.GetInt("TreatsGoalAchieved", 0)); 
@@ -146,26 +143,14 @@ public class NotificationManager : MonoBehaviour
         bool isSick = PlayerPrefs.GetInt(catID + "_IsSick", 0) == 1;
         bool isDirty = PlayerPrefs.GetInt(catID + "_IsDirty", 0) == 1;
 
-        if (hungerLevel <= 30f) {
+        if (hungerLevel <= 30f || thirstLevel <= 30f || affectionLevel <= 30f) {
             SendHungerNotification();
         }
 
 
-        if (thirstLevel <= 30f) {
-            SendThirstNotification();
-        }
-
-        if (affectionLevel <= 30f) {
-            SendAffectionNotification();
-        }
-
-        if (isSick) {
+        if (isSick || isDirty) {
             Debug.Log("is sick from sendnotification method");
             SendSickNotification();
-        }
-
-        if (isDirty) {
-            SendBathNotification();
         }
 
 
